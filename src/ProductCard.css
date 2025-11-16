@@ -1,0 +1,125 @@
+/* frontend/src/ProductCard.css */
+
+/* Bu stiller App.css'den kopyalandı ve buraya taşındı */
+.product-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  text-align: left;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  
+  /* Kartın içindekileri (resim, bilgi, düğme) dikey olarak hizalamak için */
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+
+/* Resim veya placeholder için sabit bir yükseklik alanı */
+.product-image-container {
+  width: 100%;
+  height: 250px; /* Sabit yükseklik (veya padding-top: 100% ile kare yapabiliriz) */
+  background-color: #f4f4f4;
+  position: relative;
+  overflow: hidden; /* Resmin taşmasını engeller */
+}
+
+/* Resim yoksa gösterilecek boş kutu */
+.product-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #f4f4f4;
+}
+
+/* Yüklenen resmin kendisi */
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Resmin kutuya sığmasını, esnememesini sağlar */
+  object-position: center;
+}
+.product-info {
+  padding: 15px 20px;
+  /* Bu, düğmenin en alta yapışmasını sağlar */
+  flex-grow: 1; 
+}
+
+.product-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 5px 0;
+}
+
+.product-price {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #555;
+  margin: 0;
+}
+
+/* YENİ DÜĞME STİLİ */
+.add-to-cart-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  background-color: #333; /* Koyu düğme */
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px; /* Bilgi ve düğme arası boşluk */
+}
+
+.add-to-cart-btn:hover {
+  background-color: #d9534f; /* Header'daki logo rengimiz (veya seçtiğin bir renk) */
+}
+/* YENİ FAVORİ DÜĞMESİ STİLLERİ */
+
+.favorite-btn {
+  position: absolute; /* Ebeveyni olan .product-image-container'a göre hizalanır */
+  top: 10px;  /* Resim kabının 10px aşağısında */
+  right: 10px; /* Resim kabının 10px solunda */
+  
+  background: none; /* Düğme arka planını kaldır */
+  border: none; /* Düğme kenarlığını kaldır */
+  cursor: pointer;
+  padding: 5px;
+  z-index: 10; /* Resmin üstünde kalmasını garantile */
+  
+  /* Arka planı hafifçe saydam yap (opsiyonel) */
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.1); /* Üzerine gelince hafifçe büyüsün */
+}
+
+/* İkonların (SVG) boyutu */
+.favorite-btn svg {
+  font-size: 1.2rem; /* 18px civarı */
+}
+
+/* Boş kalp (Varsayılan) */
+.empty-heart {
+  color: #333;
+}
+
+/* Dolu kalp (Favorilenmiş) */
+.filled-heart {
+  color: #d9534f; /* Logo rengimiz (Kırmızı) */
+}

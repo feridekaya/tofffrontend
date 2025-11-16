@@ -1,38 +1,39 @@
+/* App.css dosyasının yeni içeriği */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f7f6; /* Arka planı açık bir renk yapalım */
+}
+
+/* App.js'deki ana sarmalayıcı (div className="App") */
 .App {
   text-align: center;
+  padding: 20px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
+/* App.js'deki <header className="App-header"> */
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: #ffffff; /* Arka planı beyaz yapalım */
+  padding: 40px;
+  border-radius: 10px; /* Kenarları yuvarlayalım */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Hafif bir gölge */
+  max-width: 1200px; /* Kartların sığması için alanı genişletelim */
+  margin: 40px auto; /* Sayfanın ortasına alalım */
 }
 
-.App-link {
-  color: #61dafb;
+/* App.js'deki <h1> */
+.App-header h1 {
+  color: #333;
+  margin-bottom: 30px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* YENİ KART STİLLERİ */
+
+.product-card:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
+

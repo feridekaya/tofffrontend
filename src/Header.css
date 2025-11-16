@@ -1,0 +1,245 @@
+/* Header.css dosyasının içeriği */
+
+/* Ana header bölümü için temel ayarlar */
+.site-header {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0; /* İnce bir alt çizgi */
+  padding: 0 40px; /* Sağdan ve soldan boşluk */
+  box-sizing: border-box; /* Padding'in genişliği etkilememesi için */
+}
+
+/* ÜST SATIR: Logo, Arama, İkonlar */
+.header-top {
+  display: flex; /* İçindekileri (logo, arama, ikonlar) yan yana dizer */
+  justify-content: space-between; /* Aralarına eşit boşluk koyar */
+  align-items: center; /* Dikey olarak ortalar */
+  height: 80px; /* Üst satırın yüksekliği */
+}
+
+.logo {
+  font-size: 2rem; /* 32px */
+  font-weight: 700;
+  color: #d9534f; /* Örnek bir logo rengi (Boyner'e benzer) */
+  flex-basis: 20%; /* Logonun kaplayacağı alan (genişlik) */
+}
+
+/* ARAMA ÇUBUĞU */
+.search-bar {
+  flex-basis: 60%; /* Arama çubuğunun kaplayacağı alan (genişlik) */
+  text-align: center; /* İçindeki input'u ortalamak için */
+}
+
+.search-bar input {
+  width: 90%; /* Arama çubuğunun genişliği */
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+
+/* ALT SATIR: Navigasyon Linkleri */
+.header-bottom {
+  display: flex;
+  justify-content: center; /* Linkleri ortalar */
+  height: 40px;
+  border-top: 1px solid #f0f0f0; /* Üst satırdan ayıran ince çizgi */
+  position: relative; /* <-- BU SATIRI EKLE (ÇOK ÖNEMLİ) */
+}
+
+.main-nav ul {
+  list-style: none; /* Liste noktalarını kaldır */
+  margin: 0;
+  padding: 0;
+  display: flex; /* Linkleri yan yana dizer */
+  height: 100%;
+}
+
+.main-nav li {
+  display: flex;
+  align-items: center; /* Linkleri dikey olarak ortalar */
+  height: 100%; /* <-- BU SATIRI EKLE */
+}
+
+.main-nav a {
+  text-decoration: none; /* Link alt çizgisini kaldır */
+  color: #333;
+  font-size: 0.8rem; /* Yazı tipi boyutu */
+  font-weight: 600;
+  text-transform: uppercase; /* Harfleri büyük yap (KADIN, ERKEK gibi) */
+  padding: 0 15px; /* Linkler arası boşluk */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent; /* Altta gizli bir çizgi */
+  transition: border-color 0.3s ease;
+}
+
+/* Fare ile linkin üzerine gelince (hover) */
+.main-nav a:hover {
+  color: #d9534f;
+  border-bottom-color: #d9534f; /* Alttaki gizli çizgiyi göster */
+}
+/* =========================== */
+/* === YENİ MEGA MENÜ STİLLERİ === */
+/* =========================== */
+
+.mega-menu-panel {
+  position: absolute; /* EN ÖNEMLİSİ: Sayfa akışından çıkarır, süzülmesini sağlar */
+  top: 100%; /* '.header-bottom'un (position: relative olan) tam altına yerleştirir */
+  left: 0;
+  width: 100%;
+  background-color: #ffffff; /* Beyaz arka plan */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Süzüldüğünü gösteren gölge */
+  border-top: 1px solid #e0e0e0;
+  
+  /* Animasyonlu açılış için (opsiyonel) */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  
+  /* JS 'activeMenu' state'i ile menü açıldığında bu panelin
+     içindeyiz demektir. Bu CSS kuralı, .header-bottom'un
+     üzerinde durulduğu sürece (hover) paneli gösterir. */
+  .header-bottom:hover & {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.mega-menu-content {
+  /* Panel içeriğini ortalamak ve boşluk vermek için */
+  max-width: 1200px; /* Header'ımızdaki içerik genişliğiyle aynı */
+  margin: 0 auto;
+  padding: 30px 40px; /* Panel iç boşlukları */
+  text-align: left; /* Alt kategori linklerini sola hizala */
+}
+
+/* Mega menüdeki alt kategorilerin listesi (ul) */
+.mega-menu-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  /* SÜTUNLARI OLUŞTURAN KISIM */
+  /* 'Masalar' gibi uzun bir listeyi 4 sütuna böler */
+  column-count: 4; /* Sütun sayısı (isteğe bağlı değişebilir) */
+  column-gap: 30px; /* Sütunlar arası boşluk */
+}
+
+/* Mega menüdeki her bir alt kategori linki (li) */
+.mega-menu-content li {
+  margin-bottom: 15px; /* Alt alta linkler arası boşluk */
+  /* Sütunlar arasında bölünmeyi engeller */
+  break-inside: avoid; 
+}
+
+/* Mega menüdeki alt kategori linki (a) */
+.mega-menu-content a {
+  text-decoration: none;
+  color: #333; /* Link rengi */
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.mega-menu-content a:hover {
+  color: #d9534f; /* Üzerine gelince logo rengi (veya seçtiğin bir renk) */
+}
+/* ======================== */
+/* === YENİ SEPET ROZETİ === */
+/* ======================== */
+/* Header.css */
+
+/* YENİ İKON STİLLERİ */
+.header-icons {
+  flex-basis: 20%;
+  display: flex;
+  justify-content: flex-end; /* İkonları sağa yaslar */
+  align-items: center;
+  gap: 25px; /* İkonlar arası boşluk */
+}
+
+/* Her bir ikonun link sarmalayıcısı */
+.icon-link {
+  color: #333; /* İkon rengi */
+  text-decoration: none;
+  position: relative; /* Rozet (badge) için gerekli */
+  display: flex;
+  align-items: center;
+  gap: 5px; /* İkon ve metin arası boşluk (metni gizleyeceğiz) */
+}
+
+/* İkonların (SVG) boyutu */
+.icon-link svg {
+  font-size: 1.3rem; /* İkonları biraz büyütelim (20px civarı) */
+  transition: color 0.2s ease;
+}
+
+/* İkon linkinin üzerine gelince */
+.icon-link:hover svg {
+  color: #d9534f; /* Logo rengimiz */
+}
+
+/* İkonların yanındaki "Hesabım", "Sepet" metinlerini gizliyoruz */
+.icon-text {
+  /* GÖRSEL OLARAK GİZLE, AMA EKRAN OKUYUCU İÇİN KALSIN */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Sepet Rozetinin (Badge) konumunu güncelliyoruz */
+.cart-badge {
+  position: absolute; 
+  top: -10px;  /* İkonun biraz üstüne */
+  right: -10px; /* İkonun biraz sağına */
+  
+  background-color: #d9534f; 
+  color: white; 
+  border-radius: 50%; 
+  
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  font-size: 0.75rem; 
+  font-weight: 700;
+  line-height: 1;
+}
+/* Çıkış Yap düğmesini (button) bir ikon linki (a) gibi göstermek için */
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333; /* İkon rengi */
+  text-decoration: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* İkon ve metin arası boşluk (metni gizleyeceğiz) */
+  padding: 0;
+  font-family: inherit; /* Fontu eşitle */
+}
+
+/* Çıkış Yap ikonunun (SVG) boyutu */
+.logout-btn svg {
+  font-size: 1.3rem; /* Diğerleriyle aynı boyutta */
+  transition: color 0.2s ease;
+}
+
+/* Üzerine gelince renk değiştir */
+.logout-btn:hover svg {
+  color: #d9534f; /* Logo rengimiz */
+}

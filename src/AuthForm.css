@@ -1,0 +1,66 @@
+/* frontend/src/AuthForm.css */
+
+.auth-container {
+  max-width: 450px;
+  margin: 60px auto; /* Üstten alttan boşluk, sağdan soldan ortalı */
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.auth-form h2 {
+  text-align: center;
+  margin: 0 0 30px 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Padding'in genişliği etkilememesi için */
+}
+
+.auth-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.auth-button:hover {
+  background-color: #d9534f; /* Logo rengimiz */
+}
+
+.error-message {
+  color: #c9302c;
+  background-color: #fbeaea;
+  border: 1px solid #c9302c;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 20px;
+}
