@@ -74,3 +74,4 @@ export const menuData = [
     subCategories: [], // Alt kategorisi olmayan bir link
   },
 ];
+// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

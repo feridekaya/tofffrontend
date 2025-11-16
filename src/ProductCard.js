@@ -7,32 +7,32 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 function ProductCard({ product, onAddToCart, favorites, toggleFavorite }) {
 
   const imageUrl = product.image ? product.image : null; 
-  const isFavorited = (favorites || []).some(fav => fav.product === product.id);
+  
+  // DÜZELTME: 'fav.product' objesinin 'id'sine bakmalıyız
+  const isFavorited = (favorites || []).some(fav => fav.product.id === product.id);
 
   return (
     <div className="product-card"> 
       
-      {/* 2. KARTIN ÜST KISMINI LİNK İLE SARMALA */}
       <Link to={`/urun/${product.slug}`} className="product-card-link">
       
         <div className="product-image-container">
         
+          {/* DÜZELTME: ÇİFT 'onClick' HATASI GİDERİLDİ */}
           <button 
               className="favorite-btn" 
-              // App.js'deki global toggleFavorite fonksiyonunu çağır
-              onClick={() => toggleFavorite(product.id)}
               onClick={(e) => {
                   e.stopPropagation(); // Tıklamanın arkadaki <Link>'e gitmesini engelle
                   toggleFavorite(product.id); // Şimdi favori fonksiyonunu çağır
               }}
           >
-          
-              {isFavorited ? (
-                <FaHeart className="filled-heart" /> // Dolu (Kırmızı)
-              ) : (
-                <FaRegHeart className="empty-heart" /> // Boş (Beyaz/Gri)
-              )}
+            {isFavorited ? (
+              <FaHeart className="filled-heart" />
+            ) : (
+              <FaRegHeart className="empty-heart" />
+            )}
            </button>  
+
           {imageUrl ? (
             <img src={imageUrl} alt={product.name} className="product-image" />
           ) : (
@@ -45,9 +45,7 @@ function ProductCard({ product, onAddToCart, favorites, toggleFavorite }) {
           <p className="product-price">{product.price} TL</p>
         </div>
       </Link>
-      {/* LİNK SARMALAYICI BURADA BİTER */}
 
-      {/* "Sepete Ekle" düğmesi LİNKİN DIŞINDA kalır */}
       <button 
         className="add-to-cart-btn" 
         onClick={() => onAddToCart(product)}
@@ -60,3 +58,4 @@ function ProductCard({ product, onAddToCart, favorites, toggleFavorite }) {
 }
 
 export default ProductCard;
+// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

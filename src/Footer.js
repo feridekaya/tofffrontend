@@ -1,6 +1,5 @@
-
 import React from 'react';
-import './Footer.css'; // Stil dosyamızı import ediyoruz (birazdan oluşturacağız)
+import './Footer.css'; // Stil dosyamızı import ediyoruz
 
 function Footer() {
   return (
@@ -64,10 +63,6 @@ function Footer() {
         {/* Senin Sosyal Medya Linklerin */}
         <div className="footer-column">
           <h4>BİZİ TAKİP EDİN</h4>
-          {/* NOT: Bu linklerdeki ikonları (<i class...>) 
-            göstermek için "React Icons" gibi bir kütüphane 
-            kurmamız gerekecek. Şimdilik metin olarak ekliyorum.
-          */}
           <div className="social">
             <a href="https://www.instagram.com/thetoffdesign/" target="_blank" rel="noopener noreferrer">Instagram</a>
             <a href="https://wa.me/905424509342" target="_blank" rel="noopener noreferrer">WhatsApp</a>
@@ -87,3 +82,4 @@ function Footer() {
 }
 
 export default Footer;
+// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

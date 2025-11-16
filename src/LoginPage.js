@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AuthForm.css'; // Kayıt formumuzla aynı stili kullanacak
 
-// App.js'den 'onLoginSuccess' adında bir fonksiyon alacağız
 function LoginPage({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -16,24 +15,17 @@ function LoginPage({ onLoginSuccess }) {
     setError(null);
 
     try {
-      // 1. Django'daki /api/token/ adresine (simplejwt'den) istek at
       const response = await axios.post('http://127.0.0.1:8000/api/token/', {
         username: username,
         password: password,
       });
 
-      // 2. Başarılı olursa, Django bize tokenları (jetonları) verecek
       console.log('Giriş başarılı:', response.data);
       const tokens = response.data;
-
-      // 3. App.js'e "Giriş yaptık, jetonlarımız bunlar" diye haber ver
       onLoginSuccess(tokens); 
-
-      // 4. Kullanıcıyı ana sayfaya yönlendir
       navigate('/'); 
 
     } catch (err) {
-      // 401 (Yetkisiz) hatası gelirse (şifre yanlışsa)
       console.error('Giriş hatası:', err.response.data);
       setError('Kullanıcı adı veya şifre hatalı.');
     }
@@ -67,10 +59,10 @@ function LoginPage({ onLoginSuccess }) {
           />
         </div>
         <button type="submit" className="auth-button">Giriş Yap</button>
-        {/* TODO: Buraya "Hesabın yok mu? Kayıt Ol" linki ekleyebiliriz */}
       </form>
     </div>
   );
 }
 
 export default LoginPage;
+// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

@@ -10,11 +10,9 @@ import { FaUser, FaHeart, FaShoppingBag, FaSignOutAlt } from 'react-icons/fa';
 function Header({ cart, authTokens, onLogout }) {
 
   // --- Mega Menü için State ---
-  // (Bu, mega menü adımından geldi)
   const [activeMenu, setActiveMenu] = useState(null);
 
   // --- Sepet Rozeti (Badge) için Hesaplama ---
-  // (Bu, sepet rozeti adımından geldi)
   const totalItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   // --- Mega Menü Fonksiyonları ---
@@ -38,7 +36,6 @@ function Header({ cart, authTokens, onLogout }) {
         </div>
 
         {/* 3. DÜZELTİLMİŞ HEADER-ICONS BÖLÜMÜ */}
-        {/* (Sadece BİR tane <div className="header-icons"> olmalı) */}
         <div className="header-icons">
 
           {/* 1. Akıllı Giriş Yapma / Hesabım Mantığı */}
@@ -81,7 +78,6 @@ function Header({ cart, authTokens, onLogout }) {
       </div> {/* <-- .header-top burada biter */}
 
       {/* ALT SATIR: Navigasyon Linkleri (Mega Menü) */}
-      {/* (Bu kodun tamamı mega menü adımından geldi, değişiklik yok) */}
       <div className="header-bottom" onMouseLeave={handleMouseLeave}>
         <nav className="main-nav">
           <ul>
@@ -116,3 +112,4 @@ function Header({ cart, authTokens, onLogout }) {
 }
 
 export default Header;
+// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

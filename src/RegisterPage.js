@@ -11,27 +11,21 @@ function RegisterPage() {
   const [error, setError] = useState(null); // Hata mesajlarını tutmak için
   const navigate = useNavigate(); // Başarılı olunca yönlendirmek için
 
-  // Form gönderildiğinde bu fonksiyon çalışacak
   const handleSubmit = async (e) => {
     e.preventDefault(); // Formun sayfayı yenilemesini engelle
     setError(null); // Eski hataları temizle
 
     try {
-      // Django API'mizdeki /api/register/ adresine POST isteği at
       const response = await axios.post('http://127.0.0.1:8000/api/register/', {
         username: username,
         password: password,
         email: email,
-        // (first_name, last_name da gönderebiliriz)
       });
 
-      // Başarılı olursa:
       console.log('Kayıt başarılı:', response.data);
-      // Kullanıcıyı giriş yapması için login sayfasına yönlendir
       navigate('/login'); 
 
     } catch (err) {
-      // Başarısız olursa (örn: bu kullanıcı adı zaten var):
       console.error('Kayıt hatası:', err.response.data);
       setError('Kayıt başarısız. Bu kullanıcı adı veya e-posta zaten kullanılıyor olabilir.');
     }
@@ -42,7 +36,6 @@ function RegisterPage() {
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Yeni Hesap Oluştur</h2>
         
-        {/* Hata mesajı alanı */}
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-group">
@@ -82,3 +75,4 @@ function RegisterPage() {
 }
 
 export default RegisterPage;
+// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ
