@@ -1,31 +1,33 @@
 import React from 'react';
-import './Footer.css'; // Stil dosyamızı import ediyoruz
+import { Link } from 'react-router-dom';
+import { FaTruck, FaRuler, FaShieldAlt } from 'react-icons/fa';
+import './Footer.css';
 
 function Footer() {
   return (
     <footer className="site-footer">
-      
-      {/* 1. BÖLÜM: Üstteki İkonlu Alan */}
+
+      {/* 1. BÖLÜM: Üstteki İkonlu Alan - Value Proposition Strip */}
       <div className="footer-perks">
         <div className="perk">
-          <span>Icon</span> {/* Buraya ikon gelecek */}
+          <FaTruck size={32} color="#C08B5C" />
           <div>
-            <h4>ÜCRETSİZ KARGO</h4>
-            <p>Tüm siparişlerinizde kargo ücretsiz.</p>
+            <h4>ÜCRETSİZ & SİGORTALI TESLİMAT</h4>
+            <p>Tüm Türkiye'ye güvenli gönderim.</p>
           </div>
         </div>
         <div className="perk">
-          <span>Icon</span> {/* Buraya ikon gelecek */}
+          <FaRuler size={32} color="#C08B5C" />
           <div>
-            <h4>MAĞAZADAN TESLİM</h4>
-            <p>Online alışveriş, mağazadan teslimat.</p>
+            <h4>ÖZEL ÖLÇÜ İMKANI</h4>
+            <p>Evinize tam uyan ölçülerde üretim.</p>
           </div>
         </div>
         <div className="perk">
-          <span>Icon</span> {/* Buraya ikon gelecek */}
+          <FaShieldAlt size={32} color="#C08B5C" />
           <div>
-            <h4>KOLAY İADE</h4>
-            <p>Aldığınız ürünleri kolayca iade edebilirsiniz.</p>
+            <h4>%100 EL İŞÇİLİĞİ</h4>
+            <p>Masif ahşap ve metalin usta ellerdeki uyumu.</p>
           </div>
         </div>
       </div>
@@ -35,32 +37,32 @@ function Footer() {
         <div className="footer-column">
           <h4>THE TOFF HAKKINDA</h4>
           <ul>
-            <li><a href="/">Hakkımızda</a></li>
-            <li><a href="/">Kurumsal Satış</a></li>
-            <li><a href="/">Bilgi Toplumu Hizmetleri</a></li>
-            <li><a href="/">The Toff Promise</a></li>
+            <li><Link to="/hakkimizda">Hakkımızda</Link></li>
+            <li><Link to="/kurumsal-satis">Kurumsal Satış</Link></li>
+            <li><Link to="/bilgi-toplumu-hizmetleri">Bilgi Toplumu Hizmetleri</Link></li>
+            <li><Link to="/toff-promise">The Toff Promise</Link></li>
           </ul>
         </div>
         <div className="footer-column">
           <h4>MÜŞTERİ HİZMETLERİ</h4>
           <ul>
-            <li><a href="/">Bize Sorun</a></li>
-            <li><a href="/">Sıkça Sorulan Sorular</a></li>
-            <li><a href="/">Ücretsiz Kargo ve İade</a></li>
-            <li><a href="/">Üyelik Sözleşmesi</a></li>
-            <li><a href="/">İletişim</a></li>
+            <li><Link to="/bize-sorun">Bize Sorun</Link></li>
+            <li><Link to="/sss">Sıkça Sorulan Sorular</Link></li>
+            <li><Link to="/kargo-iade">Ücretsiz Kargo ve İade</Link></li>
+            <li><Link to="/uyelik-sozlesmesi">Üyelik Sözleşmesi</Link></li>
+            <li><Link to="/bize-sorun">İletişim</Link></li>
           </ul>
         </div>
         <div className="footer-column">
           <h4>HESABIM</h4>
           <ul>
-            <li><a href="/">Siparişlerim</a></li>
-            <li><a href="/">Adreslerim</a></li>
-            <li><a href="/">Üyelik Bilgilerim</a></li>
+            <li><Link to="/hesabim?view=orders">Siparişlerim</Link></li>
+            <li><Link to="/hesabim?view=addresses">Adreslerim</Link></li>
+            <li><Link to="/hesabim?view=userInfo">Üyelik Bilgilerim</Link></li>
           </ul>
         </div>
-        
-        {/* Senin Sosyal Medya Linklerin */}
+
+        {/* Sosyal Medya Linkleri */}
         <div className="footer-column">
           <h4>BİZİ TAKİP EDİN</h4>
           <div className="social">
@@ -82,4 +84,3 @@ function Footer() {
 }
 
 export default Footer;
-// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

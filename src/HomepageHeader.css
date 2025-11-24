@@ -1,0 +1,131 @@
+/* HomepageHeader.css */
+
+.homepage-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 900;
+    background: transparent;
+    transform: translateY(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.homepage-header.hidden {
+    transform: translateY(-100%);
+}
+
+.homepage-header.visible {
+    transform: translateY(0);
+}
+
+.homepage-header-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 25px 40px 25px 120px;
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+/* Logo */
+.homepage-logo {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.homepage-logo:hover {
+    color: #d35400;
+    transform: scale(1.05);
+}
+
+/* Navigation */
+.homepage-nav {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.nav-item {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 5px 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #d35400;
+    transition: width 0.3s ease;
+}
+
+.nav-item:hover {
+    color: #d35400;
+}
+
+.nav-item:hover::after,
+.nav-item.active::after {
+    width: 100%;
+}
+
+.nav-item.active {
+    color: #d35400;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .homepage-header-content {
+        padding: 20px 25px;
+        gap: 30px;
+    }
+
+    .homepage-logo {
+        font-size: 1.5rem;
+        letter-spacing: 4px;
+    }
+
+    .homepage-nav {
+        gap: 20px;
+    }
+
+    .nav-item {
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 480px) {
+    .homepage-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px 20px;
+    }
+
+    .homepage-nav {
+        width: 100%;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .nav-item {
+        font-size: 0.8rem;
+    }
+}

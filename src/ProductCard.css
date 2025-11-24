@@ -1,125 +1,169 @@
 /* frontend/src/ProductCard.css */
 
-/* Bu stiller App.css'den kopyalandı ve buraya taşındı */
 .product-card {
-  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  border: 1px solid #eee;
   border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  text-align: left;
   overflow: hidden;
-  transition: box-shadow 0.3s ease;
-  
-  /* Kartın içindekileri (resim, bilgi, düğme) dikey olarak hizalamak için */
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  /* Kartların eşit boyda olması için */
 }
 
 .product-card:hover {
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
 }
 
-
-/* Resim veya placeholder için sabit bir yükseklik alanı */
 .product-image-container {
-  width: 100%;
-  height: 250px; /* Sabit yükseklik (veya padding-top: 100% ile kare yapabiliriz) */
-  background-color: #f4f4f4;
   position: relative;
-  overflow: hidden; /* Resmin taşmasını engeller */
-}
-
-/* Resim yoksa gösterilecek boş kutu */
-.product-image-placeholder {
   width: 100%;
-  height: 100%;
-  background-color: #f4f4f4;
+  padding-top: 100%;
+  /* 1:1 Kare oran */
+  background-color: #f9f9f9;
+  overflow: hidden;
 }
 
-/* Yüklenen resmin kendisi */
+.product-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .product-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Resmin kutuya sığmasını, esnememesini sağlar */
-  object-position: center;
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image-placeholder::after {
+  content: 'Görsel Yok';
+  color: #999;
+  font-size: 0.8rem;
+}
+
+/* Favori Butonu */
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-btn:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.filled-heart {
+  color: #e74c3c;
+  font-size: 1.2rem;
+}
+
+.empty-heart {
+  color: #333;
+  font-size: 1.2rem;
+}
+
+/* Ürün Bilgileri */
 .product-info {
-  padding: 15px 20px;
-  /* Bu, düğmenin en alta yapışmasını sağlar */
-  flex-grow: 1; 
+  padding: 15px;
+  flex-grow: 1;
+  /* İçerik azsa bile alt kısmı doldur */
 }
 
 .product-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #222;
-  margin: 0 0 5px 0;
+  color: #333;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  /* Uzun isimleri 2 satırda sınırla */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .product-price {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #555;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #000;
   margin: 0;
 }
 
-/* YENİ DÜĞME STİLİ */
+/* Sepete Ekle Butonu */
 .add-to-cart-btn {
-  display: block;
   width: 100%;
-  padding: 12px 20px;
+  padding: 12px;
+  background-color: #333;
+  color: #fff;
   border: none;
-  background-color: #333; /* Koyu düğme */
-  color: white;
-  font-weight: 600;
   font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: 10px; /* Bilgi ve düğme arası boşluk */
+  transition: background-color 0.3s;
+  border-radius: 0 0 8px 8px;
+  /* Sadece alt köşeler */
 }
 
 .add-to-cart-btn:hover {
-  background-color: #d9534f; /* Header'daki logo rengimiz (veya seçtiğin bir renk) */
+  background-color: #000;
 }
-/* YENİ FAVORİ DÜĞMESİ STİLLERİ */
 
-.favorite-btn {
-  position: absolute; /* Ebeveyni olan .product-image-container'a göre hizalanır */
-  top: 10px;  /* Resim kabının 10px aşağısında */
-  right: 10px; /* Resim kabının 10px solunda */
-  
-  background: none; /* Düğme arka planını kaldır */
-  border: none; /* Düğme kenarlığını kaldır */
-  cursor: pointer;
-  padding: 5px;
-  z-index: 10; /* Resmin üstünde kalmasını garantile */
-  
-  /* Arka planı hafifçe saydam yap (opsiyonel) */
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
+/* Renk Seçenekleri (Yeni) */
+.product-card-colors {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
+  gap: 5px;
+  margin-top: 8px;
 }
 
-.favorite-btn:hover {
-  transform: scale(1.1); /* Üzerine gelince hafifçe büyüsün */
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  /* Beyaz renkler için sınır */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* İkonların (SVG) boyutu */
-.favorite-btn svg {
-  font-size: 1.2rem; /* 18px civarı */
-}
-
-/* Boş kalp (Varsayılan) */
-.empty-heart {
-  color: #333;
-}
-
-/* Dolu kalp (Favorilenmiş) */
-.filled-heart {
-  color: #d9534f; /* Logo rengimiz (Kırmızı) */
+.more-colors {
+  font-size: 0.75rem;
+  color: #777;
+  margin-left: 2px;
 }

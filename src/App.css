@@ -1,39 +1,94 @@
-/* App.css dosyasının yeni içeriği */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f4f7f6; /* Arka planı açık bir renk yapalım */
-}
+/* App.css */
 
 /* App.js'deki ana sarmalayıcı (div className="App") */
 .App {
   text-align: center;
-  padding: 20px;
+  padding: 0;
 }
 
 /* App.js'deki <header className="App-header"> */
 .App-header {
-  background-color: #ffffff; /* Arka planı beyaz yapalım */
+  background-color: var(--bg-secondary);
   padding: 40px;
-  border-radius: 10px; /* Kenarları yuvarlayalım */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Hafif bir gölge */
-  max-width: 1200px; /* Kartların sığması için alanı genişletelim */
-  margin: 40px auto; /* Sayfanın ortasına alalım */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  max-width: 1200px;
+  margin: 40px auto;
+  border: 1px solid var(--border-color);
 }
 
 /* App.js'deki <h1> */
 .App-header h1 {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 30px;
 }
 
 /* YENİ KART STİLLERİ */
-
 .product-card:hover {
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
+/* Sorting Dropdown */
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  padding: 0 20px;
+}
+
+.sort-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.sort-button {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.sort-button:hover {
+  border-color: var(--text-primary);
+}
+
+.sort-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 200px;
+  z-index: 100;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sort-menu li {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.sort-menu li:hover {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.sort-menu li:last-child {
+  border-bottom: none;
+}

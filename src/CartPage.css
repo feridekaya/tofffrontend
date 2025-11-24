@@ -1,75 +1,84 @@
-/* frontend/src/CartPage.css (TAMAMEN GÜNCELLENDİ) */
+/* CartPage.css – Dark Luxury Theme Overrides */
 
+/* Container */
 .cart-page-container {
-  /* Ana konteyneri genişletiyoruz */
   max-width: 1200px;
   margin: 40px auto;
-  padding: 0 20px; /* Kenar boşluklarını padding'e çevirdik */
+  padding: 0 20px;
   min-height: 400px;
+  background-color: #161616;
+  /* Toff Carbon */
+  color: #9CA3AF;
+  /* Light gray text */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .cart-page-container h1 {
-  text-align: left; /* Başlığı sola alıyoruz (örnekteki gibi) */
+  text-align: left;
   margin-bottom: 30px;
   font-size: 1.5rem;
   font-weight: 600;
+  color: #EDEDED;
+  /* Off‑white */
 }
 
-/* YENİ: İKİ SÜTUNLU YAPI */
+/* Layout */
 .cart-layout {
   display: flex;
-  flex-wrap: wrap; /* Küçük ekranlar için */
-  gap: 30px; /* İki sütun arası boşluk */
+  flex-wrap: wrap;
+  gap: 30px;
 }
 
-/* SÜTUN 1: ÜRÜN LİSTESİ */
+/* Column 1 – Product List */
 .cart-items-column {
-  flex: 2; /* Bu sütun, diğerinin 2 katı genişlikte olsun */
-  min-width: 400px; /* Küçülürken minimum genişlik */
+  flex: 2;
+  min-width: 400px;
 }
 
 .cart-empty {
   padding: 40px;
   text-align: center;
-  background: #fff;
-  border: 1px dashed #ccc;
+  background: #242424;
+  border: 1px dashed #333333;
   border-radius: 8px;
+  color: #9CA3AF;
 }
 
 .continue-shopping-btn {
   display: inline-block;
   margin-top: 20px;
   padding: 12px 24px;
-  background-color: #333;
-  color: white;
+  background-color: #333333;
+  color: #EDEDED;
   text-decoration: none;
   font-weight: 600;
   border-radius: 5px;
   transition: background-color 0.2s ease;
 }
+
 .continue-shopping-btn:hover {
-  background-color: #d9534f;
+  background-color: #444444;
 }
 
 .cart-items-list {
-  border: none; /* Kenarlıkları kaldırıyoruz */
+  border: none;
 }
 
-/* YENİ: SEPETTEKİ ÜRÜN KARTI TASARIMI */
+/* Cart Item */
 .cart-item {
   display: flex;
-  align-items: flex-start; /* Üstten hizala */
+  align-items: flex-start;
   padding: 20px 0;
-  border-bottom: 1px solid #eee;
-  gap: 20px; /* İç elemanlar arası boşluk */
+  border-bottom: 1px solid #404040;
+  gap: 20px;
 }
 
 .cart-item-image {
-  flex-shrink: 0; /* Küçülme */
-  width: 120px; /* Resim alanı genişliği */
+  flex-shrink: 0;
+  width: 120px;
   height: 120px;
-  background-color: #f4f4f4;
-  border: 1px solid #eee;
+  background-color: #2F2F2F;
+  border: 1px solid #404040;
 }
 
 .cart-item-image img {
@@ -79,55 +88,64 @@
 }
 
 .cart-item-info {
-  flex-grow: 1; /* Kalan tüm alanı kapla */
+  flex-grow: 1;
 }
 
 .cart-item-info h3 {
   margin: 0 0 10px 0;
   font-size: 1.1rem;
-  color: #333;
+  color: #FFFFFF;
+  /* product name */
   font-weight: 600;
 }
 
 .cart-item-info p {
   margin: 0 0 5px 0;
   font-size: 1rem;
-  color: #555;
+  color: #9CA3AF;
+  /* price */
 }
-.cart-item-info .item-quantity {
+
+/* Quantity selector */
+.quantity-select {
+  padding: 5px 8px;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  background-color: #1F1F1F;
+  color: #FFFFFF;
   font-size: 0.9rem;
-  color: #777;
+  cursor: pointer;
 }
 
-.cart-item-actions {
-  text-align: right;
-}
-
+/* Remove link */
 .remove-item-btn {
-  /* Örnekteki 'Sil' gibi daha sade bir tasarım */
   background: none;
   border: none;
-  color: #888;
+  color: #EF4444;
+  /* red/muted */
   text-decoration: underline;
   cursor: pointer;
   font-size: 0.9rem;
   padding: 5px;
 }
+
 .remove-item-btn:hover {
-  color: #c9302c;
+  color: #D32F2F;
 }
 
-/* SÜTUN 2: SİPARİŞ ÖZETİ */
+/* Column 2 – Order Summary */
 .cart-summary-column {
-  flex: 1; /* Genişliğin 1 birimini al */
+  flex: 1;
   min-width: 300px;
 }
 
 .summary-box {
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
+  background-color: #242424;
+  /* Deep Graphite */
+  border: 1px solid #333333;
   padding: 25px;
   border-radius: 8px;
+  color: #9CA3AF;
 }
 
 .summary-box h2 {
@@ -135,11 +153,14 @@
   font-weight: 600;
   margin: 0 0 20px 0;
   text-align: center;
-  border-bottom: 1px solid #ddd;
+  color: #EDEDED;
+  /* Off‑white */
+  border-bottom: 1px solid #404040;
   padding-bottom: 15px;
 }
 
-.summary-row, .summary-total {
+.summary-row,
+.summary-total {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
@@ -147,57 +168,420 @@
 }
 
 .summary-row span:first-child {
-  color: #555;
+  color: #9CA3AF;
 }
+
 .summary-row span:last-child {
   font-weight: 600;
-  color: #333;
+  color: #EDEDED;
 }
 
 .summary-total {
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #404040;
   font-size: 1.1rem;
   font-weight: 700;
+  color: #EDEDED;
 }
 
+/* Checkout button */
 .checkout-btn {
   display: block;
   width: 100%;
   padding: 15px;
   margin-top: 20px;
   border: none;
-  background-color: #333;
-  color: white;
+  background-color: #C08B5C;
+  /* Raw Copper */
+  color: #000000;
+  /* Black text */
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
+  /* rounded‑md */
   transition: background-color 0.2s ease;
 }
-.checkout-btn:hover {
-  background-color: #d9534f;
-}
-/* frontend/src/CartPage.css dosyasının en altına eklenecek */
 
-/* Eski "Adet:" yazısı stilini (item-quantity) kaldırıp bunu ekliyoruz */
-.cart-item-info .item-quantity-updater {
+.checkout-btn:hover {
+  background-color: #D4A373;
+  /* lighter copper */
+}
+
+/* Coupon Section */
+.coupon-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.coupon-input {
+  flex: 1;
+  padding: 10px;
+  background-color: #1F1F1F;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  color: #EDEDED;
   font-size: 0.9rem;
-  color: #777;
-  margin-top: 15px; /* Üstteki fiyat bilgisinden biraz ayır */
+}
+
+.coupon-input:focus {
+  outline: none;
+  border-color: #C08B5C;
+}
+
+.coupon-btn {
+  padding: 10px 15px;
+  background-color: #333333;
+  color: #C08B5C;
+  border: 1px solid #C08B5C;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.coupon-btn:hover {
+  background-color: #C08B5C;
+  color: #000000;
+}
+
+.discount-row span:last-child {
+  color: #C08B5C;
+  /* Discount amount in copper */
+}
+
+/* Agreement Section */
+.agreement-section {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.agreement-label {
   display: flex;
   align-items: center;
-  gap: 8px; /* "Adet:" yazısı ve dropdown arası boşluk */
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #9CA3AF;
+  cursor: pointer;
 }
 
-/* YENİ AÇILIR MENÜ STİLİ */
+.agreement-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #C08B5C;
+  /* Copper checkbox */
+  cursor: pointer;
+}
+
+/* Disabled Button State */
+.checkout-btn.disabled {
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-info {
+  flex-grow: 1;
+}
+
+.cart-item-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  color: #FFFFFF;
+  /* product name */
+  font-weight: 600;
+}
+
+.cart-item-info p {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+  color: #9CA3AF;
+  /* price */
+}
+
+/* Quantity selector */
 .quantity-select {
   padding: 5px 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #404040;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: #1F1F1F;
+  color: #FFFFFF;
   font-size: 0.9rem;
-  font-weight: 500;
   cursor: pointer;
+}
+
+/* Remove link */
+.remove-item-btn {
+  background: none;
+  border: none;
+  color: #EF4444;
+  /* red/muted */
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 5px;
+}
+
+.remove-item-btn:hover {
+  color: #D32F2F;
+}
+
+/* Column 2 – Order Summary */
+.cart-summary-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+.summary-box {
+  background-color: #242424;
+  /* Deep Graphite */
+  border: 1px solid #333333;
+  padding: 25px;
+  border-radius: 8px;
+  color: #9CA3AF;
+}
+
+.summary-box h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  text-align: center;
+  color: #EDEDED;
+  /* Off‑white */
+  border-bottom: 1px solid #404040;
+  padding-bottom: 15px;
+}
+
+.summary-row,
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.summary-row span:first-child {
+  color: #9CA3AF;
+}
+
+.summary-row span:last-child {
+  font-weight: 600;
+  color: #EDEDED;
+}
+
+.summary-total {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #404040;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #EDEDED;
+}
+
+/* Checkout button */
+.checkout-btn {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  border: none;
+  background-color: #C08B5C;
+  /* Raw Copper */
+  color: #000000;
+  /* Black text */
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 6px;
+  /* rounded‑md */
+  transition: background-color 0.2s ease;
+}
+
+.checkout-btn:hover {
+  background-color: #D4A373;
+  /* lighter copper */
+}
+
+/* Coupon Section */
+.coupon-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.coupon-input {
+  flex: 1;
+  padding: 10px;
+  background-color: #1F1F1F;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  color: #EDEDED;
+  font-size: 0.9rem;
+}
+
+.coupon-input:focus {
+  outline: none;
+  border-color: #C08B5C;
+}
+
+.coupon-btn {
+  padding: 10px 15px;
+  background-color: #333333;
+  color: #C08B5C;
+  border: 1px solid #C08B5C;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.coupon-btn:hover {
+  background-color: #C08B5C;
+  color: #000000;
+}
+
+.discount-row span:last-child {
+  color: #C08B5C;
+  /* Discount amount in copper */
+}
+
+/* Agreement Section */
+.agreement-section {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.agreement-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #9CA3AF;
+  cursor: pointer;
+}
+
+.agreement-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #C08B5C;
+  /* Copper checkbox */
+  cursor: pointer;
+}
+
+/* Disabled Button State */
+.checkout-btn.disabled {
+  background-color: #404040;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.checkout-btn.disabled:hover {
+  background-color: #404040;
+}
+
+/* --- MODAL STYLES --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  /* Dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #242424;
+  /* Deep Graphite */
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  border-radius: 8px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #EDEDED;
+  border: none;
+  /* Remove default border from summary-box h2 if inherited */
+  padding: 0;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-modal-btn:hover {
+  color: #EF4444;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  color: #9CA3AF;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.modal-body strong {
+  color: #EDEDED;
+}
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid #333;
+  text-align: right;
+}
+
+.modal-ok-btn {
+  background-color: #C08B5C;
+  color: #000;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-ok-btn:hover {
+  background-color: #D4A373;
 }

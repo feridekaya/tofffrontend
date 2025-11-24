@@ -1,104 +1,107 @@
 /* Footer.css dosyasının içeriği */
 
 .site-footer {
-  background-color: #1a1a1a; /* Koyu arka plan (Beymen örneği gibi) */
-  color: #a9a9a9; /* Varsayılan metin rengi (gri tonlu) */
-  padding: 60px 0 20px 0; /* Üstten 60, alttan 20 piksel boşluk */
-  font-size: 0.9rem; /* 14-15px civarı */
-  margin-top: 60px; /* Ürün listesi ile arasında boşluk olsun */
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  padding: 60px 0 20px 0;
+  font-size: 0.9rem;
+  margin-top: 60px;
+  border-top: 1px solid var(--border-color);
 }
 
-/* 1. BÖLÜM: Üstteki İkonlu Alan */
+/* 1. BÖLÜM: Üstteki İkonlu Alan - Value Proposition Strip */
 .footer-perks {
-  display: flex; /* İkonlu alanları yan yana dizer */
-  justify-content: space-around; /* Aralarına eşit boşluk bırakır */
-  width: 80%; /* Tüm genişliği kaplamasın */
-  margin: 0 auto 40px auto; /* Ortalar ve alttan boşluk bırakır */
-  padding-bottom: 40px; /* Altına çizgi için boşluk */
-  border-bottom: 1px solid #333; /* İnce bir ayırıcı çizgi */
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  margin: 0 auto 40px auto;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .perk {
-  display: flex; /* İkon ve metni yan yana getirir */
+  display: flex;
   align-items: center;
-  gap: 15px; /* Aralarında boşluk */
-  color: #ffffff; /* Beyaz yazı */
+  gap: 15px;
+  color: var(--text-primary);
 }
 
 .perk h4 {
   font-size: 0.9rem;
   margin: 0 0 5px 0;
   font-weight: 600;
+  color: #EDEDED;
 }
 
 .perk p {
   font-size: 0.8rem;
-  color: #a9a9a9;
+  color: #9CA3AF;
   margin: 0;
-  max-width: 200px; /* Metinlerin fazla uzamasını engeller */
+  max-width: 200px;
 }
 
 /* 2. BÖLÜM: Çok Sütunlu Link Alanı */
 .footer-links {
-  display: flex; /* Sütunları yan yana dizer */
-  justify-content: center; /* Sütunları ortalar */
-  gap: 60px; /* Sütunlar arası boşluk */
+  display: flex;
+  justify-content: center;
+  gap: 60px;
   width: 80%;
-  margin: 0 auto 40px auto; /* Ortalar ve alttan boşluk */
+  margin: 0 auto 40px auto;
 }
 
 .footer-column {
-  flex-basis: 200px; /* Her sütunun varsayılan genişliği */
+  flex-basis: 200px;
 }
 
 .footer-column h4 {
-  color: #ffffff; /* Başlıklar beyaz */
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 20px;
 }
 
 .footer-column ul {
-  list-style: none; /* Noktaları kaldır */
+  list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .footer-column li {
-  margin-bottom: 10px; /* Linkler arası dikey boşluk */
+  margin-bottom: 10px;
 }
 
 .footer-column a {
-  color: #a9a9a9; /* Linklerin rengi */
-  text-decoration: none; /* Alt çizgiyi kaldır */
+  color: var(--text-secondary);
+  text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .footer-column a:hover {
-  color: #ffffff; /* Üzerine gelince beyaz yap */
+  color: var(--accent-color);
 }
 
 /* Sosyal Medya Linkleri */
 .social {
   display: flex;
-  flex-direction: column; /* Linkleri alt alta diz */
+  flex-direction: column;
   gap: 10px;
 }
 
 .social a {
-  color: #a9a9a9;
+  color: var(--text-secondary);
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .social a:hover {
-  color: #ffffff;
+  color: var(--accent-color);
 }
 
 /* 3. BÖLÜM: Telif Hakkı (Copyright) */
 .footer-bottom {
   text-align: center;
   padding-top: 20px;
-  border-top: 1px solid #333; /* Üstündeki bölümden ayır */
+  border-top: 1px solid var(--border-color);
   width: 80%;
   margin: 0 auto;
   font-size: 0.8rem;

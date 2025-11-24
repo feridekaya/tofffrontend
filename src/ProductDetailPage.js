@@ -2,72 +2,215 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import './ProductCard.css'; // Stil dosyasını import et
+import './ProductDetailPage.css';
 
-// Prop'ları yakala
 function ProductDetailPage({ onAddToCart, favorites, toggleFavorite }) {
-  const { slug } = useParams(); 
+  const { slug } = useParams();
   const [product, setProduct] = useState(null);
+
+  // State
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [currentPrice, setCurrentPrice] = useState(0);
+  const [errorMsg, setErrorMsg] = useState(''); // Hata mesajı için state
+
+  // Zoom State
+  const [zoomStyle, setZoomStyle] = useState({});
 
   useEffect(() => {
     axios.get(`http://127.0.0.1:8000/api/products/?slug=${slug}`)
       .then(response => {
-        if (response.data.length > 0) {
-          setProduct(response.data[0]);
-        } 
+        const products = response.data.results || response.data;
+
+        if (products.length > 0) {
+          const prod = products[0];
+          setProduct(prod);
+          setCurrentPrice(prod.price);
+
+          if (prod.images && prod.images.length > 0) {
+            setSelectedImage(prod.images[0].image);
+          } else {
+            setSelectedImage(prod.image);
+          }
+        }
       })
       .catch(error => {
         console.error("Ürün çekilirken hata oluştu!", error);
       });
-  }, [slug]); 
+  }, [slug]);
 
-  const imageUrl = product && product.image ? product.image : null;
+  useEffect(() => {
+    if (selectedSize) {
+      setCurrentPrice(selectedSize.price);
+    } else if (product) {
+      setCurrentPrice(product.price);
+    }
+  }, [selectedSize, product]);
 
-  // DÜZELTME: 'fav.product' objesinin 'id'sine bakmalıyız
-  const isFavorited = (favorites || []).some(fav => product && fav.product.id === product.id);
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.target.getBoundingClientRect();
+    const x = ((e.pageX - left) / width) * 100;
+    const y = ((e.pageY - top) / height) * 100;
 
-  if (!product) {
-    return <div style={{padding: '100px', textAlign: 'center'}}>Yükleniyor...</div>;
-  }
+    setZoomStyle({
+      transformOrigin: `${x}% ${y}%`,
+      transform: 'scale(2)'
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setZoomStyle({
+      transformOrigin: 'center center',
+      transform: 'scale(1)'
+    });
+  };
+
+  // Sepete Ekleme Doğrulama Fonksiyonu
+  const handleAddToCartClick = () => {
+    setErrorMsg(''); // Önceki hatayı temizle
+
+    // 1. Boyut kontrolü
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      setErrorMsg('Lütfen bir boyut seçiniz.');
+      return;
+    }
+
+    // 2. Renk kontrolü
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
+      setErrorMsg('Lütfen bir renk seçiniz.');
+      return;
+    }
+
+    // Her şey tamamsa sepete ekle
+    onAddToCart({
+      ...product,
+      price: currentPrice,
+      selectedSize,
+      selectedColor
+    });
+  };
+
+  if (!product) return <div style={{ padding: '100px', textAlign: 'center' }}>Yükleniyor...</div>;
+
+  const isFavorited = (favorites || []).some(fav => fav.product.id === product.id);
+
+  const allImages = [];
+  if (product.image) allImages.push({ id: 'main', image: product.image });
+  if (product.images) allImages.push(...product.images);
 
   return (
-    <div className="product-detail-container" style={{maxWidth: '1000px', margin: '40px auto', padding: '20px'}}>
-      <h1>{product.name}</h1>
-      
-      {imageUrl && (
-        <img src={imageUrl} alt={product.name} style={{width: '100%', maxWidth: '500px'}} />
-      )}
-      
-      <h2>{product.price} TL</h2>
-      
-      <div className="product-description">
-        <p>{product.description || 'Bu ürün için henüz bir açıklama girilmemiştir.'}</p>
+    <div className="product-detail-container">
+
+      {/* SOL: Galeri */}
+      <div className="gallery-section">
+        <div
+          className="main-image-container"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
+          <img
+            src={selectedImage || product.image}
+            alt={product.name}
+            className="main-image"
+            style={zoomStyle}
+          />
+        </div>
+
+        <div className="thumbnail-list">
+          {allImages.map((img, index) => (
+            <img
+              key={img.id || index}
+              src={img.image}
+              alt={`Thumbnail ${index}`}
+              className={`thumbnail ${selectedImage === img.image ? 'active' : ''}`}
+              onClick={() => setSelectedImage(img.image)}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="detail-page-actions" style={{marginTop: '20px', display: 'flex', gap: '10px'}}>
-        <button 
-          className="add-to-cart-btn"
-          onClick={() => onAddToCart(product)}
-        >
-          Sepete Ekle
-        </button>
-        
-        {/* Favori düğmesinin 'onClick' olayı düzeltildi */}
-        <button 
-          className="favorite-btn" 
-          style={{position: 'static', width: 'auto', padding: '0 15px'}}
-          onClick={(e) => {
-            e.stopPropagation(); // Her ihtimale karşı
-            toggleFavorite(product.id);
-          }}
-        >
-          {isFavorited ? <FaHeart className="filled-heart" /> : <FaRegHeart className="empty-heart" />}
-        </button>
-      </div>
+      {/* SAĞ: Bilgi */}
+      <div className="info-section">
+        <h1 className="product-title">{product.name}</h1>
+        <div className="product-price">{currentPrice} TL</div>
 
+        <div className="product-description">
+          <p>{product.description || 'Bu ürün için açıklama bulunmamaktadır.'}</p>
+        </div>
+
+        {/* Boyut Seçimi */}
+        {product.sizes && product.sizes.length > 0 && (
+          <div className="variant-group">
+            <span className="variant-title">Boyut: {selectedSize ? selectedSize.name : 'Seçiniz'}</span>
+            <div className="variant-options">
+              {product.sizes.map(size => (
+                <div
+                  key={size.id}
+                  className={`size-option ${selectedSize?.id === size.id ? 'active' : ''}`}
+                  onClick={() => {
+                    setSelectedSize(size);
+                    setErrorMsg(''); // Seçim yapılınca hatayı kaldır
+                  }}
+                >
+                  {size.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Renk Seçimi */}
+        {product.colors && product.colors.length > 0 && (
+          <div className="variant-group">
+            <span className="variant-title">Renk: {selectedColor ? selectedColor.name : 'Seçiniz'}</span>
+            <div className="variant-options">
+              {product.colors.map((color, index) => (
+                <div
+                  key={color.id}
+                  className={`color-option ${selectedColor?.id === color.id ? 'active' : ''}`}
+                  style={{ backgroundColor: color.hex_code }}
+                  onClick={() => {
+                    setSelectedColor(color);
+                    setErrorMsg(''); // Seçim yapılınca hatayı kaldır
+                    if (allImages.length > index) {
+                      setSelectedImage(allImages[index].image);
+                    }
+                  }}
+                  title={color.name}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Hata Mesajı */}
+        {errorMsg && (
+          <div style={{ color: '#e74c3c', marginBottom: '15px', fontWeight: 'bold' }}>
+            {errorMsg}
+          </div>
+        )}
+
+        {/* Aksiyonlar */}
+        <div className="detail-actions">
+          <button
+            className="add-to-cart-btn-large"
+            onClick={handleAddToCartClick}
+          >
+            Sepete Ekle
+          </button>
+
+          <button
+            className="favorite-btn-large"
+            onClick={() => toggleFavorite(product.id)}
+          >
+            {isFavorited ? <FaHeart className="filled-heart" /> : <FaRegHeart className="empty-heart" />}
+          </button>
+        </div>
+
+      </div>
     </div>
   );
 }
 
 export default ProductDetailPage;
-// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

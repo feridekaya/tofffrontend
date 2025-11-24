@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './AuthForm.css'; // Kayıt formumuzla aynı stili kullanacak
 
 function LoginPage({ onLoginSuccess }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -16,18 +16,18 @@ function LoginPage({ onLoginSuccess }) {
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/token/', {
-        username: username,
+        username: email, // Backend 'username' bekliyor ama biz email gönderiyoruz (EmailBackend bunu halledecek)
         password: password,
       });
 
       console.log('Giriş başarılı:', response.data);
       const tokens = response.data;
-      onLoginSuccess(tokens); 
-      navigate('/'); 
+      onLoginSuccess(tokens);
+      navigate('/');
 
     } catch (err) {
-      console.error('Giriş hatası:', err.response.data);
-      setError('Kullanıcı adı veya şifre hatalı.');
+      console.error('Giriş hatası:', err.response?.data);
+      setError('E-posta veya şifre hatalı.');
     }
   };
 
@@ -35,16 +35,16 @@ function LoginPage({ onLoginSuccess }) {
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Giriş Yap</h2>
-        
+
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-group">
-          <label htmlFor="username">Kullanıcı Adı</label>
+          <label htmlFor="email">E-posta</label>
           <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>

@@ -1,0 +1,338 @@
+/* HomePage.css - Immersive Luxury Design */
+
+/* Smooth Scroll Container */
+.immersive-homepage {
+    scroll-behavior: smooth;
+}
+
+/* Remove default scrollbar for cleaner look */
+.immersive-homepage::-webkit-scrollbar {
+    width: 8px;
+}
+
+.immersive-homepage::-webkit-scrollbar-track {
+    background: #000;
+}
+
+.immersive-homepage::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.immersive-homepage::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Common Section Styles */
+.hero-section,
+.collection-section,
+.story-section {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========== HERO SECTION ========== */
+.hero-section {
+    background: #000;
+    overflow: hidden;
+}
+
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.3) 0%,
+            rgba(0, 0, 0, 0.6) 100%);
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: #fff;
+    max-width: 900px;
+    padding: 0 20px;
+}
+
+.hero-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 700;
+    letter-spacing: 12px;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8);
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin: 0 0 30px 0;
+    text-transform: uppercase;
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.hero-description {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 60px;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeInUp 1s ease-out 0.6s both, bounce 2s ease-in-out 2s infinite;
+    cursor: pointer;
+}
+
+.scroll-arrow {
+    font-size: 1.5rem;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ========== COLLECTION SECTIONS ========== */
+.collection-section {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.collection-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.4) 100%);
+    transition: background 0.5s ease;
+}
+
+.collection-section:hover .collection-overlay {
+    background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.2) 100%);
+}
+
+.collection-content {
+    position: relative;
+    z-index: 3;
+    color: #fff;
+    text-decoration: none;
+    text-align: left;
+    padding: 60px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.collection-number {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 4px;
+    opacity: 0.6;
+    margin-bottom: 20px;
+}
+
+.collection-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    transition: transform 0.3s ease;
+}
+
+.collection-section:hover .collection-title {
+    transform: translateX(10px);
+}
+
+.collection-subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: 300;
+    margin: 0 0 40px 0;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.collection-cta {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 15px 0;
+    border-bottom: 2px solid #fff;
+    transition: all 0.3s ease;
+}
+
+.collection-section:hover .collection-cta {
+    padding-left: 10px;
+    border-bottom-color: #d35400;
+}
+
+/* ========== STORY SECTION ========== */
+.story-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #fff;
+}
+
+.story-content {
+    text-align: center;
+    max-width: 800px;
+    padding: 60px 20px;
+}
+
+.story-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin: 0 0 30px 0;
+    text-transform: uppercase;
+}
+
+.story-text {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 300;
+    line-height: 1.8;
+    margin: 0 0 50px 0;
+    opacity: 0.9;
+}
+
+.story-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.story-btn {
+    padding: 18px 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid #fff;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.story-btn.primary {
+    background: #fff;
+    color: #000;
+}
+
+.story-btn.primary:hover {
+    background: #d35400;
+    border-color: #d35400;
+    color: #fff;
+}
+
+.story-btn.secondary {
+    background: transparent;
+    color: #fff;
+}
+
+.story-btn.secondary:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .collection-section {
+        background-attachment: scroll;
+    }
+
+    .collection-content {
+        padding: 40px 30px;
+    }
+
+    .collection-number {
+        font-size: 0.85rem;
+    }
+
+    .story-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .story-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        letter-spacing: 8px;
+    }
+
+    .hero-subtitle {
+        letter-spacing: 2px;
+    }
+
+    .collection-content {
+        padding: 30px 20px;
+    }
+}

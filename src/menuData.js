@@ -2,8 +2,21 @@
 
 export const menuData = [
   {
+    title: 'TÜM ÜRÜNLER',
+    path: '/tum-urunler',
+    subCategories: [],
+  },
+  {
+    title: 'KOLEKSİYONLAR',
+    path: '/koleksiyonlar',
+    subCategories: [
+      { title: 'Yeni Gelenler', path: '/yeni-gelenler' },
+      { title: 'En Çok Satanlar', path: '/tum-urunler' },
+    ],
+  },
+  {
     title: 'MASALAR',
-    path: '/masalar', // Ana link
+    path: '/masalar',
     subCategories: [
       { title: 'Yemek Masaları', path: '/masalar/yemek-masalari' },
       { title: 'Çalışma & Ofis Masaları', path: '/masalar/calisma-ofis' },
@@ -32,30 +45,19 @@ export const menuData = [
     ],
   },
   {
-    title: 'DEPOLAMA & DÜZENLEME',
-    path: '/depolama',
+    title: 'KİTAPLIKLAR & RAFLAR',
+    path: '/kitapliklar-raflar',
     subCategories: [
-      { title: 'Kitaplıklar', path: '/depolama/kitapliklar' },
-      { title: 'TV Üniteleri', path: '/depolama/tv-uniteleri' },
-      { title: 'Duvar Rafları', path: '/depolama/duvar-raflari' },
-      { title: 'Askılıklar', path: '/depolama/askiliklar' },
-      { title: 'Antre Çözümleri / Ayakkabılık', path: '/depolama/antre' },
-      { title: 'Havluluklar', path: '/depolama/havluluklar' },
+      { title: 'Kitaplıklar', path: '/kitapliklar-raflar/kitapliklar' },
+      { title: 'TV Üniteleri', path: '/kitapliklar-raflar/tv-uniteleri' },
+      { title: 'Duvar Rafları', path: '/kitapliklar-raflar/duvar-raflari' },
+      { title: 'Askılıklar', path: '/kitapliklar-raflar/askiliklar' },
+      { title: 'Antre Çözümleri / Ayakkabılık', path: '/kitapliklar-raflar/antre' },
+      { title: 'Havluluklar', path: '/kitapliklar-raflar/havluluklar' },
     ],
   },
   {
-    title: 'DIŞ MEKAN (OUTDOOR)',
-    path: '/dis-mekan',
-    subCategories: [
-      { title: 'Dış Mekan Masaları', path: '/dis-mekan/masalar' },
-      { title: 'Dış Mekan Sandalyeleri', path: '/dis-mekan/sandalyeler' },
-      { title: 'Dış Mekan Oturma Grubu', path: '/dis-mekan/oturma-grubu' },
-      { title: 'Şezlonglar', path: '/dis-mekan/sezlonglar' },
-      { title: 'Salıncaklar', path: '/dis-mekan/salincaklar' },
-    ],
-  },
-  {
-    title: 'AKSESUAR & TAMAMLAYICI',
+    title: 'AKSESUARLAR',
     path: '/aksesuar',
     subCategories: [
       { title: 'Saksılıklar', path: '/aksesuar/saksiliklar' },
@@ -63,15 +65,4 @@ export const menuData = [
       { title: 'Şamdanlar', path: '/aksesuar/samdanlar' },
     ],
   },
-  {
-    title: 'YENİ GELENLER',
-    path: '/yeni-gelenler',
-    subCategories: [], // Alt kategorisi olmayan bir link
-  },
-  {
-    title: 'TÜM ÜRÜNLER',
-    path: '/tum-urunler',
-    subCategories: [], // Alt kategorisi olmayan bir link
-  },
 ];
-// <-- FAZLADAN '}' PARANTEZİ SİLİNDİ

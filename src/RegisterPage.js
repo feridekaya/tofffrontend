@@ -5,29 +5,33 @@ import { useNavigate } from 'react-router-dom'; // Yönlendirme için
 import './AuthForm.css'; // Giriş ve Kayıt formları için ortak stil dosyası
 
 function RegisterPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [error, setError] = useState(null); // Hata mesajlarını tutmak için
-  const navigate = useNavigate(); // Başarılı olunca yönlendirmek için
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Formun sayfayı yenilemesini engelle
-    setError(null); // Eski hataları temizle
+    e.preventDefault();
+    setError(null);
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/register/', {
-        username: username,
-        password: password,
         email: email,
+        password: password,
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: phoneNumber
       });
 
       console.log('Kayıt başarılı:', response.data);
-      navigate('/login'); 
+      navigate('/giris'); // Login sayfasına yönlendir
 
     } catch (err) {
-      console.error('Kayıt hatası:', err.response.data);
-      setError('Kayıt başarısız. Bu kullanıcı adı veya e-posta zaten kullanılıyor olabilir.');
+      console.error('Kayıt hatası:', err.response?.data);
+      setError('Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.');
     }
   };
 
@@ -39,15 +43,27 @@ function RegisterPage() {
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-group">
-          <label htmlFor="username">Kullanıcı Adı</label>
+          <label htmlFor="firstName">Ad</label>
           <input
             type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            id="firstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             required
           />
         </div>
+
+        <div className="form-group">
+          <label htmlFor="lastName">Soyad</label>
+          <input
+            type="text"
+            id="lastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </div>
+
         <div className="form-group">
           <label htmlFor="email">E-posta</label>
           <input
@@ -58,6 +74,19 @@ function RegisterPage() {
             required
           />
         </div>
+
+        <div className="form-group">
+          <label htmlFor="phoneNumber">Telefon Numarası</label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            required
+            placeholder="05xxxxxxxxx"
+          />
+        </div>
+
         <div className="form-group">
           <label htmlFor="password">Şifre</label>
           <input

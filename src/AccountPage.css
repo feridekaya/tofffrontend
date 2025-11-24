@@ -1,0 +1,163 @@
+/* src/AccountPage.css */
+
+/* --- Main Container --- */
+.account-page-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  min-height: 500px;
+  gap: 32px;
+  /* gap-8 equivalent */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- LEFT SIDEBAR: Navigation Menu --- */
+.account-sidebar {
+  flex: 0 0 260px;
+  border: 1px solid #333333;
+  /* Darker border */
+  border-radius: 8px;
+  /* rounded-lg */
+  padding: 15px;
+  height: fit-content;
+  background-color: #242424;
+  /* Deep Graphite */
+}
+
+.account-sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.account-sidebar nav li {
+  margin-bottom: 5px;
+}
+
+/* Menu Links (Buttons) */
+.account-sidebar nav button {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  /* Placeholder for active border */
+  border-radius: 0 6px 6px 0;
+  /* Rounded right corners only */
+  font-size: 16px;
+  font-weight: 500;
+  color: #9CA3AF;
+  /* Light Gray for inactive */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-sidebar nav button:hover {
+  background-color: #333333;
+  color: #EDEDED;
+}
+
+/* Active Link Style */
+.account-sidebar nav button.active {
+  background-color: #333333;
+  /* Very subtle dark tint */
+  color: #C08B5C;
+  /* Raw Copper */
+  border-left: 3px solid #C08B5C;
+  /* Active indicator */
+  font-weight: 600;
+}
+
+/* Logout Button */
+.account-sidebar nav button.logout-btn {
+  color: #EF4444;
+  /* Muted Red */
+  margin-top: 10px;
+  border-top: 1px solid #333333;
+  padding-top: 12px;
+  border-left: 3px solid transparent;
+  /* Reset border for logout */
+  border-radius: 6px;
+}
+
+.account-sidebar nav button.logout-btn:hover {
+  background-color: #2F2F2F;
+  color: #D32F2F;
+}
+
+
+/* --- RIGHT SIDE: Dynamic Content Area --- */
+.account-content {
+  flex: 1;
+  /* padding-left removed because we use gap in container */
+}
+
+.account-content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #EDEDED;
+  /* Off-White */
+  border-bottom: 2px solid #333333;
+  /* Dark Gray */
+  padding-bottom: 10px;
+  margin-top: 0;
+}
+
+/* My Orders Tabs */
+.order-tabs {
+  display: flex;
+  margin-top: 20px;
+  border-bottom: 1px solid #333333;
+  /* Dark Gray divider */
+}
+
+.order-tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #9CA3AF;
+  /* Gray for inactive */
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s;
+}
+
+.order-tabs button:hover {
+  color: #EDEDED;
+}
+
+.order-tabs button.active {
+  color: #FFFFFF;
+  /* White for active */
+  font-weight: 600;
+  border-bottom-color: #C08B5C;
+  /* Raw Copper underline */
+}
+
+/* "No Orders" Box */
+.order-content {
+  padding: 40px;
+  text-align: center;
+  background-color: #242424;
+  /* Deep Graphite */
+  border: 1px solid #333333;
+  /* Subtle border */
+  border-radius: 8px;
+  /* rounded-lg */
+  margin-top: 20px;
+}
+
+.order-content p {
+  font-size: 18px;
+  color: #9CA3AF;
+  /* Light Gray */
+}
+
+.password-update-section {
+  margin-top: 40px;
+}
