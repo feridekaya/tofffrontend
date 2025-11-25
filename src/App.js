@@ -4,6 +4,7 @@ import axios from 'axios';
 import './App.css';
 import ScrollToTop from './ScrollToTop';
 import OffCanvasSidebar from './OffCanvasSidebar';
+import API_BASE_URL from './config/api';
 
 // --- Ana bileşenler ---
 import Header from './Header';
@@ -115,7 +116,7 @@ function App() {
   // API'den favorileri çeken fonksiyon
   const fetchFavorites = async (accessToken) => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/favorites/', {
+      const response = await axios.get(`${API_BASE_URL}/api/favorites/`, {
         headers: {
           'Authorization': `Bearer ${accessToken}`
         }
@@ -142,8 +143,8 @@ function App() {
     try {
       if (existingFavorite) {
         // Çıkar
-        await axios.delete(`http://127.0.0.1:8000/api/favorites/${existingFavorite.id}/`, {
-          headers: { 'Authorization': `Bearer ${accessToken}` }
+        await axios.delete(`${API_BASE_URL}/api/favorites/${existingFavorite.id}/`, {
+          headers: { 'Authorization': `Bearer ${authTokens.access}` }
         });
 
         // State'den çıkar
@@ -151,9 +152,9 @@ function App() {
         console.log("Favorilerden çıkarıldı.");
       } else {
         // Ekle
-        const response = await axios.post('http://127.0.0.1:8000/api/favorites/',
+        const response = await axios.post(`${API_BASE_URL}/api/favorites/`,
           { product: productId }, // FavoriteWriteSerializer sadece ID bekler
-          { headers: { 'Authorization': `Bearer ${accessToken}` } }
+          { headers: { 'Authorization': `Bearer ${authTokens.access}` } }
         );
 
         // Backend 'FavoriteWriteSerializer' kullandığı için dönen cevapta 'product' sadece ID olabilir.
