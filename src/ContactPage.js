@@ -66,8 +66,8 @@ function ContactPage() {
                     <div style={styles.socialMedia}>
                         <h4 style={styles.itemTitle}>Bizi Takip Edin</h4>
                         <div style={styles.socialIcons}>
-                            <a href="#" style={styles.socialLink}><FaInstagram /></a>
-                            <a href="#" style={styles.socialLink}><FaLinkedin /></a>
+                            <a href="/" style={styles.socialLink}><FaInstagram /></a>
+                            <a href="/" style={styles.socialLink}><FaLinkedin /></a>
                         </div>
                     </div>
                 </div>

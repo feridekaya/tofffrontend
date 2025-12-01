@@ -152,7 +152,7 @@ function App() {
         console.log("Favorilerden çıkarıldı.");
       } else {
         // Ekle
-        const response = await axios.post(`${API_BASE_URL}/api/favorites/`,
+        await axios.post(`${API_BASE_URL}/api/favorites/`,
           { product: productId }, // FavoriteWriteSerializer sadece ID bekler
           { headers: { 'Authorization': `Bearer ${authTokens.access}` } }
         );
