@@ -3,6 +3,7 @@ import './Header.css';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { menuData } from './menuData';
 import axios from 'axios';
+import API_BASE_URL from './config';
 
 // 1. Gerekli tüm ikonları import et
 import { FaUser, FaHeart, FaShoppingBag, FaSignOutAlt, FaSearch, FaTimes } from 'react-icons/fa';
@@ -16,21 +17,35 @@ function Header({ cart, authTokens, onLogout }) {
   // --- Arama Overlay için State ---
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  // --- Koleksiyonlar için State ---
+  // --- Koleksiyonlar ve Kategoriler için State ---
+  const [categories, setCategories] = useState([]);
   const [collections, setCollections] = useState([]);
 
   // --- Sepet Rozeti (Badge) için Hesaplama ---
   const totalItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
-  // Koleksiyonları API'den çek
+  // Kategorileri ve Koleksiyonları API'den çek
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/collections/')
+    // 1. Koleksiyonları çek
+    axios.get(`${API_BASE_URL}/api/collections/`)
+      .then(response => setCollections(response.data))
+      .catch(err => console.error('Koleksiyon hatası:', err));
+
+    // 2. Kategorileri çek
+    axios.get(`${API_BASE_URL}/api/categories/`)
       .then(response => {
-        setCollections(response.data);
+        // Sadece ana kategorileri (parent=null) filtrele
+        const mainCategories = response.data.filter(cat => cat.parent === null);
+        // Her ana kategori için alt kategorileri bul
+        const categoriesWithSubs = mainCategories.map(mainCat => {
+          return {
+            ...mainCat,
+            subCategories: response.data.filter(sub => sub.parent === mainCat.id)
+          };
+        });
+        setCategories(categoriesWithSubs);
       })
-      .catch(error => {
-        console.error('Koleksiyonlar yüklenemedi:', error);
-      });
+      .catch(err => console.error('Kategori hatası:', err));
   }, []);
 
   // --- Arama Fonksiyonu ---
@@ -51,23 +66,41 @@ function Header({ cart, authTokens, onLogout }) {
     setActiveMenu(null);
   };
 
-  // Menü datasını koleksiyonlarla birleştir
-  const getMenuWithCollections = () => {
-    return menuData.map(item => {
-      if (item.title === 'KOLEKSİYONLAR') {
-        return {
-          ...item,
-          subCategories: collections.map(col => ({
-            title: col.name,
-            path: `/koleksiyon/${col.slug}`
-          }))
-        };
+  // Menüyü Dinamik Oluştur
+  const getDynamicMenu = () => {
+    // 1. Sabit Başlangıç (Tüm Ürünler)
+    const menu = [
+      {
+        title: 'TÜM ÜRÜNLER',
+        path: '/tum-urunler',
+        subCategories: [],
+      },
+      {
+        title: 'KOLEKSİYONLAR',
+        path: '/koleksiyonlar',
+        subCategories: collections.map(col => ({
+          title: col.name,
+          path: `/koleksiyon/${col.slug}`
+        }))
       }
-      return item;
+    ];
+
+    // 2. Dinamik Kategoriler
+    categories.forEach(cat => {
+      menu.push({
+        title: cat.name.toUpperCase(), // Başlıkları büyük harf yap
+        path: `/${cat.slug}`,
+        subCategories: cat.subCategories.map(sub => ({
+          title: sub.name,
+          path: `/${cat.slug}/${sub.slug}`
+        }))
+      });
     });
+
+    return menu;
   };
 
-  const menuWithCollections = getMenuWithCollections();
+  const menuWithCollections = getDynamicMenu();
 
   return (
     <>
