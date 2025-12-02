@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { menuData } from './menuData';
+
 import axios from 'axios';
 import API_BASE_URL from './config';
 
