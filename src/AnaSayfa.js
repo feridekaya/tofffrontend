@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import API_BASE_URL from './config/api';
 
 function AnaSayfa() {
   const [collections, setCollections] = useState([]);
+  const collectionsRef = useRef(null);
 
   useEffect(() => {
     // Fetch collections from API
@@ -19,6 +20,10 @@ function AnaSayfa() {
         console.error('Koleksiyonlar yüklenemedi:', error);
       });
   }, []);
+
+  const scrollToCollections = () => {
+    collectionsRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="immersive-homepage">
@@ -50,7 +55,7 @@ function AnaSayfa() {
             Atölyeden evinize, %100 el işçiliği ile üretilen zamansız tasarımlar
           </p>
 
-          <div className="scroll-indicator">
+          <div className="scroll-indicator" onClick={scrollToCollections}>
             <span>Keşfet</span>
             <FaChevronDown className="scroll-arrow" />
           </div>
@@ -58,22 +63,24 @@ function AnaSayfa() {
       </section>
 
       {/* Collection Sections */}
-      {collections.map((collection, index) => (
-        <section
-          key={collection.slug}
-          className="collection-section"
-          style={{ backgroundImage: `url('${collection.image || `/assets/collection-${collection.slug}.png`}')` }}
-        >
-          <div className="collection-overlay"></div>
+      <div ref={collectionsRef}>
+        {collections.map((collection, index) => (
+          <section
+            key={collection.slug}
+            className="collection-section"
+            style={{ backgroundImage: `url('${collection.image || `/assets/collection-${collection.slug}.png`}')` }}
+          >
+            <div className="collection-overlay"></div>
 
-          <Link to={`/koleksiyon/${collection.slug}`} className="collection-content">
-            <div className="collection-number">0{index + 1}</div>
-            <h2 className="collection-title">{collection.name}</h2>
-            <p className="collection-subtitle">{collection.description || 'Özel tasarım koleksiyonu'}</p>
-            <span className="collection-cta">Koleksiyonu Keşfet →</span>
-          </Link>
-        </section>
-      ))}
+            <Link to={`/koleksiyon/${collection.slug}`} className="collection-content">
+              <div className="collection-number">0{index + 1}</div>
+              <h2 className="collection-title">{collection.name}</h2>
+              <p className="collection-subtitle">{collection.description || 'Özel tasarım koleksiyonu'}</p>
+              <span className="collection-cta">Koleksiyonu Keşfet →</span>
+            </Link>
+          </section>
+        ))}
+      </div>
 
       {/* Final Section: Brand Story */}
       <section className="story-section">
