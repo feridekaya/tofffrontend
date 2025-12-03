@@ -8,4 +8,4 @@ cmds = ["npm install"]
 cmds = ["npm run build"]
 
 [phases.start]
-cmds = ["sh -c 'npx serve -s build -l 0.0.0.0:${PORT}'"]
+cmds = ["node server.js"]
