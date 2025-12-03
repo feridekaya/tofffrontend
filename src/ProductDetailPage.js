@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import './ProductDetailPage.css';
+import API_BASE_URL from './config/api';
 
 function ProductDetailPage({ onAddToCart, favorites, toggleFavorite }) {
   const { slug } = useParams();
@@ -19,7 +20,7 @@ function ProductDetailPage({ onAddToCart, favorites, toggleFavorite }) {
   const [zoomStyle, setZoomStyle] = useState({});
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/api/products/?slug=${slug}`)
+    axios.get(`${API_BASE_URL}/api/products/?slug=${slug}`)
       .then(response => {
         const products = response.data.results || response.data;
 

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CheckoutPage.css';
+import API_BASE_URL from './config/api';
 
 function CheckoutPage({ cart, setCart, authTokens }) {
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                 }))
             };
 
-            const response = await fetch('http://127.0.0.1:8000/api/orders/create/', {
+            const response = await fetch(`${API_BASE_URL}/api/orders/create/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -294,3 +295,4 @@ function CheckoutPage({ cart, setCart, authTokens }) {
 }
 
 export default CheckoutPage;
+

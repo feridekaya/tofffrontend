@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import './CategoryPage.css';
 import ProductCard from './ProductCard';
+import API_BASE_URL from './config/api';
 
 function CategoryPage({ onAddToCart, favorites, toggleFavorite }) {
   const { slug } = useParams();
@@ -26,7 +27,7 @@ function CategoryPage({ onAddToCart, favorites, toggleFavorite }) {
     setCurrentPage(page);
 
     // 1. Ürünleri çek
-    let apiUrl = `http://127.0.0.1:8000/api/products/?category_slug=${slug}&page=${page}`;
+    let apiUrl = `${API_BASE_URL}/api/products/?category_slug=${slug}&page=${page}`;
 
     if (sortOption) {
       apiUrl += `&ordering=${sortOption}`;

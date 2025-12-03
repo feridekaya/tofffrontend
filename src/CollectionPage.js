@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from './ProductCard';
 import './CategoryPage.css';
+import API_BASE_URL from './config/api';
 
 function CollectionPage({ onAddToCart, favorites, toggleFavorite }) {
     const { slug } = useParams();
@@ -15,7 +16,7 @@ function CollectionPage({ onAddToCart, favorites, toggleFavorite }) {
 
     useEffect(() => {
         // Koleksiyon bilgilerini al
-        axios.get(`http://127.0.0.1:8000/api/collections/${slug}/`)
+        axios.get(`${API_BASE_URL}/api/collections/${slug}/`)
             .then(response => {
                 setCollection(response.data);
             })
@@ -24,7 +25,7 @@ function CollectionPage({ onAddToCart, favorites, toggleFavorite }) {
             });
 
         // Koleksiyonun ürünlerini al
-        axios.get(`http://127.0.0.1:8000/api/collections/${slug}/products/?page=${currentPage}`)
+        axios.get(`${API_BASE_URL}/api/collections/${slug}/products/?page=${currentPage}`)
             .then(response => {
                 setProducts(response.data.results || response.data);
                 if (response.data.count) {
@@ -120,3 +121,4 @@ function CollectionPage({ onAddToCart, favorites, toggleFavorite }) {
 }
 
 export default CollectionPage;
+

@@ -244,3 +244,4 @@ const styles = {
 };
 
 export default FAQPage;
+

@@ -4,13 +4,14 @@ import { FaChevronDown } from 'react-icons/fa';
 import axios from 'axios';
 import './HomePage.css';
 import HomepageHeader from './HomepageHeader';
+import API_BASE_URL from './config/api';
 
 function AnaSayfa() {
   const [collections, setCollections] = useState([]);
 
   useEffect(() => {
     // Fetch collections from API
-    axios.get('http://127.0.0.1:8000/api/collections/')
+    axios.get(`${API_BASE_URL}/api/collections/`)
       .then(response => {
         setCollections(response.data);
       })

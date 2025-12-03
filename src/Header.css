@@ -319,38 +319,31 @@
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .header-top {
-    padding: 0 20px;
-    grid-template-columns: 1fr;
-    height: auto;
     padding: 15px 20px;
-    flex-direction: column;
-    gap: 15px;
+    flex-direction: row;
+    /* Keep row for logo and icons */
+    justify-content: space-between;
+    gap: 10px;
   }
 
   .header-left-group {
-    flex-direction: column;
     gap: 15px;
-    width: 100%;
-    justify-content: center;
+    width: auto;
   }
 
+  /* Hide desktop nav links */
   .header-top-nav {
-    gap: 15px;
-    justify-content: center;
+    display: none;
+  }
+
+  /* Hide main nav bar */
+  .header-bottom {
+    display: none;
   }
 
   .header-icons {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .main-nav ul {
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-
-  .main-nav a {
-    font-size: 0.85rem;
+    width: auto;
+    gap: 15px;
   }
 
   .search-overlay {

@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AuthForm.css'; // Stil için
+import API_BASE_URL from './config/api';
 
 function MyUserInfo({ authTokens }) {
-  
+
   // 1. State'i yeni nested (iç içe) yapıya göre güncelledik
   const [userData, setUserData] = useState({
     email: '',
@@ -17,12 +18,12 @@ function MyUserInfo({ authTokens }) {
       gender: ''
     }
   });
-  
+
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState(null);
-  
+
   // API URL'si (değişmedi)
-  const API_URL = 'http://127.0.0.1:8000/api/user/';
+  const API_URL = `${API_BASE_URL}/api/user/`;
 
   // 2. Sayfa yüklendiğinde veriyi çek
   useEffect(() => {
@@ -31,13 +32,13 @@ function MyUserInfo({ authTokens }) {
         setLoading(false);
         return;
       }
-      
+
       try {
         setLoading(true);
         const response = await axios.get(API_URL, {
           headers: { 'Authorization': `Bearer ${authTokens.access}` }
         });
-        
+
         // Backend'den null gelen değerleri boş string yap (formda hata olmasın)
         const data = response.data;
         data.profile = data.profile || {}; // Profil null ise boş obje yap
@@ -50,17 +51,17 @@ function MyUserInfo({ authTokens }) {
       } catch (error) {
         console.error('Kullanıcı bilgileri çekilirken hata:', error);
         // GÜVENLİK KONTROLÜ:
-          if (error.response && error.response.data) {
-            // API'den gelen spesifik bir hata varsa (örn: Eposta formatı yanlış)
-            const errorMsg = error.response.data?.email 
-              ? `E-posta hatası: ${error.response.data.email[0]}`
-              : 'API hatası oluştu.';
-            setMessage({ type: 'error', text: errorMsg });
-          } else {
-            // Ağ hatası
-            setMessage({ type: 'error', text: 'Sunucuya bağlanılamadı veya bir ağ hatası oluştu.' });
-          }
+        if (error.response && error.response.data) {
+          // API'den gelen spesifik bir hata varsa (örn: Eposta formatı yanlış)
+          const errorMsg = error.response.data?.email
+            ? `E-posta hatası: ${error.response.data.email[0]}`
+            : 'API hatası oluştu.';
+          setMessage({ type: 'error', text: errorMsg });
+        } else {
+          // Ağ hatası
+          setMessage({ type: 'error', text: 'Sunucuya bağlanılamadı veya bir ağ hatası oluştu.' });
         }
+      }
     };
     fetchUserData();
   }, [authTokens]);
@@ -109,14 +110,14 @@ function MyUserInfo({ authTokens }) {
       const response = await axios.patch(API_URL, dataToUpdate, {
         headers: { 'Authorization': `Bearer ${authTokens.access}` }
       });
-      
+
       // Dönen veriyi de null kontrolü yaparak state'e kaydet
       const data = response.data;
       data.profile = data.profile || {};
       data.profile.phone_number = data.profile.phone_number || '';
       data.profile.birth_date = data.profile.birth_date || '';
       data.profile.gender = data.profile.gender || '';
-      
+
       setUserData(data);
       setMessage({ type: 'success', text: 'Bilgileriniz başarıyla güncellendi!' });
 
@@ -135,10 +136,10 @@ function MyUserInfo({ authTokens }) {
   return (
     <div>
       <h2>Kullanıcı Bilgilerim</h2>
-      
+
       <div className="auth-form-container" style={{ margin: 0, padding: 0, maxWidth: 'none' }}>
         <form className="auth-form" onSubmit={handleSubmit} style={{ padding: '30px' }}>
-          
+
           {message && (
             <div className={`form-message ${message.type === 'error' ? 'error-message' : 'success-message'}`}>
               {message.text}
@@ -146,7 +147,7 @@ function MyUserInfo({ authTokens }) {
           )}
 
           {/* "username" saçmalığı kaldırıldı. */}
-          
+
           <div className="form-group">
             <label htmlFor="first_name">Ad</label>
             <input

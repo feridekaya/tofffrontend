@@ -11,3 +11,4 @@ function InfoSocietyPage() {
 }
 
 export default InfoSocietyPage;
+

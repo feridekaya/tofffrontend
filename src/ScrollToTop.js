@@ -68,3 +68,4 @@ const styles = {
 };
 
 export default ScrollToTop;
+

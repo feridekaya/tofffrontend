@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Yönlendirme için
 import './AuthForm.css'; // Giriş ve Kayıt formları için ortak stil dosyası
+import API_BASE_URL from './config/api';
 
 function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ function RegisterPage() {
     setError(null);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/register/', {
+      const response = await axios.post(`${API_BASE_URL}/api/register/`, {
         email: email,
         password: password,
         first_name: firstName,
@@ -39,7 +40,7 @@ function RegisterPage() {
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Yeni Hesap Oluştur</h2>
-        
+
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-group">

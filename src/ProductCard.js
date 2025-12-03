@@ -81,3 +81,4 @@ function ProductCard({ product, onAddToCart, favorites, toggleFavorite }) {
 }
 
 export default ProductCard;
+

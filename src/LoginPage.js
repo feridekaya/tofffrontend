@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AuthForm.css'; // Kayıt formumuzla aynı stili kullanacak
+import API_BASE_URL from './config/api';
 
 function LoginPage({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ function LoginPage({ onLoginSuccess }) {
     setError(null);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/token/', {
+      const response = await axios.post(`${API_BASE_URL}/api/token/`, {
         username: email, // Backend 'username' bekliyor ama biz email gönderiyoruz (EmailBackend bunu halledecek)
         password: password,
       });

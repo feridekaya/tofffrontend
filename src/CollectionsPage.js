@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './CollectionsPage.css';
+import API_BASE_URL from './config/api';
 
 function CollectionsPage() {
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/collections/')
+        axios.get(`${API_BASE_URL}/api/collections/`)
             .then(response => {
                 setCollections(response.data);
                 setLoading(false);
@@ -71,3 +72,4 @@ function CollectionsPage() {
 }
 
 export default CollectionsPage;
+

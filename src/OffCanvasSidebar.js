@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './OffCanvasSidebar.css';
+import API_BASE_URL from './config/api';
 
 function OffCanvasSidebar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +28,7 @@ function OffCanvasSidebar() {
 
     // Fetch collections
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/collections/')
+        axios.get(`${API_BASE_URL}/api/collections/`)
             .then(response => {
                 setCollections(response.data);
             })
@@ -141,3 +142,4 @@ function OffCanvasSidebar() {
 }
 
 export default OffCanvasSidebar;
+

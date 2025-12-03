@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './AuthForm.css'; // Stil için
+import API_BASE_URL from './config/api';
 
 function UpdatePassword({ authTokens }) {
   const [passwords, setPasswords] = useState({
@@ -13,7 +14,7 @@ function UpdatePassword({ authTokens }) {
   const [loading, setLoading] = useState(false);
 
   // Backend'de tanımladığımız yeni URL
-  const API_URL = 'http://127.0.0.1:8000/api/user/change-password/';
+  const API_URL = `${API_BASE_URL}/api/user/change-password/`;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,8 +46,8 @@ function UpdatePassword({ authTokens }) {
       console.error('Şifre güncelleme hatası:', error.response.data);
       if (error.response && error.response.data) {
         // Eğer varsa, bu "Eski şifre yanlış" gibi bir API hatasıdır
-        const errorMsg = error.response.data?.old_password 
-          ? "Eski şifreniz yanlış." 
+        const errorMsg = error.response.data?.old_password
+          ? "Eski şifreniz yanlış."
           : (error.response.data?.new_password ? "Yeni şifre kurallara uymuyor." : "Bilinmeyen bir API hatası.");
         setMessage({ type: 'error', text: errorMsg });
       } else {
@@ -62,7 +63,7 @@ function UpdatePassword({ authTokens }) {
       <h2>Şifremi Güncelle</h2>
       <div className="auth-form-container" style={{ margin: 0, padding: 0, maxWidth: 'none' }}>
         <form className="auth-form" onSubmit={handleSubmit} style={{ padding: '30px' }}>
-          
+
           {message && (
             <div className={`form-message ${message.type === 'error' ? 'error-message' : 'success-message'}`}>
               {message.text}
