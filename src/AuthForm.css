@@ -2,17 +2,21 @@
 
 .auth-container {
   max-width: 450px;
-  margin: 60px auto; /* Üstten alttan boşluk, sağdan soldan ortalı */
+  margin: 60px auto;
+  /* Üstten alttan boşluk, sağdan soldan ortalı */
   padding: 40px;
-  background-color: #ffffff;
+  background-color: #242424;
+  /* Deep Graphite */
+  border: 1px solid #333333;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .auth-form h2 {
   text-align: center;
   margin: 0 0 30px 0;
-  color: #333;
+  color: #EDEDED;
+  /* Off-White */
 }
 
 .form-group {
@@ -23,17 +27,28 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #555;
+  color: #9CA3AF;
+  /* Light Gray */
   font-size: 0.9rem;
 }
 
 .form-group input {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #ccc;
+  border: 1px solid #404040;
   border-radius: 5px;
   font-size: 1rem;
-  box-sizing: border-box; /* Padding'in genişliği etkilememesi için */
+  box-sizing: border-box;
+  /* Padding'in genişliği etkilememesi için */
+  background-color: #161616;
+  /* Darker Black */
+  color: #FFFFFF;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #C08B5C;
+  /* Focus: Copper */
 }
 
 .auth-button {
@@ -41,8 +56,10 @@
   width: 100%;
   padding: 15px;
   border: none;
-  background-color: #333;
-  color: white;
+  background-color: #C08B5C;
+  /* Raw Copper */
+  color: #000000;
+  /* Black Text */
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -52,7 +69,8 @@
 }
 
 .auth-button:hover {
-  background-color: #d9534f; /* Logo rengimiz */
+  background-color: #d4a276;
+  /* Slightly lighter copper */
 }
 
 .error-message {
@@ -64,6 +82,7 @@
   text-align: center;
   margin-bottom: 20px;
 }
+
 .auth-form select {
   width: 100%;
   padding: 12px;
@@ -71,7 +90,10 @@
   border-radius: 5px;
   font-size: 16px;
   background-color: #fff;
-  box-sizing: border-box; /* padding'in genişliği etkilememesi için */
-  margin-bottom: 15px; /* Diğer form-group gibi boşluk bırak */
-  font-family: inherit; /* Sayfanın yazı tipini al */
+  box-sizing: border-box;
+  /* padding'in genişliği etkilememesi için */
+  margin-bottom: 15px;
+  /* Diğer form-group gibi boşluk bırak */
+  font-family: inherit;
+  /* Sayfanın yazı tipini al */
 }

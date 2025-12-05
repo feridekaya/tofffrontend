@@ -60,6 +60,13 @@ function LoginPage({ onLoginSuccess }) {
           />
         </div>
         <button type="submit" className="auth-button">Giriş Yap</button>
+
+        <div className="auth-footer" style={{ marginTop: '20px', textAlign: 'center' }}>
+          <span style={{ color: '#9CA3AF' }}>Hesabınız yok mu? </span>
+          <a href="/register" style={{ color: '#C08B5C', fontWeight: 'bold', textDecoration: 'underline' }}>
+            Üye Ol
+          </a>
+        </div>
       </form>
     </div>
   );
