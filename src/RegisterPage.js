@@ -28,7 +28,7 @@ function RegisterPage() {
       });
 
       console.log('Kayıt başarılı:', response.data);
-      navigate('/giris'); // Login sayfasına yönlendir
+      navigate('/login'); // Login sayfasına yönlendir
 
     } catch (err) {
       console.error('Kayıt hatası:', err.response?.data);

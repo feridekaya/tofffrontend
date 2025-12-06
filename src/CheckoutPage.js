@@ -93,6 +93,30 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                 body: JSON.stringify(orderData)
             });
 
+            // --- ADRES KAYDETME (Eğer kullanıcı giriş yapmışsa) ---
+            if (authTokens && authTokens.access) {
+                try {
+                    // Sessizce adresi kaydet (Hata verirse siparişi durdurma)
+                    await fetch(`${API_BASE_URL}/api/addresses/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authTokens.access}`
+                        },
+                        body: JSON.stringify({
+                            title: 'Teslimat Adresi', // Varsayılan başlık
+                            full_name: deliveryInfo.fullName,
+                            address: deliveryInfo.address,
+                            city: deliveryInfo.city,
+                            phone: deliveryInfo.phone
+                        })
+                    });
+                    console.log('Adres profili kaydedildi.');
+                } catch (addrError) {
+                    console.error('Adres kaydetme hatası (Önemsiz):', addrError);
+                }
+            }
+
             if (response.ok) {
                 // Başarılı sipariş
                 alert('Siparişiniz Alındı! Teşekkür ederiz.');

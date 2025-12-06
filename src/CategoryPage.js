@@ -33,6 +33,12 @@ function CategoryPage({ onAddToCart, favorites, toggleFavorite }) {
       apiUrl += `&ordering=${sortOption}`;
     }
 
+    // 2. Arama Sorgusu varsa ekle
+    const searchQuery = searchParams.get('search');
+    if (searchQuery) {
+      apiUrl += `&search=${encodeURIComponent(searchQuery)}`;
+    }
+
     axios.get(apiUrl)
       .then(response => {
         // Pagination kontrolü (DRF pagination varsa 'results' döner)
