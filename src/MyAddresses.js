@@ -1,6 +1,7 @@
 //frontend/src/MyAddresses.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from './config/api';
 
 function MyAddresses() {
   const [addresses, setAddresses] = useState([]);
@@ -28,9 +29,10 @@ function MyAddresses() {
 
   const fetchAddresses = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get('http://localhost:8000/api/addresses/', {
-        headers: { Authorization: `Bearer ${token}` }
+      const storedTokens = localStorage.getItem('authTokens');
+      const tokens = storedTokens ? JSON.parse(storedTokens) : null;
+      const response = await axios.get(`${API_BASE_URL}/api/addresses/`, {
+        headers: { Authorization: `Bearer ${tokens?.access}` }
       });
       setAddresses(response.data);
     } catch (error) {
@@ -63,16 +65,17 @@ function MyAddresses() {
     }
 
     try {
-      const token = localStorage.getItem('authToken');
+      const storedTokens = localStorage.getItem('authTokens');
+      const tokens = storedTokens ? JSON.parse(storedTokens) : null;
 
       if (editingId) {
-        await axios.put(`http://localhost:8000/api/addresses/${editingId}/`, formData, {
-          headers: { Authorization: `Bearer ${token}` }
+        await axios.put(`${API_BASE_URL}/api/addresses/${editingId}/`, formData, {
+          headers: { Authorization: `Bearer ${tokens?.access}` }
         });
         alert('Adres başarıyla güncellendi!');
       } else {
-        await axios.post('http://localhost:8000/api/addresses/', formData, {
-          headers: { Authorization: `Bearer ${token}` }
+        await axios.post(`${API_BASE_URL}/api/addresses/`, formData, {
+          headers: { Authorization: `Bearer ${tokens?.access}` }
         });
         alert('Adres başarıyla kaydedildi!');
       }
@@ -95,9 +98,10 @@ function MyAddresses() {
     if (!window.confirm('Bu adresi silmek istediğinizden emin misiniz?')) return;
 
     try {
-      const token = localStorage.getItem('authToken');
-      await axios.delete(`http://localhost:8000/api/addresses/${id}/`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const storedTokens = localStorage.getItem('authTokens');
+      const tokens = storedTokens ? JSON.parse(storedTokens) : null;
+      await axios.delete(`${API_BASE_URL}/api/addresses/${id}/`, {
+        headers: { Authorization: `Bearer ${tokens?.access}` }
       });
       fetchAddresses();
     } catch (error) {
