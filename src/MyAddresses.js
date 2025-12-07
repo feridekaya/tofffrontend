@@ -68,6 +68,14 @@ function MyAddresses() {
       const storedTokens = localStorage.getItem('authTokens');
       const tokens = storedTokens ? JSON.parse(storedTokens) : null;
 
+      console.log('DEBUG - storedTokens:', storedTokens);
+      console.log('DEBUG - tokens?.access:', tokens?.access);
+
+      if (!tokens?.access) {
+        alert('Oturum açmanız gerekmektedir. Lütfen giriş yapın.');
+        return;
+      }
+
       // Clean up data: convert empty strings to null for optional fields
       const cleanedData = {
         ...formData,
