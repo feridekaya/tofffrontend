@@ -68,13 +68,22 @@ function MyAddresses() {
       const storedTokens = localStorage.getItem('authTokens');
       const tokens = storedTokens ? JSON.parse(storedTokens) : null;
 
+      // Clean up data: convert empty strings to null for optional fields
+      const cleanedData = {
+        ...formData,
+        tc_id: formData.tc_id || null,
+        corporate_name: formData.corporate_name || null,
+        tax_office: formData.tax_office || null,
+        tax_number: formData.tax_number || null,
+      };
+
       if (editingId) {
-        await axios.put(`${API_BASE_URL}/api/addresses/${editingId}/`, formData, {
+        await axios.put(`${API_BASE_URL}/api/addresses/${editingId}/`, cleanedData, {
           headers: { Authorization: `Bearer ${tokens?.access}` }
         });
         alert('Adres başarıyla güncellendi!');
       } else {
-        await axios.post(`${API_BASE_URL}/api/addresses/`, formData, {
+        await axios.post(`${API_BASE_URL}/api/addresses/`, cleanedData, {
           headers: { Authorization: `Bearer ${tokens?.access}` }
         });
         alert('Adres başarıyla kaydedildi!');
