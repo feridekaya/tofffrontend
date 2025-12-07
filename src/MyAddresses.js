@@ -93,7 +93,23 @@ function MyAddresses() {
       resetForm();
     } catch (error) {
       console.error('Adres kaydedilemedi:', error);
-      alert('Adres kaydedilirken bir hata oluştu: ' + (error.response?.data?.detail || error.message));
+      console.error('Hata detayı:', error.response?.data);
+
+      // DRF validation errors are field-based objects like {field: ["error"]}
+      const errorData = error.response?.data;
+      let errorMessage = 'Adres kaydedilirken bir hata oluştu: ';
+
+      if (errorData && typeof errorData === 'object') {
+        // Convert field errors to readable message
+        const fieldErrors = Object.entries(errorData)
+          .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+          .join('; ');
+        errorMessage += fieldErrors || error.message;
+      } else {
+        errorMessage += error.message;
+      }
+
+      alert(errorMessage);
     }
   };
 
