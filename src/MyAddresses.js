@@ -347,6 +347,7 @@ function MyAddresses() {
                     value={formData.first_name}
                     onChange={handleInputChange}
                     required
+                    maxLength="50"
                     style={{ flex: 1, padding: '8px', boxSizing: 'border-box' }}
                     placeholder="Adınız"
                   />
@@ -356,6 +357,7 @@ function MyAddresses() {
                     value={formData.last_name}
                     onChange={handleInputChange}
                     required
+                    maxLength="50"
                     style={{ flex: 1, padding: '8px', boxSizing: 'border-box' }}
                     placeholder="Soyadınız"
                   />
@@ -370,6 +372,7 @@ function MyAddresses() {
                   value={formData.phone_number}
                   onChange={handleInputChange}
                   required
+                  maxLength="15"
                   style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                   placeholder="05XXXXXXXXX"
                 />
@@ -507,13 +510,14 @@ function MyAddresses() {
               {/* DYNAMIC DROPDOWNS END */}
 
               <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>ADRES BAŞLIĞI *</strong>
+                <strong>ADRES BAŞLIĞI * (En fazla 50 karakter)</strong>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
                   required
+                  maxLength="50"
                   style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                   placeholder="Adresinize bir isim verin Ör: İş Adresim"
                 />
