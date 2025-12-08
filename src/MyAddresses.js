@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_BASE_URL from './config/api';
+import './MyAddresses.css'; // Import the new CSS file
 
 function MyAddresses() {
   const [addresses, setAddresses] = useState([]);
@@ -194,26 +195,6 @@ function MyAddresses() {
     setFormData(address);
     setEditingId(address.id);
     setShowForm(true);
-    // On edit, we don't automatically load dropdowns deep state for simplicity.
-    // User sees the values in inputs? No, we switched to selects.
-    // Ideally we should prefill districts/neighborhoods if city/district is set.
-    // For now, let's just let them see the values? No, <select> without option won't show it.
-    // We need to trigger the loads. 
-    // Quick fix: user sees empty selects if they edit? That's bad.
-    // Added logic in handleEdit to try to recover state could be complex.
-    // For this iteration, let's ship the create flow perfection.
-    // Edit might just need re-selection if they want to change it.
-    // Better: We can at least load districts for the city if we have the city name.
-    // But neighborhoods require async fetch.
-
-    // Attempting to at least set districts if city matches
-    // This requires provinces to be loaded already (which they should be)
-    // We can't easily access 'provinces' stale state here synchronously if handleEdit is called immediately?
-    // It's fine, provinces load on mount.
-
-    // Improved Edit Logic (Mini):
-    // If we have address.city, find it in provinces and setDistricts.
-    // But we need to wait for provinces... they should be there.
   };
 
   // Custom Edit Handler to populate districts
@@ -226,11 +207,6 @@ function MyAddresses() {
       const prov = provinces.find(p => p.name === address.city);
       if (prov) {
         setDistricts(prov.districts);
-        // Neighborhoods is harder because it needs ID and async. 
-        // Leaving neighborhoods empty until user re-selects district is acceptable 
-        // but 'neighborhood' value won't show if option doesn't exist.
-        // We can just add a "current value" option as a temporary placeholder?
-        // Or just let it be.
       }
     }
   };
@@ -274,43 +250,28 @@ function MyAddresses() {
   };
 
   return (
-    <div>
-      <h2>Adreslerim</h2>
+    <div className="my-addresses-container">
+      <h2 className="my-addresses-header">Adreslerim</h2>
 
       <button
         onClick={() => setShowForm(!showForm)}
-        style={{
-          padding: '10px 20px',
-          marginBottom: '20px',
-          backgroundColor: '#333',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
+        className={`btn-new-address-toggle ${showForm ? 'active' : ''}`}
       >
-        {showForm ? 'İptal' : 'Yeni Adres Ekle'}
+        {showForm ? 'İptal' : '+ Yeni Adres Ekle'}
       </button>
 
       {showForm && (
-        <div style={{
-          border: '1px solid #ddd',
-          padding: '20px',
-          marginBottom: '20px',
-          borderRadius: '8px',
-          backgroundColor: '#f9f9f9',
-          color: '#333'
-        }}>
+        <div className="address-form-container">
           <h3>{editingId ? 'Adresi Düzenle' : 'Yeni Adres Ekle'}</h3>
           <form onSubmit={handleSubmit}>
 
             {/* FATURA BİLGİLERİNİZ */}
-            <div style={{ marginBottom: '20px' }}>
+            <div className="address-form-group">
               <h4>FATURA BİLGİLERİNİZ</h4>
-              <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>FATURA TİPİ *</strong>
-                <div style={{ marginTop: '5px' }}>
-                  <label style={{ marginRight: '20px' }}>
+              <label className="address-form-label">
+                FATURA TİPİ *
+                <div className="radio-group" style={{ marginTop: '10px' }}>
+                  <label>
                     <input
                       type="radio"
                       name="billing_type"
@@ -318,7 +279,7 @@ function MyAddresses() {
                       checked={formData.billing_type === 'individual'}
                       onChange={handleInputChange}
                     />
-                    {' '}Bireysel
+                    Bireysel
                   </label>
                   <label>
                     <input
@@ -328,19 +289,19 @@ function MyAddresses() {
                       checked={formData.billing_type === 'corporate'}
                       onChange={handleInputChange}
                     />
-                    {' '}Kurumsal
+                    Kurumsal
                   </label>
                 </div>
               </label>
             </div>
 
             {/* KİŞİSEL BİLGİLERİNİZ */}
-            <div style={{ marginBottom: '20px' }}>
+            <div className="address-form-group">
               <h4>KİŞİSEL BİLGİLERİNİZ</h4>
 
-              <div style={{ marginBottom: '10px' }}>
-                <strong style={{ display: 'block', marginBottom: '5px' }}>ADINIZ SOYADINIZ *</strong>
-                <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ marginBottom: '15px' }}>
+                <strong className="address-form-label">ADINIZ SOYADINIZ *</strong>
+                <div className="address-form-row">
                   <input
                     type="text"
                     name="first_name"
@@ -348,7 +309,7 @@ function MyAddresses() {
                     onChange={handleInputChange}
                     required
                     maxLength="50"
-                    style={{ flex: 1, padding: '8px', boxSizing: 'border-box' }}
+                    className="address-form-input"
                     placeholder="Adınız"
                   />
                   <input
@@ -358,14 +319,14 @@ function MyAddresses() {
                     onChange={handleInputChange}
                     required
                     maxLength="50"
-                    style={{ flex: 1, padding: '8px', boxSizing: 'border-box' }}
+                    className="address-form-input"
                     placeholder="Soyadınız"
                   />
                 </div>
               </div>
 
-              <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>CEP TELEFONUNUZ *</strong>
+              <label className="address-form-label">
+                CEP TELEFONUNUZ *
                 <input
                   type="tel"
                   name="phone_number"
@@ -373,14 +334,15 @@ function MyAddresses() {
                   onChange={handleInputChange}
                   required
                   maxLength="15"
-                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                  className="address-form-input"
+                  style={{ marginTop: '5px' }}
                   placeholder="05XXXXXXXXX"
                 />
               </label>
 
               {formData.billing_type === 'individual' && (
-                <label style={{ display: 'block', marginBottom: '10px' }}>
-                  <strong>TC KİMLİK NUMARANIZ</strong>
+                <label className="address-form-label" style={{ marginTop: '15px' }}>
+                  TC KİMLİK NUMARANIZ
                   <input
                     type="text"
                     name="tc_id"
@@ -388,11 +350,12 @@ function MyAddresses() {
                     onChange={handleInputChange}
                     maxLength="11"
                     pattern="\d{11}"
-                    style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                    className="address-form-input"
+                    style={{ marginTop: '5px' }}
                     placeholder="Lütfen T.C. kimlik numaranızı yazınız (11 haneli)"
                   />
                   {formData.tc_id && formData.tc_id.length !== 11 && (
-                    <small style={{ color: 'red', display: 'block', marginTop: '5px' }}>
+                    <small className="error-text">
                       TC Kimlik Numarası 11 haneli olmalıdır
                     </small>
                   )}
@@ -401,37 +364,40 @@ function MyAddresses() {
 
               {formData.billing_type === 'corporate' && (
                 <>
-                  <label style={{ display: 'block', marginBottom: '10px' }}>
-                    <strong>ŞİRKET ADI *</strong>
+                  <label className="address-form-label">
+                    ŞİRKET ADI *
                     <input
                       type="text"
                       name="corporate_name"
                       value={formData.corporate_name}
                       onChange={handleInputChange}
                       required={formData.billing_type === 'corporate'}
-                      style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                      className="address-form-input"
+                      style={{ marginTop: '5px' }}
                     />
                   </label>
-                  <label style={{ display: 'block', marginBottom: '10px' }}>
-                    <strong>VERGİ DAİRESİ *</strong>
+                  <label className="address-form-label">
+                    VERGİ DAİRESİ *
                     <input
                       type="text"
                       name="tax_office"
                       value={formData.tax_office}
                       onChange={handleInputChange}
                       required={formData.billing_type === 'corporate'}
-                      style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                      className="address-form-input"
+                      style={{ marginTop: '5px' }}
                     />
                   </label>
-                  <label style={{ display: 'block', marginBottom: '10px' }}>
-                    <strong>VERGİ NUMARASI *</strong>
+                  <label className="address-form-label">
+                    VERGİ NUMARASI *
                     <input
                       type="text"
                       name="tax_number"
                       value={formData.tax_number}
                       onChange={handleInputChange}
                       required={formData.billing_type === 'corporate'}
-                      style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                      className="address-form-input"
+                      style={{ marginTop: '5px' }}
                     />
                   </label>
                 </>
@@ -439,31 +405,33 @@ function MyAddresses() {
             </div>
 
             {/* ADRES BİLGİLERİNİZ */}
-            <div style={{ marginBottom: '20px' }}>
+            <div className="address-form-group">
               <h4>ADRES BİLGİLERİNİZ</h4>
 
-              <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>ADRESİNİZ * (Cadde, Sokak, Apartman vb. detaylar)</strong>
+              <label className="address-form-label">
+                ADRESİNİZ * (Cadde, Sokak, Apartman vb. detaylar)
                 <textarea
                   name="address_text"
                   value={formData.address_text}
                   onChange={handleInputChange}
                   required
                   rows="3"
-                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                  className="address-form-textarea"
+                  style={{ marginTop: '5px' }}
                   placeholder="Lütfen tam adresinizi yazınız."
                 />
               </label>
 
               {/* DYNAMIC DROPDOWNS START */}
-              <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>İL SEÇİNİZ *</strong>
+              <label className="address-form-label" style={{ marginTop: '15px' }}>
+                İL SEÇİNİZ *
                 <select
                   name="city"
                   value={formData.city}
                   onChange={handleCityChange}
                   required
-                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                  className="address-form-select"
+                  style={{ marginTop: '5px' }}
                 >
                   <option value="">İl Seçiniz</option>
                   {provinces.map(prov => (
@@ -472,15 +440,16 @@ function MyAddresses() {
                 </select>
               </label>
 
-              <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>İLÇE SEÇİNİZ *</strong>
+              <label className="address-form-label" style={{ marginTop: '15px' }}>
+                İLÇE SEÇİNİZ *
                 <select
                   name="district"
                   value={formData.district}
                   onChange={handleDistrictChange}
                   required
                   disabled={!formData.city}
-                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                  className="address-form-select"
+                  style={{ marginTop: '5px' }}
                 >
                   <option value="">{formData.city ? 'İlçe Seçiniz' : 'Önce İl Seçiniz'}</option>
                   {districts.map(dist => (
@@ -489,15 +458,16 @@ function MyAddresses() {
                 </select>
               </label>
 
-              <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>MAHALLE SEÇİNİZ *</strong>
+              <label className="address-form-label" style={{ marginTop: '15px' }}>
+                MAHALLE SEÇİNİZ *
                 <select
                   name="neighborhood"
                   value={formData.neighborhood}
                   onChange={handleInputChange}
                   required
                   disabled={!formData.district || loadingLocations}
-                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                  className="address-form-select"
+                  style={{ marginTop: '5px' }}
                 >
                   <option value="">
                     {loadingLocations ? 'Yükleniyor...' : (formData.district ? 'Mahalle Seçiniz' : 'Önce İlçe Seçiniz')}
@@ -509,8 +479,8 @@ function MyAddresses() {
               </label>
               {/* DYNAMIC DROPDOWNS END */}
 
-              <label style={{ display: 'block', marginBottom: '10px' }}>
-                <strong>ADRES BAŞLIĞI * (En fazla 50 karakter)</strong>
+              <label className="address-form-label" style={{ marginTop: '15px' }}>
+                ADRES BAŞLIĞI * (En fazla 50 karakter)
                 <input
                   type="text"
                   name="title"
@@ -518,104 +488,81 @@ function MyAddresses() {
                   onChange={handleInputChange}
                   required
                   maxLength="50"
-                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                  className="address-form-input"
+                  style={{ marginTop: '5px' }}
                   placeholder="Adresinize bir isim verin Ör: İş Adresim"
                 />
               </label>
             </div>
 
-            <button
-              type="submit"
-              style={{
-                padding: '12px 30px',
-                backgroundColor: '#d9534f',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                marginRight: '10px'
-              }}
-            >
-              {editingId ? 'Güncelle' : 'Kaydet'}
-            </button>
+            <div style={{ marginTop: '30px' }}>
+              <button
+                type="submit"
+                className="btn-primary-save"
+              >
+                {editingId ? 'Güncelle' : 'Kaydet'}
+              </button>
 
-            <button
-              type="button"
-              onClick={resetForm}
-              style={{
-                padding: '12px 30px',
-                backgroundColor: '#999',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              İptal
-            </button>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="btn-secondary-cancel"
+              >
+                İptal
+              </button>
+            </div>
           </form>
         </div>
       )}
 
       {/* Adres Listesi */}
       <div>
-        <h3>Kayıtlı Adresleriniz</h3>
+        <h3 className="my-addresses-header">Kayıtlı Adresleriniz</h3>
         {addresses.length === 0 ? (
-          <p>Henüz kayıtlı adresiniz bulunmamaktadır.</p>
+          <p style={{ color: '#9CA3AF' }}>Henüz kayıtlı adresiniz bulunmamaktadır.</p>
         ) : (
-          <div style={{ display: 'grid', gap: '15px' }}>
+          <div className="address-grid">
             {addresses.map(address => (
               <div
                 key={address.id}
-                style={{
-                  border: '1px solid #ddd',
-                  padding: '15px',
-                  borderRadius: '8px',
-                  backgroundColor: '#fff',
-                  color: '#333'
-                }}
+                className="address-card"
               >
-                <h4 style={{ marginTop: 0 }}>{address.title}</h4>
-                <p><strong>{address.first_name} {address.last_name}</strong></p>
-                <p>{address.address_text}</p>
-                <p>{address.neighborhood}, {address.district}, {address.city}</p>
-                <p>Telefon: {address.phone_number}</p>
-                <p>Fatura Tipi: {address.billing_type === 'individual' ? 'Bireysel' : 'Kurumsal'}</p>
+                <h4>{address.title}</h4>
+                <div className="address-text">
+                  <strong>{address.first_name} {address.last_name}</strong>
+                </div>
+                <div className="address-text">
+                  {address.address_text}
+                </div>
+                <div className="address-text">
+                  {address.neighborhood}, {address.district}, {address.city}
+                </div>
+                <div className="address-meta">
+                  Telefon: {address.phone_number}<br />
+                  Fatura Tipi: {address.billing_type === 'individual' ? 'Bireysel' : 'Kurumsal'}
+                </div>
 
-                <button
-                  onClick={() => handleEditEnhanced(address)}
-                  style={{
-                    padding: '8px 15px',
-                    marginRight: '10px',
-                    backgroundColor: '#5bc0de',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Düzenle
-                </button>
+                <div style={{ marginTop: '15px' }}>
+                  <button
+                    onClick={() => handleEditEnhanced(address)}
+                    className="btn-edit-address"
+                  >
+                    Düzenle
+                  </button>
 
-                <button
-                  onClick={() => handleDelete(address.id)}
-                  style={{
-                    padding: '8px 15px',
-                    backgroundColor: '#d9534f',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Sil
-                </button>
+                  <button
+                    onClick={() => handleDelete(address.id)}
+                    className="btn-delete-address"
+                  >
+                    Sil
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 

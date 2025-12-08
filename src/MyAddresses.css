@@ -1,0 +1,226 @@
+/* MyAddresses.css - Luxury Dark Mode Overrides */
+
+/* Container & Typography */
+.my-addresses-container {
+  color: #EDEDED;
+  font-family: 'Inter', sans-serif;
+}
+
+.my-addresses-header {
+  margin-bottom: 20px;
+  color: #EDEDED;
+}
+
+/* 1. Address Cards */
+.address-card {
+  background-color: #242424; /* Deep Graphite */
+  border: 1px solid #333333;
+  padding: 20px;
+  border-radius: 8px;
+  color: #9CA3AF; /* Light Gray for details */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.address-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.address-card h4 {
+  color: #FFFFFF; /* Name/Title White */
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.address-card strong {
+  color: #FFFFFF; /* Highlighting names */
+}
+
+.address-card .address-text {
+  color: #9CA3AF;
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+
+.address-card .address-meta {
+  color: #6B7280; /* Phone/Invoice Type Gray */
+  font-size: 0.9em;
+  margin-bottom: 15px;
+}
+
+/* 2. Action Buttons (Card) */
+.btn-edit-address {
+  background-color: transparent !important;
+  border: 1px solid #C08B5C !important; /* Raw Copper */
+  color: #C08B5C !important;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-edit-address:hover {
+  background-color: #3a2e26 !important; /* Subtle copper tint bg */
+}
+
+.btn-delete-address {
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  color: #EF4444 !important; /* Muted Red */
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete-address:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-color: #EF4444 !important;
+}
+
+/* 3. Address Form */
+.address-form-container {
+  background-color: #242424; /* Deep Graphite */
+  border: 1px solid #333333;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.address-form-container h3, 
+.address-form-container h4 {
+  color: #EDEDED;
+  margin-top: 0;
+}
+
+.address-form-group {
+  margin-bottom: 20px;
+}
+
+.address-form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #EDEDED; /* Off-White */
+  font-size: 0.9rem;
+}
+
+.address-form-input,
+.address-form-select,
+.address-form-textarea {
+  width: 100%;
+  padding: 12px;
+  background-color: #1F1F1F; /* Dark Input */
+  border: 1px solid #333333;
+  color: #FFFFFF;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.address-form-input:focus,
+.address-form-select:focus,
+.address-form-textarea:focus {
+  outline: none;
+  border-color: #C08B5C; /* Focus Copper */
+}
+
+.address-form-input::placeholder,
+.address-form-textarea::placeholder {
+  color: #555555;
+}
+
+.address-form-row {
+  display: flex;
+  gap: 15px;
+}
+
+/* Radio Buttons */
+.radio-group label {
+  color: #EDEDED;
+  margin-right: 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.radio-group input[type="radio"] {
+  accent-color: #C08B5C; /* Copper Radio */
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* 4. Primary Actions */
+.btn-primary-save {
+  padding: 12px 30px;
+  background-color: #C08B5C; /* Raw Copper */
+  color: #000000; /* Black Text */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 15px;
+  transition: background-color 0.2s;
+}
+
+.btn-primary-save:hover {
+  background-color: #d4a276;
+}
+
+.btn-secondary-cancel {
+  padding: 12px 30px;
+  background-color: transparent;
+  color: #EDEDED;
+  border: 1px solid #4B5563;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary-cancel:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Top "New Address" Button */
+.btn-new-address-toggle {
+  padding: 12px 25px;
+  margin-bottom: 25px;
+  background-color: #242424;
+  color: #C08B5C;
+  border: 1px solid #C08B5C;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-new-address-toggle:hover {
+  background-color: #C08B5C;
+  color: #000;
+}
+
+.btn-new-address-toggle.active {
+  background-color: transparent;
+  border-color: #4B5563;
+  color: #9CA3AF;
+}
+
+.address-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.error-text {
+  color: #EF4444;
+  font-size: 0.85em;
+  margin-top: 5px;
+  display: block;
+}
