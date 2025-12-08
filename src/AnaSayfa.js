@@ -64,22 +64,34 @@ function AnaSayfa() {
 
       {/* Collection Sections */}
       <div ref={collectionsRef}>
-        {collections.map((collection, index) => (
-          <section
-            key={collection.slug}
-            className="collection-section"
-            style={{ backgroundImage: `url('${collection.image || `/assets/collection-${collection.slug}.png`}')` }}
-          >
-            <div className="collection-overlay"></div>
+        {collections.map((collection, index) => {
+          // Helper to construct valid image URL
+          const getImageUrl = (img) => {
+            if (!img) return null;
+            if (img.startsWith('http')) return img;
+            // Remove leading slash if both have it to avoid double slash, though usually fine
+            return `${API_BASE_URL}${img}`;
+          };
 
-            <Link to={`/koleksiyon/${collection.slug}`} className="collection-content">
-              <div className="collection-number">0{index + 1}</div>
-              <h2 className="collection-title">{collection.name}</h2>
-              <p className="collection-subtitle">{collection.description || 'Özel tasarım koleksiyonu'}</p>
-              <span className="collection-cta">Koleksiyonu Keşfet →</span>
-            </Link>
-          </section>
-        ))}
+          const bgImage = getImageUrl(collection.image) || `/assets/collection-${collection.slug}.png`;
+
+          return (
+            <section
+              key={collection.slug}
+              className="collection-section"
+              style={{ backgroundImage: `url('${bgImage}')` }}
+            >
+              <div className="collection-overlay"></div>
+
+              <Link to={`/koleksiyon/${collection.slug}`} className="collection-content">
+                <div className="collection-number">0{index + 1}</div>
+                <h2 className="collection-title">{collection.name}</h2>
+                <p className="collection-subtitle">{collection.description || 'Özel tasarım koleksiyonu'}</p>
+                <span className="collection-cta">Koleksiyonu Keşfet →</span>
+              </Link>
+            </section>
+          );
+        })}
       </div>
 
       {/* Final Section: Brand Story */}
