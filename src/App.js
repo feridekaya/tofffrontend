@@ -29,9 +29,10 @@ import CorporateSalesPage from './CorporateSalesPage';
 import InfoSocietyPage from './InfoSocietyPage';
 import ToffPromisePage from './ToffPromisePage';
 import ContactPage from './ContactPage';
-import FAQPage from './FAQPage';
-import ShippingReturnPage from './ShippingReturnPage';
-import MembershipAgreementPage from './MembershipAgreementPage';
+import AdminOrdersPage from './AdminOrdersPage';
+import AdminOrderDetailPage from './AdminOrderDetailPage';
+
+
 
 function App() {
 
@@ -347,6 +348,10 @@ function App() {
               toggleFavorite={toggleFavorite}
             />}
           />
+
+          {/* ADMIN ROUTES */}
+          <Route path="/admin/orders" element={<AdminOrdersPage authTokens={authTokens} />} />
+          <Route path="/admin/orders/:id" element={<AdminOrderDetailPage authTokens={authTokens} />} />
         </Routes>
 
         <Footer />

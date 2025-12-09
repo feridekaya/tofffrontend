@@ -1,0 +1,116 @@
+/* src/AdminOrdersPage.css */
+
+.admin-orders-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #EDEDED;
+    min-height: 80vh;
+}
+
+.admin-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 15px;
+    color: #C08B5C; /* Copper */
+}
+
+.orders-table-wrapper {
+    background-color: #242424; /* Deep Graphite */
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th {
+    text-align: left;
+    padding: 15px 20px;
+    background-color: #1F1F1F;
+    border-bottom: 2px solid #333;
+    color: #9CA3AF;
+    font-weight: 600;
+}
+
+.orders-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #333;
+    color: #EDEDED;
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.clickable-row:hover {
+    background-color: #2F2F2F;
+}
+
+.customer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-name {
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+.customer-email {
+    font-size: 0.85em;
+    color: #9CA3AF;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #FFF;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Badge Colors (Tailwind equivalents hardcoded for vanilla CSS) */
+.bg-yellow-500 { background-color: #EAB308; color: #000; }
+.bg-blue-500 { background-color: #3B82F6; }
+.bg-indigo-500 { background-color: #6366F1; }
+.bg-orange-600 { background-color: #EA580C; }
+.bg-amber-700 { background-color: #B45309; }
+.bg-purple-600 { background-color: #9333EA; }
+.bg-teal-600 { background-color: #0D9488; }
+.bg-green-600 { background-color: #16A34A; }
+.bg-green-800 { background-color: #166534; }
+.bg-red-600 { background-color: #DC2626; }
+.bg-gray-600 { background-color: #4B5563; }
+
+.btn-details {
+    background-color: transparent;
+    border: 1px solid #C08B5C;
+    color: #C08B5C;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-details:hover {
+    background-color: #C08B5C;
+    color: #000;
+}
+
+.admin-loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2em;
+    color: #9CA3AF;
+}
