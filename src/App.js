@@ -43,18 +43,71 @@ function App() {
   // --- FONKSİYON BÖLÜMÜ ---
 
   // Sayfa yüklendiğinde hafızadaki jetonu (token) kontrol et
-  useEffect(() => {
-    const storedTokens = localStorage.getItem('authTokens');
-    if (storedTokens) {
-      const tokens = JSON.parse(storedTokens);
-      setAuthTokens(tokens);
-      fetchFavorites(tokens.access);
-    }
-  }, []); // [] = Sadece bir kez çalışır
+
 
   // Global sepete ekleme fonksiyonu
+  // API'den favorileri çeken fonksiyon
+  const fetchFavorites = async (accessToken) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/favorites/`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      setFavorites(response.data); // Gelen favori listesini state'e kaydet
+      console.log("Favoriler yüklendi:", response.data);
+    } catch (error) {
+      console.error('Favoriler çekilirken hata oluştu:', error);
+    }
+  };
+
+  // API'den Sepeti Çeken Fonksiyon
+  const fetchCart = async (accessToken) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/cart/`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
+      // Backend { items: [...] } dönüyor. Bizim state direkt array bekliyor.
+      // Backend item yapısı: { id, product, quantity, selected_size, ... }
+      // Frontend item yapısı: { cartId, product, quantity, selectedSize, ... }
+      // Uyumlu hale getirelim:
+      const mappedItems = (response.data.items || []).map(item => ({
+        ...item,
+        cartId: item.id, // Backend ID'sini cartId olarak kullan
+        selectedSize: item.selected_size,
+        selectedColor: item.selected_color
+      }));
+      setCart(mappedItems);
+      console.log("Sepet yüklendi:", mappedItems);
+    } catch (error) {
+      console.error('Sepet yüklenirken hata:', error);
+    }
+  };
+
   // Global sepete ekleme fonksiyonu
-  const handleAddToCart = (productToAdd) => {
+  const handleAddToCart = async (productToAdd) => {
+    // 1. KULLANICI GİRİŞ YAPMIŞSA -> BACKEND
+    if (authTokens) {
+      try {
+        await axios.post(`${API_BASE_URL}/api/cart/add_item/`, {
+          product_id: productToAdd.id,
+          quantity: 1,
+          selected_size_id: productToAdd.selectedSize ? productToAdd.selectedSize.id : null,
+          selected_color_id: productToAdd.selectedColor ? productToAdd.selectedColor.id : null
+        }, {
+          headers: { 'Authorization': `Bearer ${authTokens.access}` }
+        });
+        // Ekleme başarılı, sepeti güncelle
+        fetchCart(authTokens.access);
+        alert("Ürün sepete eklendi!");
+      } catch (error) {
+        console.error("Sepete ekleme hatası:", error);
+        alert("Ürün sepete eklenirken bir sorun oluştu.");
+      }
+      return;
+    }
+
+    // 2. MİSAFİR KULLANICI -> LOCAL STATE (Eski mantık)
     // Sepette bu ürün (ID + Size + Color kombinasyonu) var mı?
     const existingProductIndex = cart.findIndex(item => {
       const isSameId = item.product.id === productToAdd.id;
@@ -75,17 +128,14 @@ function App() {
       console.log('Miktar artırıldı:', productToAdd.name);
     } else {
       // Yoksa yeni kalem olarak ekle
-      // Fiyatı doğru kaydettiğimizden emin olalım (seçili boyut fiyatı veya normal fiyat)
       const finalPrice = productToAdd.selectedSize ? productToAdd.selectedSize.price : productToAdd.price;
-
-      // Ürün objesini sepete uygun hale getir (fiyatı güncelle)
       const productWithVariantPrice = {
         ...productToAdd,
-        price: finalPrice // Sepette görünecek fiyat
+        price: finalPrice
       };
 
       const newCartItem = {
-        cartId: Date.now() + Math.random().toString(36).substr(2, 9), // Benzersiz ID oluştur
+        cartId: Date.now() + Math.random().toString(36).substr(2, 9),
         product: productWithVariantPrice,
         quantity: 1,
         selectedSize: productToAdd.selectedSize,
@@ -100,33 +150,32 @@ function App() {
 
   // Global giriş başarılı fonksiyonu
   const handleLoginSuccess = (tokens) => {
-    setAuthTokens(tokens); // Jetonları global state'e kaydet
+    setAuthTokens(tokens);
     localStorage.setItem('authTokens', JSON.stringify(tokens));
-    fetchFavorites(tokens.access); // Giriş yapınca favorileri çek
+    fetchFavorites(tokens.access);
+    fetchCart(tokens.access); // Sepeti de çek
   };
 
   // Global çıkış yapma (logout) fonksiyonu
   const handleLogout = () => {
-    setAuthTokens(null); // 1. Global state'i (hafızayı) temizle
-    localStorage.removeItem('authTokens'); // 2. Tarayıcı hafızasını temizle
-    setFavorites([]); // 3. Favori listesini temizle
+    setAuthTokens(null);
+    localStorage.removeItem('authTokens');
+    setFavorites([]);
+    setCart([]); // Sepeti temizle
     console.log("Kullanıcı çıkış yaptı.");
   };
 
-  // API'den favorileri çeken fonksiyon
-  const fetchFavorites = async (accessToken) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/favorites/`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-      setFavorites(response.data); // Gelen favori listesini state'e kaydet
-      console.log("Favoriler yüklendi:", response.data);
-    } catch (error) {
-      console.error('Favoriler çekilirken hata oluştu:', error);
+  // Sayfa yüklendiğinde hafızadaki jetonu (token) kontrol et
+  useEffect(() => {
+    const storedTokens = localStorage.getItem('authTokens');
+    if (storedTokens) {
+      const tokens = JSON.parse(storedTokens);
+      setAuthTokens(tokens);
+      fetchFavorites(tokens.access);
+      fetchCart(tokens.access); // Sepeti de çek
     }
-  };
+  }, []);
+
 
   // Bir ürünü favori Ekleme/Çıkarma fonksiyonu
   const toggleFavorite = async (productId) => {
@@ -203,7 +252,7 @@ function App() {
           {/* Rota 2: Sepet Sayfası */}
           <Route
             path="/sepet"
-            element={<CartPage cart={cart} setCart={setCart} />}
+            element={<CartPage cart={cart} setCart={setCart} authTokens={authTokens} />}
           />
 
           {/* Rota 3: Kayıt Ol Sayfası */}
@@ -247,14 +296,8 @@ function App() {
             />}
           />
 
-          {/* Rota 7: Sepet Sayfası */}
-          <Route
-            path="/sepet"
-            element={<CartPage
-              cart={cart}
-              setCart={setCart}
-            />}
-          />
+          {/* Rota 7: Sepet Sayfası (DUPLICATE REMOVED) */}
+
 
           {/* Rota 8: Ödeme Sayfası */}
           <Route

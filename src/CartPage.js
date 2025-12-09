@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import './CartPage.css';
 import { Link, useNavigate } from 'react-router-dom';
 
-function CartPage({ cart, setCart }) {
+import API_BASE_URL from './config/api';
+
+function CartPage({ cart, setCart, authTokens }) {
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
@@ -13,16 +15,54 @@ function CartPage({ cart, setCart }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Ürünü kaldırma fonksiyonu (cartId'ye göre)
-  const handleRemoveFromCart = (cartIdToRemove) => {
+  const handleRemoveFromCart = async (cartIdToRemove) => {
+    // 1. GİRİŞ YAPMIŞSA -> BACKEND
+    if (authTokens) {
+      try {
+        await fetch(`${API_BASE_URL}/api/cart/remove_item/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authTokens.access}`
+          },
+          body: JSON.stringify({ item_id: cartIdToRemove })
+        });
+        // Başarılı olursa state'den de sil
+      } catch (error) {
+        console.error('Silme hatası:', error);
+        alert('Ürün silinirken bir hata oluştu');
+        return;
+      }
+    }
+
+    // 2. HER DURUMDA LOCAL STATE GÜNCELLE
     const updatedCart = cart.filter(item => item.cartId !== cartIdToRemove);
     setCart(updatedCart);
   };
 
   // Adet (quantity) değiştirme (cartId'ye göre)
-  const handleQuantityChange = (cartId, newQuantity) => {
+  const handleQuantityChange = async (cartId, newQuantity) => {
     const quantityNum = parseInt(newQuantity);
 
     if (quantityNum > 0) {
+      // 1. GİRİŞ YAPMIŞSA -> BACKEND
+      if (authTokens) {
+        try {
+          await fetch(`${API_BASE_URL}/api/cart/update_quantity/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${authTokens.access}`
+            },
+            body: JSON.stringify({ item_id: cartId, quantity: quantityNum })
+          });
+        } catch (error) {
+          console.error('Güncelleme hatası:', error);
+          // Hata olursa geri alabiliriz ama şimdilik sadece logluyoruz
+        }
+      }
+
+      // 2. HER DURUMDA LOCAL STATE GÜNCELLE
       const updatedCart = cart.map(item => {
         if (item.cartId === cartId) {
           return { ...item, quantity: quantityNum };
