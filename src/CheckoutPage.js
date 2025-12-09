@@ -36,15 +36,21 @@ function CheckoutPage({ cart, setCart, authTokens }) {
 
     // -- Effects --
     useEffect(() => {
-        if (authTokens && authTokens.access) {
-            fetchSavedAddresses();
+        let tokens = authTokens;
+        if (!tokens) {
+            const stored = localStorage.getItem('authTokens');
+            if (stored) tokens = JSON.parse(stored);
+        }
+
+        if (tokens && tokens.access) {
+            fetchSavedAddresses(tokens.access);
         }
     }, [authTokens]);
 
-    const fetchSavedAddresses = async () => {
+    const fetchSavedAddresses = async (accessToken) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/api/addresses/`, {
-                headers: { Authorization: `Bearer ${authTokens.access}` }
+                headers: { Authorization: `Bearer ${accessToken}` }
             });
             setSavedAddresses(response.data);
 
@@ -54,6 +60,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
             }
         } catch (error) {
             console.error("Adresler çekilemedi:", error);
+            // Optional: User facing error if needed, but console is good for now.
         }
     };
 
@@ -155,7 +162,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                 <div className="checkout-left-column">
 
                     {/* ADRES SEÇİMİ (Only if logged in) */}
-                    {authTokens && (
+                    {(authTokens || localStorage.getItem('authTokens')) && (
                         <div className="checkout-section">
                             <h2>Teslimat Adresi Seçimi</h2>
                             <div className="address-grid-checkout">
