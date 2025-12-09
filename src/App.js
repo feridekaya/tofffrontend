@@ -31,6 +31,10 @@ import ToffPromisePage from './ToffPromisePage';
 import ContactPage from './ContactPage';
 import AdminOrdersPage from './AdminOrdersPage';
 import AdminOrderDetailPage from './AdminOrderDetailPage';
+import CustomerOrderDetailPage from './CustomerOrderDetailPage';
+import FAQPage from './FAQPage';
+import ShippingReturnPage from './ShippingReturnPage';
+import MembershipAgreementPage from './MembershipAgreementPage';
 
 
 
