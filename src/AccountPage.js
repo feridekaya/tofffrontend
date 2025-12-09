@@ -28,7 +28,7 @@ function AccountPage({ authTokens, onLogout }) {
   const renderContent = () => {
     switch (activeView) {
       case 'orders':
-        return <MyOrders />;
+        return <MyOrders authTokens={authTokens} />;
       case 'returns':
         return <MyReturns />;
       case 'addresses':

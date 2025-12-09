@@ -286,6 +286,7 @@ function App() {
               onLogout={handleLogout} // <-- Çıkış yap fonksiyonunu prop olarak ekledik
             />}
           />
+          <Route path="/hesabim/siparisler/:id" element={<CustomerOrderDetailPage authTokens={authTokens} />} />
 
           {/* Rota 6: Favoriler Sayfası (DÜZELTME: 'onAddToCart' -> 'handleAddToCart') */}
           <Route
