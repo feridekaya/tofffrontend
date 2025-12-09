@@ -1,13 +1,21 @@
 // frontend/src/CheckoutPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './CheckoutPage.css';
 import API_BASE_URL from './config/api';
+import CheckoutAddressForm from './CheckoutAddressForm';
+import { FaCheckCircle, FaPlus } from 'react-icons/fa';
 
 function CheckoutPage({ cart, setCart, authTokens }) {
     const navigate = useNavigate();
 
-    // Teslimat Adresi State
+    // -- State --
+    const [savedAddresses, setSavedAddresses] = useState([]);
+    const [selectedAddressId, setSelectedAddressId] = useState(null);
+    const [showAddModal, setShowAddModal] = useState(false);
+
+    // Manual form state (used for Guest OR if user wants to type manually)
     const [deliveryInfo, setDeliveryInfo] = useState({
         fullName: '',
         phone: '',
@@ -15,7 +23,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
         address: ''
     });
 
-    // Ödeme Bilgileri State (Görsel amaçlı)
+    // Payment state
     const [paymentInfo, setPaymentInfo] = useState({
         cardHolder: '',
         cardNumber: '',
@@ -26,43 +34,67 @@ function CheckoutPage({ cart, setCart, authTokens }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    // Sepet toplamını hesapla
-    const calculateTotal = () => {
-        return cart.reduce((total, item) => {
-            return total + (parseFloat(item.product.price) * item.quantity);
-        }, 0);
+    // -- Effects --
+    useEffect(() => {
+        if (authTokens && authTokens.access) {
+            fetchSavedAddresses();
+        }
+    }, [authTokens]);
+
+    const fetchSavedAddresses = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/addresses/`, {
+                headers: { Authorization: `Bearer ${authTokens.access}` }
+            });
+            setSavedAddresses(response.data);
+
+            // Auto-select first address if exists
+            if (response.data.length > 0) {
+                selectAddress(response.data[0]);
+            }
+        } catch (error) {
+            console.error("Adresler çekilemedi:", error);
+        }
     };
 
+    // -- Handlers --
+    const calculateTotal = () => {
+        return cart.reduce((total, item) => total + (parseFloat(item.product.price) * item.quantity), 0);
+    };
     const total = calculateTotal();
 
-    // Form input değişikliklerini handle et
     const handleDeliveryChange = (e) => {
+        setDeliveryInfo({ ...deliveryInfo, [e.target.name]: e.target.value });
+        // If user types manually, clear selection
+        if (selectedAddressId) setSelectedAddressId(null);
+    };
+
+    const handlePaymentChange = (e) => setPaymentInfo({ ...paymentInfo, [e.target.name]: e.target.value });
+
+    const selectAddress = (addr) => {
+        setSelectedAddressId(addr.id);
         setDeliveryInfo({
-            ...deliveryInfo,
-            [e.target.name]: e.target.value
+            fullName: `${addr.first_name} ${addr.last_name}`,
+            phone: addr.phone_number,
+            city: addr.city,
+            address: `${addr.address_text} \n${addr.neighborhood}, ${addr.district}`
         });
     };
 
-    const handlePaymentChange = (e) => {
-        setPaymentInfo({
-            ...paymentInfo,
-            [e.target.name]: e.target.value
-        });
+    const handleAddressSaved = () => {
+        setShowAddModal(false);
+        fetchSavedAddresses(); // Refresh list, it will auto-select 1st or we can improve logic
     };
 
-    // Sipariş oluşturma
     const handleCompleteOrder = async () => {
-        // Form validasyonu
         if (!deliveryInfo.fullName || !deliveryInfo.phone || !deliveryInfo.city || !deliveryInfo.address) {
             setErrorMessage('Lütfen tüm teslimat bilgilerini doldurunuz.');
             return;
         }
-
         if (!paymentInfo.cardHolder || !paymentInfo.cardNumber || !paymentInfo.expiryDate || !paymentInfo.cvv) {
             setErrorMessage('Lütfen tüm ödeme bilgilerini doldurunuz.');
             return;
         }
-
         if (cart.length === 0) {
             setErrorMessage('Sepetiniz boş.');
             return;
@@ -72,7 +104,6 @@ function CheckoutPage({ cart, setCart, authTokens }) {
         setErrorMessage('');
 
         try {
-            // Backend'e gönderilecek veri formatı
             const orderData = {
                 full_name: deliveryInfo.fullName,
                 address: deliveryInfo.address,
@@ -80,7 +111,9 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                 phone: deliveryInfo.phone,
                 cart_items: cart.map(item => ({
                     product: { id: item.product.id },
-                    quantity: item.quantity
+                    quantity: item.quantity,
+                    selected_size: item.selectedSize ? { name: item.selectedSize.name } : null,
+                    selected_color: item.selectedColor ? { name: item.selectedColor.name } : null
                 }))
             };
 
@@ -93,35 +126,12 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                 body: JSON.stringify(orderData)
             });
 
-            // --- ADRES KAYDETME (Eğer kullanıcı giriş yapmışsa) ---
-            if (authTokens && authTokens.access) {
-                try {
-                    // Sessizce adresi kaydet (Hata verirse siparişi durdurma)
-                    await fetch(`${API_BASE_URL}/api/addresses/`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authTokens.access}`
-                        },
-                        body: JSON.stringify({
-                            title: 'Teslimat Adresi', // Varsayılan başlık
-                            full_name: deliveryInfo.fullName,
-                            address: deliveryInfo.address,
-                            city: deliveryInfo.city,
-                            phone: deliveryInfo.phone
-                        })
-                    });
-                    console.log('Adres profili kaydedildi.');
-                } catch (addrError) {
-                    console.error('Adres kaydetme hatası (Önemsiz):', addrError);
-                }
-            }
-
             if (response.ok) {
-                // Başarılı sipariş
+                // If Guest and successful, maybe suggest saving address? (Not in reqs)
+
                 alert('Siparişiniz Alındı! Teşekkür ederiz.');
-                setCart([]); // Sepeti temizle
-                navigate('/'); // Ana sayfaya yönlendir (veya /siparis-basarili sayfasına)
+                setCart([]);
+                navigate('/');
             } else {
                 const errorData = await response.json();
                 setErrorMessage(errorData.detail || 'Sipariş oluşturulurken bir hata oluştu.');
@@ -134,10 +144,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
         }
     };
 
-    // Resim URL fonksiyonu
-    const getImageUrl = (product) => {
-        return product.image ? product.image : null;
-    };
+    const getImageUrl = (product) => product.image ? product.image : null;
 
     return (
         <div className="checkout-page-container">
@@ -146,63 +153,70 @@ function CheckoutPage({ cart, setCart, authTokens }) {
             <div className="checkout-layout">
                 {/* SOL SÜTUN */}
                 <div className="checkout-left-column">
-                    {/* Teslimat Adresi Formu */}
+
+                    {/* ADRES SEÇİMİ (Only if logged in) */}
+                    {authTokens && (
+                        <div className="checkout-section">
+                            <h2>Teslimat Adresi Seçimi</h2>
+                            <div className="address-grid-checkout">
+                                {savedAddresses.map(addr => (
+                                    <div
+                                        key={addr.id}
+                                        className={`address-card-checkout ${selectedAddressId === addr.id ? 'selected' : ''}`}
+                                        onClick={() => selectAddress(addr)}
+                                    >
+                                        <div className="card-header-row">
+                                            <h4>{addr.title}</h4>
+                                            {selectedAddressId === addr.id && <FaCheckCircle className="check-icon" />}
+                                        </div>
+                                        <p>{addr.first_name} {addr.last_name}</p>
+                                        <p className="sm-text">{addr.district}, {addr.city}</p>
+                                    </div>
+                                ))}
+
+                                <div className="add-address-card" onClick={() => setShowAddModal(true)}>
+                                    <FaPlus className="plus-icon" />
+                                    <span>Yeni Adres Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TESLİMAT ADRESİ FORMU (Always visible to show what's selected or for manual entry) */}
                     <div className="checkout-section">
-                        <h2>Teslimat Adresi</h2>
+                        <h2>Teslimat Detayları</h2>
+                        {/* If address selected, show read-only or allow edit? Usually editable. */}
                         <div className="form-group">
-                            <label htmlFor="fullName">Ad Soyad *</label>
+                            <label>Ad Soyad *</label>
                             <input
-                                type="text"
-                                id="fullName"
-                                name="fullName"
-                                value={deliveryInfo.fullName}
-                                onChange={handleDeliveryChange}
-                                placeholder="Adınız ve Soyadınız"
-                                required
+                                type="text" name="fullName" value={deliveryInfo.fullName}
+                                onChange={handleDeliveryChange} placeholder="Adınız Soyadınız" required
                             />
                         </div>
-
                         <div className="form-group">
-                            <label htmlFor="phone">Telefon *</label>
+                            <label>Telefon *</label>
                             <input
-                                type="tel"
-                                id="phone"
-                                name="phone"
-                                value={deliveryInfo.phone}
-                                onChange={handleDeliveryChange}
-                                placeholder="0555 123 45 67"
-                                required
+                                type="tel" name="phone" value={deliveryInfo.phone}
+                                onChange={handleDeliveryChange} placeholder="0555..." required
                             />
                         </div>
-
                         <div className="form-group">
-                            <label htmlFor="city">Şehir *</label>
+                            <label>Şehir *</label>
                             <input
-                                type="text"
-                                id="city"
-                                name="city"
-                                value={deliveryInfo.city}
-                                onChange={handleDeliveryChange}
-                                placeholder="İstanbul"
-                                required
+                                type="text" name="city" value={deliveryInfo.city}
+                                onChange={handleDeliveryChange} placeholder="İl" required
                             />
                         </div>
-
                         <div className="form-group">
-                            <label htmlFor="address">Açık Adres *</label>
+                            <label>Açık Adres *</label>
                             <textarea
-                                id="address"
-                                name="address"
-                                value={deliveryInfo.address}
-                                onChange={handleDeliveryChange}
-                                placeholder="Mahalle, Sokak, Bina No, Daire No..."
-                                rows="4"
-                                required
+                                name="address" value={deliveryInfo.address}
+                                onChange={handleDeliveryChange} rows="3" placeholder="Adres detayları..." required
                             />
                         </div>
                     </div>
 
-                    {/* Sipariş Özeti */}
+                    {/* SİPARİŞ ÖZETİ */}
                     <div className="checkout-section">
                         <h2>Sipariş Özeti</h2>
                         <div className="order-summary-list">
@@ -224,96 +238,57 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                     </div>
                 </div>
 
-                {/* SAĞ SÜTUN (Sticky) */}
+                {/* SAĞ SÜTUN (Ödeme) */}
                 <div className="checkout-right-column">
                     <div className="checkout-sticky-box">
-                        {/* Ödeme Bilgileri */}
                         <div className="checkout-section">
                             <h2>Ödeme Bilgileri</h2>
                             <div className="form-group">
-                                <label htmlFor="cardHolder">Kart Sahibi *</label>
-                                <input
-                                    type="text"
-                                    id="cardHolder"
-                                    name="cardHolder"
-                                    value={paymentInfo.cardHolder}
-                                    onChange={handlePaymentChange}
-                                    placeholder="AD SOYAD"
-                                    required
-                                />
+                                <label>Kart Sahibi *</label>
+                                <input type="text" name="cardHolder" value={paymentInfo.cardHolder} onChange={handlePaymentChange} required />
                             </div>
-
                             <div className="form-group">
-                                <label htmlFor="cardNumber">Kart Numarası *</label>
-                                <input
-                                    type="text"
-                                    id="cardNumber"
-                                    name="cardNumber"
-                                    value={paymentInfo.cardNumber}
-                                    onChange={handlePaymentChange}
-                                    placeholder="1234 5678 9012 3456"
-                                    maxLength="19"
-                                    required
-                                />
+                                <label>Kart Numarası *</label>
+                                <input type="text" name="cardNumber" value={paymentInfo.cardNumber} onChange={handlePaymentChange} maxLength="19" required />
                             </div>
-
                             <div className="form-row">
                                 <div className="form-group">
-                                    <label htmlFor="expiryDate">Son Kullanma *</label>
-                                    <input
-                                        type="text"
-                                        id="expiryDate"
-                                        name="expiryDate"
-                                        value={paymentInfo.expiryDate}
-                                        onChange={handlePaymentChange}
-                                        placeholder="AA/YY"
-                                        maxLength="5"
-                                        required
-                                    />
+                                    <label>SKT *</label>
+                                    <input type="text" name="expiryDate" value={paymentInfo.expiryDate} onChange={handlePaymentChange} placeholder="AA/YY" maxLength="5" required />
                                 </div>
-
                                 <div className="form-group">
-                                    <label htmlFor="cvv">CVV *</label>
-                                    <input
-                                        type="text"
-                                        id="cvv"
-                                        name="cvv"
-                                        value={paymentInfo.cvv}
-                                        onChange={handlePaymentChange}
-                                        placeholder="123"
-                                        maxLength="3"
-                                        required
-                                    />
+                                    <label>CVV *</label>
+                                    <input type="text" name="cvv" value={paymentInfo.cvv} onChange={handlePaymentChange} maxLength="3" required />
                                 </div>
                             </div>
                         </div>
 
-                        {/* Ödenecek Tutar */}
                         <div className="checkout-total-section">
                             <h3>Ödenecek Tutar</h3>
-                            <div className="checkout-total-amount">
-                                {total.toFixed(2)} TL
-                            </div>
+                            <div className="checkout-total-amount">{total.toFixed(2)} TL</div>
                         </div>
 
-                        {/* Hata Mesajı */}
-                        {errorMessage && (
-                            <div className="checkout-error-message">
-                                {errorMessage}
-                            </div>
-                        )}
+                        {errorMessage && <div className="checkout-error-message">{errorMessage}</div>}
 
-                        {/* Siparişi Tamamla Butonu */}
-                        <button
-                            className="complete-order-btn"
-                            onClick={handleCompleteOrder}
-                            disabled={isSubmitting}
-                        >
+                        <button className="complete-order-btn" onClick={handleCompleteOrder} disabled={isSubmitting}>
                             {isSubmitting ? 'İşleniyor...' : 'Siparişi Tamamla'}
                         </button>
                     </div>
                 </div>
             </div>
+
+            {/* MODAL for Adding Address */}
+            {showAddModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <CheckoutAddressForm
+                            authTokens={authTokens}
+                            onSuccess={handleAddressSaved}
+                            onCancel={() => setShowAddModal(false)}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
