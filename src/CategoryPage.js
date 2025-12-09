@@ -11,6 +11,7 @@ function CategoryPage({ onAddToCart, favorites, toggleFavorite }) {
 
   const [products, setProducts] = useState([]);
   const [categoryName, setCategoryName] = useState('');
+  const [headerSlug, setHeaderSlug] = useState(slug); // Başlangıçta slug'ı kullan
   const [sortOption, setSortOption] = useState('-id');
   const [isSortOpen, setIsSortOpen] = useState(false);
 
@@ -59,9 +60,19 @@ function CategoryPage({ onAddToCart, favorites, toggleFavorite }) {
         setProducts([]);
       });
 
-    // 2. Başlığı slug'dan oluştur
-    const title = slug.replace(/-/g, ' ').toUpperCase();
-    setCategoryName(title);
+    // 3. Kategori Detaylarını Çek (Parent Header için)
+    axios.get(`${API_BASE_URL}/api/categories/${slug}/`)
+      .then(res => {
+        setCategoryName(res.data.name.toUpperCase());
+        // Backend'den gelen header_slug'ı kullan (parent varsa o gelir)
+        setHeaderSlug(res.data.header_slug);
+      })
+      .catch(err => {
+        console.warn('Kategori detayı yüklenemedi, varsayılanlar kullanılacak.');
+        const title = slug.replace(/-/g, ' ').toUpperCase();
+        setCategoryName(title);
+        setHeaderSlug(slug);
+      });
 
   }, [slug, sortOption, searchParams]);
 
@@ -94,7 +105,7 @@ function CategoryPage({ onAddToCart, favorites, toggleFavorite }) {
     <div className="category-page-container">
       <header className="category-header">
         <div className="category-banner">
-          <img src={`/assets/${slug}-header.png`} alt={`${categoryName} Header`} className="category-banner-image" />
+          <img src={`/assets/${headerSlug}-header.png`} alt={`${categoryName} Header`} className="category-banner-image" />
           <div className="category-banner-overlay">
             <h1>{categoryName}</h1>
           </div>
