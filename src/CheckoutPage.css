@@ -102,6 +102,16 @@
     min-height: 100px;
 }
 
+.form-group input:disabled,
+.form-group textarea:disabled {
+    opacity: 0.6;
+    cursor: default;
+    background-color: #1a1a1a;
+    border-color: #333;
+    color: #9CA3AF;
+    /* Slightly dimmer text */
+}
+
 /* Form Row (İki Input Yan Yana) */
 .form-row {
     display: grid;

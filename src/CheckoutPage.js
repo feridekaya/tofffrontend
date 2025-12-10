@@ -191,13 +191,34 @@ function CheckoutPage({ cart, setCart, authTokens }) {
 
                     {/* TESLİMAT ADRESİ FORMU (Always visible to show what's selected or for manual entry) */}
                     <div className="checkout-section">
-                        <h2>Teslimat Detayları</h2>
-                        {/* If address selected, show read-only or allow edit? Usually editable. */}
+                        <div className="card-header-row" style={{ marginBottom: '20px', borderBottom: '2px solid #C08B5C', paddingBottom: '10px' }}>
+                            <h2 style={{ border: 'none', margin: 0, padding: 0 }}>Teslimat Detayları</h2>
+                            {selectedAddressId && (
+                                <button
+                                    onClick={() => {
+                                        setSelectedAddressId(null);
+                                        setDeliveryInfo({ fullName: '', phone: '', city: '', address: '' });
+                                    }}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: '#C08B5C',
+                                        cursor: 'pointer',
+                                        fontSize: '0.9rem',
+                                        textDecoration: 'underline'
+                                    }}
+                                >
+                                    Farklı Adres Gir
+                                </button>
+                            )}
+                        </div>
+
                         <div className="form-group">
                             <label>Ad Soyad *</label>
                             <input
                                 type="text" name="fullName" value={deliveryInfo.fullName}
                                 onChange={handleDeliveryChange} placeholder="Adınız Soyadınız" required
+                                disabled={!!selectedAddressId}
                             />
                         </div>
                         <div className="form-group">
@@ -205,6 +226,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                             <input
                                 type="tel" name="phone" value={deliveryInfo.phone}
                                 onChange={handleDeliveryChange} placeholder="0555..." required
+                                disabled={!!selectedAddressId}
                             />
                         </div>
                         <div className="form-group">
@@ -212,6 +234,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                             <input
                                 type="text" name="city" value={deliveryInfo.city}
                                 onChange={handleDeliveryChange} placeholder="İl" required
+                                disabled={!!selectedAddressId}
                             />
                         </div>
                         <div className="form-group">
@@ -219,6 +242,7 @@ function CheckoutPage({ cart, setCart, authTokens }) {
                             <textarea
                                 name="address" value={deliveryInfo.address}
                                 onChange={handleDeliveryChange} rows="3" placeholder="Adres detayları..." required
+                                disabled={!!selectedAddressId}
                             />
                         </div>
                     </div>
