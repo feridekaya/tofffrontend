@@ -10,6 +10,410 @@
     color: var(--text-primary);
 }
 
+/* --- Sol: Galeri --- */
+.gallery-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.main-image-container {
+    width: 100%;
+    height: 500px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: crosshair;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-primary);
+}
+
+.main-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.1s ease-out;
+}
+
+/* İndirim Badge */
+.discount-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: #C08B5C;
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+.thumbnail-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    object-fit: cover;
+    opacity: 0.6;
+    transition: opacity 0.2s, border-color 0.2s;
+    background-color: var(--bg-primary);
+}
+
+.thumbnail:hover,
+.thumbnail.active {
+    opacity: 1;
+    border-color: var(--accent-color);
+}
+
+/* --- Sağ: Bilgi --- */
+.info-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.product-breadcrumb {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.product-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Fiyat Bloğu */
+.price-block {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.price-original {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.price-discounted {
+    font-size: 1.6rem;
+    color: var(--accent-color);
+    font-weight: 800;
+}
+
+.product-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+/* Varyantlar */
+.variant-group {
+    margin-bottom: 20px;
+}
+
+.variant-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+    color: var(--text-primary);
+}
+
+.variant-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.size-option {
+    padding: 10px 20px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.size-option:hover {
+    border-color: var(--text-primary);
+}
+
+.size-option.active {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color);
+    color: #000;
+}
+
+.color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--border-color);
+    transition: transform 0.2s;
+}
+
+.color-option.active {
+    box-shadow: 0 0 0 2px var(--accent-color);
+    transform: scale(1.15);
+}
+
+.variant-error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+/* Aksiyonlar */
+.detail-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    align-items: center;
+}
+
+.add-to-cart-btn-large {
+    flex: 1;
+    background-color: transparent;
+    color: var(--text-primary);
+    padding: 15px;
+    font-size: 1.1rem;
+    border: 1px solid var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.add-to-cart-btn-large:hover {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.favorite-btn-large {
+    width: 54px;
+    height: 54px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-primary);
+}
+
+.favorite-btn-large:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Ürün Özellikleri */
+.product-specs {
+    margin-top: 36px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 24px;
+}
+
+.specs-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.specs-table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.spec-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+.spec-icon {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.spec-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    min-width: 80px;
+}
+
+.spec-value {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Toast */
+.detail-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #C08B5C;
+    color: #000;
+    padding: 12px 28px;
+    font-weight: 700;
+    border-radius: 4px;
+    z-index: 9999;
+    animation: toastIn 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        bottom: 10px;
+    }
+
+    to {
+        opacity: 1;
+        bottom: 30px;
+    }
+}
+
+/* Loading Skeleton */
+.detail-loading {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 20px;
+    display: flex;
+    gap: 40px;
+}
+
+.detail-skeleton-img {
+    flex: 1;
+    min-width: 300px;
+    height: 500px;
+    background: linear-gradient(90deg, #242424 25%, #2a2a2a 50%, #242424 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.detail-skeleton-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 20px;
+}
+
+.skeleton-line {
+    background: linear-gradient(90deg, #242424 25%, #2a2a2a 50%, #242424 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    height: 18px;
+}
+
+.skeleton-line.lg {
+    width: 70%;
+    height: 36px;
+}
+
+.skeleton-line.md {
+    width: 40%;
+    height: 28px;
+}
+
+.skeleton-line.sm {
+    width: 90%;
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .product-detail-container {
+        flex-direction: column;
+        padding: 10px;
+        margin-top: 20px;
+    }
+
+    .gallery-section,
+    .info-section {
+        min-width: 100%;
+    }
+
+    .main-image-container {
+        height: 320px;
+    }
+
+    .product-title {
+        font-size: 1.5rem;
+    }
+
+    .price-discounted {
+        font-size: 1.4rem;
+    }
+
+    .detail-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .add-to-cart-btn-large,
+    .favorite-btn-large {
+        width: 100%;
+    }
+}
+
+
+.product-detail-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    color: var(--text-primary);
+}
+
 /* --- Sol Taraf: Galeri --- */
 .gallery-section {
     flex: 1;

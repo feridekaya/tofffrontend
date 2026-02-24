@@ -35,6 +35,7 @@ import CustomerOrderDetailPage from './CustomerOrderDetailPage';
 import FAQPage from './FAQPage';
 import ShippingReturnPage from './ShippingReturnPage';
 import MembershipAgreementPage from './MembershipAgreementPage';
+import ForgotPasswordPage from './ForgotPasswordPage';
 
 
 
@@ -161,13 +162,24 @@ function App() {
     fetchCart(tokens.access); // Sepeti de çek
   };
 
-  // Global çıkış yapma (logout) fonksiyonu
-  const handleLogout = () => {
+  // Global çıkış yapma (logout) fonksiyonu — refresh token'ı blacklist'e ekler
+  const handleLogout = async () => {
+    const stored = localStorage.getItem('authTokens');
+    if (stored) {
+      try {
+        const tokens = JSON.parse(stored);
+        await axios.post(`${API_BASE_URL}/api/auth/logout/`, { refresh: tokens.refresh }, {
+          headers: { Authorization: `Bearer ${tokens.access}` }
+        });
+      } catch (err) {
+        // Token zaten geçersizse veya hata olsa da local temizlik yapılır
+        console.warn('Logout API hatası (token zaten geçersiz olabilir):', err.message);
+      }
+    }
     setAuthTokens(null);
     localStorage.removeItem('authTokens');
     setFavorites([]);
-    setCart([]); // Sepeti temizle
-    console.log("Kullanıcı çıkış yaptı.");
+    setCart([]);
   };
 
   // Sayfa yüklendiğinde hafızadaki jetonu (token) kontrol et
@@ -262,6 +274,7 @@ function App() {
 
           {/* Rota 3: Kayıt Ol Sayfası */}
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           {/* Rota 3.5: Koleksiyon Sayfası */}
           <Route path="/koleksiyonlar" element={<CollectionsPage />} />

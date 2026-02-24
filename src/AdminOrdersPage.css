@@ -1,5 +1,296 @@
 /* src/AdminOrdersPage.css */
 
+/* === PANEL WRAPPER === */
+.admin-panel-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+    min-height: 80vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #EDEDED;
+}
+
+.admin-panel-header {
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+    margin-bottom: 0;
+}
+
+.admin-panel-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #C08B5C;
+    margin: 0;
+}
+
+/* === TAB BAR === */
+.admin-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #333;
+    margin-bottom: 30px;
+}
+
+.admin-tab-btn {
+    background: transparent;
+    border: none;
+    color: #9CA3AF;
+    padding: 14px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.admin-tab-btn:hover {
+    color: #EDEDED;
+}
+
+.admin-tab-btn.active {
+    color: #C08B5C;
+    border-bottom-color: #C08B5C;
+}
+
+.tab-badge {
+    background: #C08B5C;
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* === ORDERS CONTAINER === */
+.admin-orders-container {
+    padding: 0;
+}
+
+.admin-title {
+    font-size: 22px;
+    margin-bottom: 24px;
+    color: #EDEDED;
+    font-weight: 700;
+}
+
+/* === HEADER ROW (search + filter) === */
+.admin-header-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-search {
+    background: #1F1F1F;
+    border: 1px solid #333;
+    color: #EDEDED;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 200px;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.admin-search:focus {
+    outline: none;
+    border-color: #C08B5C;
+}
+
+/* === TABLE === */
+.orders-table-wrapper {
+    background-color: #242424;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th {
+    text-align: left;
+    padding: 14px 18px;
+    background-color: #1F1F1F;
+    border-bottom: 2px solid #333;
+    color: #9CA3AF;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.orders-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #2a2a2a;
+    color: #EDEDED;
+    vertical-align: middle;
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.clickable-row:hover {
+    background-color: #2a2a2a;
+}
+
+.customer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.customer-name {
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.customer-email {
+    font-size: 0.82rem;
+    color: #9CA3AF;
+}
+
+/* === BADGES === */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.badge-active {
+    background-color: #166534;
+    color: #86efac;
+}
+
+.badge-inactive {
+    background-color: #3f1010;
+    color: #f87171;
+}
+
+/* === BUTTONS === */
+.btn-details {
+    background-color: transparent;
+    border: 1px solid #C08B5C;
+    color: #C08B5C;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-details:hover {
+    background-color: #C08B5C;
+    color: #000;
+}
+
+.btn-delete {
+    background-color: transparent;
+    border: 1px solid #DC2626;
+    color: #DC2626;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-delete:hover {
+    background-color: #DC2626;
+    color: #fff;
+}
+
+/* === TOAST === */
+.admin-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 14px 24px;
+    border-radius: 6px;
+    font-weight: 700;
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.toast-success {
+    background: #C08B5C;
+    color: #000;
+}
+
+.toast-error {
+    background: #DC2626;
+    color: #fff;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        right: 0;
+    }
+
+    to {
+        opacity: 1;
+        right: 30px;
+    }
+}
+
+/* === FORM === */
+.admin-form {
+    background: #1F1F1F;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 28px;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.admin-loading {
+    text-align: center;
+    padding: 60px;
+    font-size: 1.1rem;
+    color: #9CA3AF;
+}
+
+.font-mono {
+    font-family: monospace;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+
 .admin-orders-container {
     max-width: 1400px;
     margin: 40px auto;
@@ -14,11 +305,13 @@
     margin-bottom: 30px;
     border-bottom: 2px solid #333;
     padding-bottom: 15px;
-    color: #C08B5C; /* Copper */
+    color: #C08B5C;
+    /* Copper */
 }
 
 .orders-table-wrapper {
-    background-color: #242424; /* Deep Graphite */
+    background-color: #242424;
+    /* Deep Graphite */
     border: 1px solid #333;
     border-radius: 8px;
     overflow-x: auto;
@@ -80,17 +373,50 @@
 }
 
 /* Badge Colors (Tailwind equivalents hardcoded for vanilla CSS) */
-.bg-yellow-500 { background-color: #EAB308; color: #000; }
-.bg-blue-500 { background-color: #3B82F6; }
-.bg-indigo-500 { background-color: #6366F1; }
-.bg-orange-600 { background-color: #EA580C; }
-.bg-amber-700 { background-color: #B45309; }
-.bg-purple-600 { background-color: #9333EA; }
-.bg-teal-600 { background-color: #0D9488; }
-.bg-green-600 { background-color: #16A34A; }
-.bg-green-800 { background-color: #166534; }
-.bg-red-600 { background-color: #DC2626; }
-.bg-gray-600 { background-color: #4B5563; }
+.bg-yellow-500 {
+    background-color: #EAB308;
+    color: #000;
+}
+
+.bg-blue-500 {
+    background-color: #3B82F6;
+}
+
+.bg-indigo-500 {
+    background-color: #6366F1;
+}
+
+.bg-orange-600 {
+    background-color: #EA580C;
+}
+
+.bg-amber-700 {
+    background-color: #B45309;
+}
+
+.bg-purple-600 {
+    background-color: #9333EA;
+}
+
+.bg-teal-600 {
+    background-color: #0D9488;
+}
+
+.bg-green-600 {
+    background-color: #16A34A;
+}
+
+.bg-green-800 {
+    background-color: #166534;
+}
+
+.bg-red-600 {
+    background-color: #DC2626;
+}
+
+.bg-gray-600 {
+    background-color: #4B5563;
+}
 
 .btn-details {
     background-color: transparent;
