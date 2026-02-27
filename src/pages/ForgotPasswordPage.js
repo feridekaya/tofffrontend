@@ -1,9 +1,7 @@
-// frontend/src/ForgotPasswordPage.js
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import authService from '../services/authService';
 import '../AuthForm.css';
-import API_BASE_URL from '../config/api';
 
 function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -17,7 +15,7 @@ function ForgotPasswordPage() {
         setLoading(true);
 
         try {
-            await axios.post(`${API_BASE_URL}/api/auth/forgot-password/`, { email });
+            await authService.forgotPassword(email);
             setSent(true);
         } catch (err) {
             setError(err.response?.data?.error || 'Bir hata oluştu. Lütfen tekrar deneyin.');
