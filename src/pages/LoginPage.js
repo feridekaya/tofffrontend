@@ -30,7 +30,13 @@ function LoginPage() {
       handleLoginSuccess(response.data);
       navigate(from, { replace: true });
     } catch (err) {
-      const detail = err.response?.data?.detail || err.response?.data?.error;
+      let detail = err.response?.data?.detail || err.response?.data?.error;
+
+      // SimpleJWT varsayılan İngilizce hatasını Türkçeleştirme
+      if (detail === 'No active account found with the given credentials') {
+        detail = 'E-posta veya şifre hatalı.';
+      }
+
       setError(detail || 'E-posta veya şifre hatalı.');
     } finally {
       setLoading(false);
