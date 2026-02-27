@@ -20,7 +20,7 @@ function ForgotPasswordPage() {
             await axios.post(`${API_BASE_URL}/api/auth/forgot-password/`, { email });
             setSent(true);
         } catch (err) {
-            setError('Bir hata oluştu. Lütfen tekrar deneyin.');
+            setError(err.response?.data?.error || 'Bir hata oluştu. Lütfen tekrar deneyin.');
         } finally {
             setLoading(false);
         }

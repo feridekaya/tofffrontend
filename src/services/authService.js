@@ -35,6 +35,13 @@ const authService = {
             old_password: oldPassword,
             new_password: newPassword,
         }),
+
+    /** POST /api/auth/reset-password-confirm/{uid}/{token}/ */
+    resetPasswordConfirm: (uid, token, newPassword, newPasswordConfirm) =>
+        axios.post(`${API_BASE_URL}/api/auth/reset-password-confirm/${uid}/${token}/`, {
+            new_password: newPassword,
+            new_password_confirm: newPasswordConfirm
+        }),
 };
 
 export default authService;
