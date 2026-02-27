@@ -1,24 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa';
-import axios from 'axios';
+import productService from '../services/productService';
 import './HomePage.css';
-import HomepageHeader from '../components/HomepageHeader';
-import API_BASE_URL from '../config/api';
 
 function AnaSayfa() {
   const [collections, setCollections] = useState([]);
   const collectionsRef = useRef(null);
 
   useEffect(() => {
-    // Fetch collections from API
-    axios.get(`${API_BASE_URL}/api/collections/`)
-      .then(response => {
-        setCollections(response.data);
-      })
-      .catch(error => {
-        console.error('Koleksiyonlar yüklenemedi:', error);
-      });
+    productService.getCollections()
+      .then(res => setCollections(res.data))
+      .catch(err => console.error('Koleksiyonlar yüklenemedi:', err));
   }, []);
 
   const scrollToCollections = () => {
@@ -27,7 +20,6 @@ function AnaSayfa() {
 
   return (
     <div className="immersive-homepage">
-      <HomepageHeader />
 
       {/* Section 1: Video Hero */}
       <section className="hero-section">
@@ -65,12 +57,11 @@ function AnaSayfa() {
       {/* Collection Sections */}
       <div ref={collectionsRef}>
         {collections.map((collection, index) => {
-          // Helper to construct valid image URL
+          // Cloudinary URL'leri http ile başlar, yerel dosyalara fallback
           const getImageUrl = (img) => {
             if (!img) return null;
             if (img.startsWith('http')) return img;
-            // Remove leading slash if both have it to avoid double slash, though usually fine
-            return `${API_BASE_URL}${img}`;
+            return img; // yerel path
           };
 
           const bgImage = getImageUrl(collection.image) || `/assets/collection-${collection.slug}.png`;
