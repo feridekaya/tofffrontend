@@ -1,42 +1,28 @@
 // frontend/src/pages/CheckoutPage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './CheckoutPage.css';
 import { useAuth } from '../context/AuthContext';
 import CheckoutAddressForm from '../components/account/CheckoutAddressForm';
 import { FaCheckCircle, FaPlus } from 'react-icons/fa';
 import addressService from '../services/addressService';
 import orderService from '../services/orderService';
 
+const inputClass = 'w-full bg-toff-bg border border-toff-border-2 text-toff-text rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-toff-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+const labelClass = 'block text-xs font-semibold text-toff-muted uppercase tracking-wider mb-1.5';
+
 function CheckoutPage() {
     const { cart, setCart, authTokens } = useAuth();
     const navigate = useNavigate();
 
-    // -- State --
     const [savedAddresses, setSavedAddresses] = useState([]);
     const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
 
-    // Manual form state (used for Guest OR if user wants to type manually)
-    const [deliveryInfo, setDeliveryInfo] = useState({
-        fullName: '',
-        phone: '',
-        city: '',
-        address: ''
-    });
-
-    // Payment state
-    const [paymentInfo, setPaymentInfo] = useState({
-        cardHolder: '',
-        cardNumber: '',
-        expiryDate: '',
-        cvv: ''
-    });
-
+    const [deliveryInfo, setDeliveryInfo] = useState({ fullName: '', phone: '', city: '', address: '' });
+    const [paymentInfo, setPaymentInfo] = useState({ cardHolder: '', cardNumber: '', expiryDate: '', cvv: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    // -- Effects --
     useEffect(() => {
         if (authTokens) fetchSavedAddresses();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,23 +33,15 @@ function CheckoutPage() {
             const res = await addressService.getAddresses();
             setSavedAddresses(res.data);
             if (res.data.length > 0) selectAddress(res.data[0]);
-        } catch (error) {
-            console.error('Adresler çekilemedi:', error);
-        }
+        } catch { }
     };
 
-    // -- Handlers --
-    const calculateTotal = () => {
-        return cart.reduce((total, item) => total + (parseFloat(item.product.price) * item.quantity), 0);
-    };
-    const total = calculateTotal();
+    const total = cart.reduce((t, item) => t + parseFloat(item.product.price) * item.quantity, 0);
 
     const handleDeliveryChange = (e) => {
         setDeliveryInfo({ ...deliveryInfo, [e.target.name]: e.target.value });
-        // If user types manually, clear selection
         if (selectedAddressId) setSelectedAddressId(null);
     };
-
     const handlePaymentChange = (e) => setPaymentInfo({ ...paymentInfo, [e.target.name]: e.target.value });
 
     const selectAddress = (addr) => {
@@ -72,34 +50,23 @@ function CheckoutPage() {
             fullName: `${addr.first_name} ${addr.last_name}`,
             phone: addr.phone_number,
             city: addr.city,
-            address: `${addr.address_text} \n${addr.neighborhood}, ${addr.district}`
+            address: `${addr.address_text}\n${addr.neighborhood}, ${addr.district}`,
         });
-    };
-
-    const handleAddressSaved = () => {
-        setShowAddModal(false);
-        fetchSavedAddresses(); // Refresh list, it will auto-select 1st or we can improve logic
     };
 
     const handleCompleteOrder = async () => {
         if (!deliveryInfo.fullName || !deliveryInfo.phone || !deliveryInfo.city || !deliveryInfo.address) {
-            setErrorMessage('Lütfen tüm teslimat bilgilerini doldurunuz.');
-            return;
+            return setErrorMessage('Lütfen tüm teslimat bilgilerini doldurunuz.');
         }
         if (!paymentInfo.cardHolder || !paymentInfo.cardNumber || !paymentInfo.expiryDate || !paymentInfo.cvv) {
-            setErrorMessage('Lütfen tüm ödeme bilgilerini doldurunuz.');
-            return;
+            return setErrorMessage('Lütfen tüm ödeme bilgilerini doldurunuz.');
         }
-        if (cart.length === 0) {
-            setErrorMessage('Sepetiniz boş.');
-            return;
-        }
+        if (cart.length === 0) return setErrorMessage('Sepetiniz boş.');
 
         setIsSubmitting(true);
         setErrorMessage('');
-
         try {
-            const orderData = {
+            const res = await orderService.createOrder({
                 full_name: deliveryInfo.fullName,
                 address: deliveryInfo.address,
                 city: deliveryInfo.city,
@@ -110,192 +77,189 @@ function CheckoutPage() {
                     selectedSize: item.selectedSize || null,
                     selectedColor: item.selectedColor || null,
                 })),
-                card_info: {
-                    cardHolder: paymentInfo.cardHolder,
-                    cardNumber: paymentInfo.cardNumber,
-                    expiryDate: paymentInfo.expiryDate,
-                    cvv: paymentInfo.cvv,
-                },
-            };
-
-            const res = await orderService.createOrder(orderData);
+                card_info: paymentInfo,
+            });
             if (res.data.success) {
-                alert(`Siparişiniz Alındı! Sipariş No: #${res.data.order_id}`);
                 setCart([]);
                 navigate('/');
+                alert(`Siparişiniz Alındı! Sipariş No: #${res.data.order_id}`);
             }
-        } catch (error) {
-            const msg = error.response?.data?.error || 'Sipariş oluşturulurken bir hata oluştu.';
-            setErrorMessage(msg);
+        } catch (err) {
+            setErrorMessage(err.response?.data?.error || 'Sipariş oluşturulurken bir hata oluştu.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    const getImageUrl = (product) => product.image ? product.image : null;
+    const sectionCard = 'bg-toff-bg-2 border border-toff-border rounded-xl p-5 mb-5';
+    const sectionTitle = 'text-sm font-bold text-toff-text tracking-widest uppercase mb-4 pb-3 border-b border-toff-border';
 
     return (
-        <div className="checkout-page-container">
-            <h1>ÖDEME</h1>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 animate-fade-up">
+            <h1 className="text-2xl font-bold text-toff-text tracking-wider mb-8">ÖDEME</h1>
 
-            <div className="checkout-layout">
-                {/* SOL SÜTUN */}
-                <div className="checkout-left-column">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    {/* ADRES SEÇİMİ (Only if logged in) */}
-                    {(authTokens || localStorage.getItem('authTokens')) && (
-                        <div className="checkout-section">
-                            <h2>Teslimat Adresi Seçimi</h2>
-                            <div className="address-grid-checkout">
+                {/* ── Sol Sütun ─────────────────────────────────────────────── */}
+                <div className="lg:col-span-2 flex flex-col">
+
+                    {/* Adres Seçimi */}
+                    {authTokens && (
+                        <div className={sectionCard}>
+                            <h2 className={sectionTitle}>Teslimat Adresi</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {savedAddresses.map(addr => (
                                     <div
                                         key={addr.id}
-                                        className={`address-card-checkout ${selectedAddressId === addr.id ? 'selected' : ''}`}
                                         onClick={() => selectAddress(addr)}
+                                        className={`cursor-pointer border rounded-xl p-4 transition-all ${selectedAddressId === addr.id
+                                                ? 'border-toff-accent bg-toff-accent/5'
+                                                : 'border-toff-border hover:border-toff-muted'
+                                            }`}
                                     >
-                                        <div className="card-header-row">
-                                            <h4>{addr.title}</h4>
-                                            {selectedAddressId === addr.id && <FaCheckCircle className="check-icon" />}
+                                        <div className="flex justify-between items-start mb-1">
+                                            <h4 className="text-sm font-bold text-toff-text">{addr.title}</h4>
+                                            {selectedAddressId === addr.id && <FaCheckCircle className="text-toff-accent" size={14} />}
                                         </div>
-                                        <p>{addr.first_name} {addr.last_name}</p>
-                                        <p className="sm-text">{addr.district}, {addr.city}</p>
+                                        <p className="text-sm text-toff-muted">{addr.first_name} {addr.last_name}</p>
+                                        <p className="text-xs text-toff-faint mt-0.5">{addr.district}, {addr.city}</p>
                                     </div>
                                 ))}
 
-                                <div className="add-address-card" onClick={() => setShowAddModal(true)}>
-                                    <FaPlus className="plus-icon" />
-                                    <span>Yeni Adres Ekle</span>
-                                </div>
+                                <button
+                                    onClick={() => setShowAddModal(true)}
+                                    className="border border-dashed border-toff-border hover:border-toff-accent rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-toff-faint hover:text-toff-accent transition-colors"
+                                >
+                                    <FaPlus size={18} />
+                                    <span className="text-xs font-semibold">Yeni Adres Ekle</span>
+                                </button>
                             </div>
                         </div>
                     )}
 
-                    {/* TESLİMAT ADRESİ FORMU (Always visible to show what's selected or for manual entry) */}
-                    <div className="checkout-section">
-                        <div className="card-header-row" style={{ marginBottom: '20px', borderBottom: '2px solid #C08B5C', paddingBottom: '10px' }}>
-                            <h2 style={{ border: 'none', margin: 0, padding: 0 }}>Teslimat Detayları</h2>
+                    {/* Teslimat Detayları */}
+                    <div className={sectionCard}>
+                        <div className="flex items-center justify-between mb-4 pb-3 border-b border-toff-border">
+                            <h2 className="text-sm font-bold text-toff-text tracking-widest uppercase">Teslimat Detayları</h2>
                             {selectedAddressId && (
                                 <button
-                                    onClick={() => {
-                                        setSelectedAddressId(null);
-                                        setDeliveryInfo({ fullName: '', phone: '', city: '', address: '' });
-                                    }}
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        color: '#C08B5C',
-                                        cursor: 'pointer',
-                                        fontSize: '0.9rem',
-                                        textDecoration: 'underline'
-                                    }}
+                                    onClick={() => { setSelectedAddressId(null); setDeliveryInfo({ fullName: '', phone: '', city: '', address: '' }); }}
+                                    className="text-xs text-toff-accent underline hover:text-toff-accent-2 transition-colors"
                                 >
                                     Farklı Adres Gir
                                 </button>
                             )}
                         </div>
 
-                        <div className="form-group">
-                            <label>Ad Soyad *</label>
-                            <input
-                                type="text" name="fullName" value={deliveryInfo.fullName}
-                                onChange={handleDeliveryChange} placeholder="Adınız Soyadınız" required
-                                disabled={!!selectedAddressId}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Telefon *</label>
-                            <input
-                                type="tel" name="phone" value={deliveryInfo.phone}
-                                onChange={handleDeliveryChange} placeholder="0555..." required
-                                disabled={!!selectedAddressId}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Şehir *</label>
-                            <input
-                                type="text" name="city" value={deliveryInfo.city}
-                                onChange={handleDeliveryChange} placeholder="İl" required
-                                disabled={!!selectedAddressId}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Açık Adres *</label>
-                            <textarea
-                                name="address" value={deliveryInfo.address}
-                                onChange={handleDeliveryChange} rows="3" placeholder="Adres detayları..." required
-                                disabled={!!selectedAddressId}
-                            />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label className={labelClass}>Ad Soyad *</label>
+                                <input type="text" name="fullName" value={deliveryInfo.fullName} onChange={handleDeliveryChange}
+                                    disabled={!!selectedAddressId} className={inputClass} placeholder="Adınız Soyadınız" />
+                            </div>
+                            <div>
+                                <label className={labelClass}>Telefon *</label>
+                                <input type="tel" name="phone" value={deliveryInfo.phone} onChange={handleDeliveryChange}
+                                    disabled={!!selectedAddressId} className={inputClass} placeholder="0555 000 00 00" />
+                            </div>
+                            <div>
+                                <label className={labelClass}>Şehir *</label>
+                                <input type="text" name="city" value={deliveryInfo.city} onChange={handleDeliveryChange}
+                                    disabled={!!selectedAddressId} className={inputClass} placeholder="İl" />
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label className={labelClass}>Açık Adres *</label>
+                                <textarea name="address" value={deliveryInfo.address} onChange={handleDeliveryChange} rows={3}
+                                    disabled={!!selectedAddressId} className={`${inputClass} resize-none`} placeholder="Adres detayları..." />
+                            </div>
                         </div>
                     </div>
 
-                    {/* SİPARİŞ ÖZETİ */}
-                    <div className="checkout-section">
-                        <h2>Sipariş Özeti</h2>
-                        <div className="order-summary-list">
+                    {/* Sipariş Özeti */}
+                    <div className={sectionCard}>
+                        <h2 className={sectionTitle}>Sipariş Özeti</h2>
+                        <div className="flex flex-col gap-3">
                             {cart.map(item => (
-                                <div key={item.cartId || item.product.id} className="order-summary-item">
-                                    <div className="order-item-image">
-                                        <img src={getImageUrl(item.product)} alt={item.product.name} />
+                                <div key={item.cartId || item.product.id} className="flex items-center gap-3">
+                                    <div className="w-14 h-14 bg-toff-bg-3 rounded-lg overflow-hidden shrink-0">
+                                        {item.product.image
+                                            ? <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                                            : <div className="w-full h-full bg-toff-bg-3" />
+                                        }
                                     </div>
-                                    <div className="order-item-info">
-                                        <h4>{item.product.name}</h4>
-                                        <p>{item.quantity} x {parseFloat(item.product.price).toFixed(2)} TL</p>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-toff-text truncate">{item.product.name}</p>
+                                        <p className="text-xs text-toff-muted">{item.quantity} × {parseFloat(item.product.price).toLocaleString('tr-TR')} ₺</p>
                                     </div>
-                                    <div className="order-item-total">
-                                        <strong>{(parseFloat(item.product.price) * item.quantity).toFixed(2)} TL</strong>
-                                    </div>
+                                    <span className="text-sm font-bold text-toff-text shrink-0">
+                                        {(parseFloat(item.product.price) * item.quantity).toLocaleString('tr-TR')} ₺
+                                    </span>
                                 </div>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                {/* SAĞ SÜTUN (Ödeme) */}
-                <div className="checkout-right-column">
-                    <div className="checkout-sticky-box">
-                        <div className="checkout-section">
-                            <h2>Ödeme Bilgileri</h2>
-                            <div className="form-group">
-                                <label>Kart Sahibi *</label>
-                                <input type="text" name="cardHolder" value={paymentInfo.cardHolder} onChange={handlePaymentChange} required />
-                            </div>
-                            <div className="form-group">
-                                <label>Kart Numarası *</label>
-                                <input type="text" name="cardNumber" value={paymentInfo.cardNumber} onChange={handlePaymentChange} maxLength="19" required />
-                            </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>SKT *</label>
-                                    <input type="text" name="expiryDate" value={paymentInfo.expiryDate} onChange={handlePaymentChange} placeholder="AA/YY" maxLength="5" required />
+                {/* ── Sağ Sütun: Ödeme ──────────────────────────────────────── */}
+                <div>
+                    <div className="sticky top-[80px]">
+                        {/* Kart Bilgileri */}
+                        <div className={sectionCard}>
+                            <h2 className={sectionTitle}>Ödeme Bilgileri</h2>
+                            <div className="flex flex-col gap-4">
+                                <div>
+                                    <label className={labelClass}>Kart Sahibi *</label>
+                                    <input type="text" name="cardHolder" value={paymentInfo.cardHolder} onChange={handlePaymentChange} className={inputClass} placeholder="Ad Soyad" />
                                 </div>
-                                <div className="form-group">
-                                    <label>CVV *</label>
-                                    <input type="text" name="cvv" value={paymentInfo.cvv} onChange={handlePaymentChange} maxLength="3" required />
+                                <div>
+                                    <label className={labelClass}>Kart Numarası *</label>
+                                    <input type="text" name="cardNumber" value={paymentInfo.cardNumber} onChange={handlePaymentChange} maxLength={19} className={inputClass} placeholder="**** **** **** ****" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className={labelClass}>SKT *</label>
+                                        <input type="text" name="expiryDate" value={paymentInfo.expiryDate} onChange={handlePaymentChange} maxLength={5} className={inputClass} placeholder="AA/YY" />
+                                    </div>
+                                    <div>
+                                        <label className={labelClass}>CVV *</label>
+                                        <input type="text" name="cvv" value={paymentInfo.cvv} onChange={handlePaymentChange} maxLength={3} className={inputClass} placeholder="***" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="checkout-total-section">
-                            <h3>Ödenecek Tutar</h3>
-                            <div className="checkout-total-amount">{total.toFixed(2)} TL</div>
+                        {/* Toplam & Sipariş Butonu */}
+                        <div className={sectionCard}>
+                            <div className="flex justify-between items-center mb-5">
+                                <span className="text-sm text-toff-muted">Ödenecek Tutar</span>
+                                <span className="text-2xl font-extrabold text-toff-accent">{total.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</span>
+                            </div>
+
+                            {errorMessage && (
+                                <div className="mb-4 bg-red-900/30 border border-red-700/50 text-red-400 text-sm px-4 py-3 rounded-lg">
+                                    {errorMessage}
+                                </div>
+                            )}
+
+                            <button
+                                onClick={handleCompleteOrder}
+                                disabled={isSubmitting}
+                                className="w-full bg-toff-accent hover:bg-toff-accent-3 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 tracking-widest text-sm rounded-lg transition-colors"
+                            >
+                                {isSubmitting ? 'İŞLENİYOR...' : 'SİPARİŞİ TAMAMLA'}
+                            </button>
                         </div>
-
-                        {errorMessage && <div className="checkout-error-message">{errorMessage}</div>}
-
-                        <button className="complete-order-btn" onClick={handleCompleteOrder} disabled={isSubmitting}>
-                            {isSubmitting ? 'İşleniyor...' : 'Siparişi Tamamla'}
-                        </button>
                     </div>
                 </div>
             </div>
 
-            {/* MODAL for Adding Address */}
+            {/* ── Adres Ekleme Modal ─────────────────────────────────────── */}
             {showAddModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-toff-bg-2 border border-toff-border rounded-xl w-full max-w-lg shadow-2xl">
                         <CheckoutAddressForm
                             authTokens={authTokens}
-                            onSuccess={handleAddressSaved}
+                            onSuccess={() => { setShowAddModal(false); fetchSavedAddresses(); }}
                             onCancel={() => setShowAddModal(false)}
                         />
                     </div>
@@ -306,4 +270,3 @@ function CheckoutPage() {
 }
 
 export default CheckoutPage;
-

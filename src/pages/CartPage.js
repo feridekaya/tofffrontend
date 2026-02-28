@@ -1,10 +1,10 @@
 // frontend/src/pages/CartPage.js
 import React, { useState } from 'react';
-import './CartPage.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import cartService from '../services/cartService';
 import couponService from '../services/couponService';
+import { FiTrash2, FiShoppingBag } from 'react-icons/fi';
 
 function CartPage() {
   const { cart, setCart, authTokens } = useAuth();
@@ -12,276 +12,259 @@ function CartPage() {
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
-  // Sözleşme Onayı State
   const [isAgreementChecked, setIsAgreementChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [couponLoading, setCouponLoading] = useState(false);
 
-  // Ürünü kaldırma fonksiyonu (cartId'ye göre)
   const handleRemoveFromCart = async (cartIdToRemove) => {
     if (authTokens) {
-      try {
-        await cartService.removeItem(cartIdToRemove);
-      } catch (error) {
-        console.error('Silme hatası:', error);
-        alert('Ürün silinirken bir hata oluştu');
-        return;
-      }
+      try { await cartService.removeItem(cartIdToRemove); }
+      catch { return; }
     }
     setCart(cart.filter(item => item.cartId !== cartIdToRemove));
   };
 
-  // Adet (quantity) değiştirme
   const handleQuantityChange = async (cartId, newQuantity) => {
-    const quantityNum = parseInt(newQuantity);
-    if (quantityNum > 0) {
+    const q = parseInt(newQuantity);
+    if (q > 0) {
       if (authTokens) {
-        try {
-          await cartService.updateQuantity(cartId, quantityNum);
-        } catch (error) {
-          console.error('Güncelleme hatası:', error);
-        }
+        try { await cartService.updateQuantity(cartId, q); } catch { }
       }
-      setCart(cart.map(item =>
-        item.cartId === cartId ? { ...item, quantity: quantityNum } : item
-      ));
+      setCart(cart.map(item => item.cartId === cartId ? { ...item, quantity: q } : item));
     }
   };
 
-  // --- HESAPLAMALAR ---
+  const subtotal = cart.reduce((t, item) => t + parseFloat(item.product.price) * item.quantity, 0);
+  const kdvAmount = subtotal - subtotal / 1.2;
+  const shippingCost = subtotal >= 1000 ? 0 : 100;
+  const totalPayable = subtotal + shippingCost - discount;
+  const remaining = 1000 - subtotal;
 
-  // 1. Ara Toplam (Ürünlerin toplam fiyatı)
-  const subtotal = cart.reduce((total, item) => {
-    return total + (parseFloat(item.product.price) * item.quantity);
-  }, 0);
-
-  // 2. KDV (%20 varsayalım, fiyata dahilse ayırıp gösterelim)
-  // Türkiye'de genelde fiyatlar KDV dahildir. Bilgi amaçlı gösteriyoruz.
-  const kdvRate = 0.20;
-  const kdvAmount = subtotal - (subtotal / (1 + kdvRate));
-
-  // 3. Kargo (1000 TL üzeri ücretsiz, altı 100 TL)
-  const shippingThreshold = 1000;
-  const shippingCost = subtotal >= shippingThreshold ? 0 : 100;
-
-  // Kupon Uygulama
   const handleApplyCoupon = async () => {
     if (!couponCode) return;
+    setCouponLoading(true);
     try {
       const res = await couponService.validateCoupon(couponCode);
       const data = res.data;
       const disc = subtotal * (data.discount_percent / 100);
       setDiscount(disc);
       setAppliedCoupon(data.code);
-      alert(`Kupon uygulandı: %${data.discount_percent} indirim`);
-    } catch (error) {
-      const msg = error.response?.data?.error || 'Geçersiz kupon kodu.';
-      alert(msg);
-      setDiscount(0);
-      setAppliedCoupon(null);
-    }
+    } catch (err) {
+      alert(err.response?.data?.error || 'Geçersiz kupon kodu.');
+      setDiscount(0); setAppliedCoupon(null);
+    } finally { setCouponLoading(false); }
   };
 
-  // 5. Genel Toplam
-  const totalPayable = subtotal + shippingCost - discount;
-
-  // Satın Al Butonu İşlemi
   const handleCheckout = () => {
     if (!isAgreementChecked) {
       alert('Lütfen Mesafeli Satış Sözleşmesini onaylayınız.');
       return;
     }
-    // Ödeme sayfasına yönlendir
     navigate('/odeme');
   };
 
-  // Resim URL fonksiyonu
-  const getImageUrl = (product) => {
-    return product.image ? product.image : null;
-  };
-
   return (
-    <div className="cart-page-container">
-      <h1>SEPETİM</h1>
-      <div className="cart-layout">
-        {/* --- SÜTUN 1: SEPET LİSTESİ --- */}
-        <div className="cart-items-column">
-          {cart.length === 0 ? (
-            <div className="cart-empty">
-              <p>Sepetinizde henüz ürün bulunmamaktadır.</p>
-              <Link to="/" className="continue-shopping-btn">Alışverişe Devam Et</Link>
-            </div>
-          ) : (
-            <div className="cart-items-list">
-              {cart.map(item => (
-                <div key={item.cartId || item.product.id} className="cart-item">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 animate-fade-up">
+      <h1 className="text-2xl font-bold text-toff-text tracking-wider mb-8">SEPETİM</h1>
 
-                  <div className="cart-item-image">
-                    <img src={getImageUrl(item.product)} alt={item.product.name} />
+      {cart.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 gap-6">
+          <FiShoppingBag size={56} className="text-toff-faint" />
+          <p className="text-toff-muted text-lg">Sepetinizde henüz ürün bulunmuyor.</p>
+          <Link
+            to="/"
+            className="border border-toff-accent text-toff-accent hover:bg-toff-accent hover:text-white px-8 py-3 text-sm font-bold tracking-widest transition-colors"
+          >
+            ALIŞVERİŞE DEVAM ET
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+          {/* ── Sepet Listesi ─────────────────────────────────────────── */}
+          <div className="lg:col-span-2 flex flex-col gap-4">
+            {cart.map(item => (
+              <div
+                key={item.cartId || item.product.id}
+                className="flex gap-4 bg-toff-bg-2 border border-toff-border rounded-xl p-4 hover:border-toff-border-2 transition-colors"
+              >
+                {/* Resim */}
+                <div className="w-24 h-24 sm:w-28 sm:h-28 bg-toff-bg-3 rounded-lg overflow-hidden shrink-0">
+                  {item.product.image
+                    ? <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                    : <div className="w-full h-full flex items-center justify-center text-toff-faint text-xs">Görsel yok</div>
+                  }
+                </div>
+
+                {/* Bilgi */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-toff-text line-clamp-2 mb-1">{item.product.name}</h3>
+
+                  {/* Varyantlar */}
+                  <div className="flex flex-wrap gap-3 mb-2">
+                    {item.selectedSize && (
+                      <span className="text-xs text-toff-faint bg-toff-bg px-2 py-1 rounded">
+                        Boyut: <strong className="text-toff-muted">{item.selectedSize.name}</strong>
+                      </span>
+                    )}
+                    {item.selectedColor && (
+                      <span className="flex items-center gap-1.5 text-xs text-toff-faint bg-toff-bg px-2 py-1 rounded">
+                        Renk:
+                        <span className="w-3 h-3 rounded-full border border-white/20 shrink-0" style={{ backgroundColor: item.selectedColor.hex_code }} />
+                        <strong className="text-toff-muted">{item.selectedColor.name}</strong>
+                      </span>
+                    )}
                   </div>
 
-                  <div className="cart-item-info">
-                    <h3>{item.product.name}</h3>
+                  <p className="text-toff-accent font-bold text-base mb-3">
+                    {(parseFloat(item.product.price) * item.quantity).toLocaleString('tr-TR')} ₺
+                  </p>
 
-                    <div className="cart-item-variants" style={{ marginBottom: '10px', fontSize: '0.9rem', color: '#777' }}>
-                      {item.selectedSize && (
-                        <div style={{ marginBottom: '4px' }}>
-                          <strong>Boyut:</strong> {item.selectedSize.name}
-                        </div>
-                      )}
-                      {item.selectedColor && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <strong>Renk:</strong>
-                          <div
-                            style={{
-                              width: '14px',
-                              height: '14px',
-                              borderRadius: '50%',
-                              backgroundColor: item.selectedColor.hex_code,
-                              border: '1px solid #ccc'
-                            }}
-                          />
-                          {item.selectedColor.name}
-                        </div>
-                      )}
-                    </div>
-
-                    <p>{(parseFloat(item.product.price) * item.quantity).toFixed(2)} TL</p>
-
-                    <div className="item-quantity-updater">
-                      <label htmlFor={`quantity-${item.cartId}`}>Adet: </label>
+                  {/* Adet ve Sil */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
+                      <label className="text-xs text-toff-faint">Adet:</label>
                       <select
-                        id={`quantity-${item.cartId}`}
-                        className="quantity-select"
                         value={item.quantity}
-                        onChange={(e) => handleQuantityChange(item.cartId, e.target.value)}
+                        onChange={e => handleQuantityChange(item.cartId, e.target.value)}
+                        className="bg-toff-bg border border-toff-border text-toff-text text-sm rounded px-2 py-1 focus:outline-none focus:border-toff-accent"
                       >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                          <option key={num} value={num}>{num}</option>
-                        ))}
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => <option key={n} value={n}>{n}</option>)}
                       </select>
                     </div>
-                  </div>
-
-                  <div className="cart-item-actions">
                     <button
-                      className="remove-item-btn"
                       onClick={() => handleRemoveFromCart(item.cartId)}
+                      className="flex items-center gap-1 text-xs text-toff-faint hover:text-red-400 transition-colors ml-auto"
                     >
-                      Sil
+                      <FiTrash2 size={13} /> Sil
                     </button>
                   </div>
-
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* --- SÜTUN 2: SİPARİŞ ÖZETİ --- */}
-        <div className="cart-summary-column">
-          <div className="summary-box">
-            <h2>SİPARİŞ ÖZETİ</h2>
-
-            <div className="summary-row">
-              <span>Ara Toplam</span>
-              <span>{subtotal.toFixed(2)} TL</span>
-            </div>
-
-            <div className="summary-row" style={{ fontSize: '0.9rem', color: '#777' }}>
-              <span>KDV (%20 Dahil)</span>
-              <span>{kdvAmount.toFixed(2)} TL</span>
-            </div>
-
-            <div className="summary-row">
-              <span>Kargo</span>
-              <span>{shippingCost === 0 ? 'Ücretsiz' : `${shippingCost.toFixed(2)} TL`}</span>
-            </div>
-
-            {shippingCost > 0 && (
-              <div style={{ fontSize: '0.8rem', color: '#C08B5C', marginBottom: '10px', textAlign: 'right' }}>
-                {1000 - subtotal > 0 ? `${(1000 - subtotal).toFixed(2)} TL daha ekleyin, kargo bedava olsun!` : ''}
               </div>
-            )}
+            ))}
+          </div>
 
-            {/* Kupon Alanı */}
-            <div className="coupon-section">
-              <input
-                type="text"
-                placeholder="Kupon Kodu"
-                className="coupon-input"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-              />
-              <button className="coupon-btn" onClick={handleApplyCoupon}>Uygula</button>
-            </div>
+          {/* ── Sipariş Özeti ─────────────────────────────────────────── */}
+          <div>
+            <div className="bg-toff-bg-2 border border-toff-border rounded-xl p-5 sticky top-[80px]">
+              <h2 className="text-sm font-bold text-toff-text tracking-widest mb-5 pb-3 border-b border-toff-border uppercase">
+                Sipariş Özeti
+              </h2>
 
-            {discount > 0 && (
-              <div className="summary-row discount-row">
-                <span>İndirim ({appliedCoupon})</span>
-                <span>-{discount.toFixed(2)} TL</span>
+              <div className="flex flex-col gap-2 text-sm mb-4">
+                <div className="flex justify-between text-toff-muted">
+                  <span>Ara Toplam</span>
+                  <span>{subtotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</span>
+                </div>
+                <div className="flex justify-between text-toff-faint text-xs">
+                  <span>KDV (%20 Dahil)</span>
+                  <span>{kdvAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</span>
+                </div>
+                <div className="flex justify-between text-toff-muted">
+                  <span>Kargo</span>
+                  <span className={shippingCost === 0 ? 'text-green-400' : ''}>
+                    {shippingCost === 0 ? 'Ücretsiz' : `${shippingCost} ₺`}
+                  </span>
+                </div>
+                {shippingCost > 0 && remaining > 0 && (
+                  <p className="text-toff-accent text-[11px] text-right">
+                    {remaining.toLocaleString('tr-TR', { minimumFractionDigits: 0 })} ₺ daha ekleyin, kargo bedava!
+                  </p>
+                )}
               </div>
-            )}
 
-            <div className="summary-total">
-              <span>Ödenecek Tutar</span>
-              <span>{totalPayable.toFixed(2)} TL</span>
-            </div>
+              {/* Kupon */}
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  placeholder="Kupon kodu"
+                  value={couponCode}
+                  onChange={e => setCouponCode(e.target.value)}
+                  className="flex-1 bg-toff-bg border border-toff-border text-toff-text text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-toff-accent transition-colors"
+                />
+                <button
+                  onClick={handleApplyCoupon}
+                  disabled={couponLoading}
+                  className="bg-toff-bg border border-toff-border text-toff-muted hover:border-toff-accent hover:text-toff-accent text-xs font-bold px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {couponLoading ? '...' : 'Uygula'}
+                </button>
+              </div>
 
-            {/* Sözleşme Onayı Checkbox */}
-            <div className="agreement-section">
-              <label className="agreement-label">
+              {discount > 0 && (
+                <div className="flex justify-between text-sm text-green-400 mb-3">
+                  <span>İndirim ({appliedCoupon})</span>
+                  <span>-{discount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</span>
+                </div>
+              )}
+
+              {/* Toplam */}
+              <div className="flex justify-between text-base font-bold text-toff-text border-t border-toff-border pt-3 mb-5">
+                <span>Ödenecek Tutar</span>
+                <span className="text-toff-accent">{totalPayable.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</span>
+              </div>
+
+              {/* Sözleşme */}
+              <label className="flex items-start gap-2 mb-4 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isAgreementChecked}
-                  onChange={(e) => setIsAgreementChecked(e.target.checked)}
+                  onChange={e => setIsAgreementChecked(e.target.checked)}
+                  className="mt-0.5 accent-toff-accent shrink-0"
                 />
-                <span>
-                  <span
+                <span className="text-xs text-toff-faint leading-relaxed">
+                  <button
+                    type="button"
                     onClick={() => setIsModalOpen(true)}
-                    style={{ color: '#C08B5C', textDecoration: 'underline', cursor: 'pointer' }}
+                    className="text-toff-accent underline hover:text-toff-accent-2 transition-colors"
                   >
                     Mesafeli Satış Sözleşmesi
-                  </span>'ni okudum ve onaylıyorum.
+                  </button>
+                  'ni okudum ve onaylıyorum.
                 </span>
               </label>
-            </div>
 
-            <button
-              className={`checkout-btn ${!isAgreementChecked ? 'disabled' : ''}`}
-              onClick={handleCheckout}
-              disabled={!isAgreementChecked}
-            >
-              SATIN AL
-            </button>
+              <button
+                onClick={handleCheckout}
+                disabled={!isAgreementChecked}
+                className="w-full bg-toff-accent hover:bg-toff-accent-3 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 tracking-widest text-sm transition-colors rounded-lg"
+              >
+                SATIN AL
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* MODAL */}
+      {/* ── Sözleşme Modal ────────────────────────────────────────── */}
       {isModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Mesafeli Satış Sözleşmesi</h2>
-              <button className="close-modal-btn" onClick={() => setIsModalOpen(false)}>×</button>
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="bg-toff-bg-2 border border-toff-border rounded-xl w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-toff-border">
+              <h2 className="text-sm font-bold text-toff-text tracking-wider">Mesafeli Satış Sözleşmesi</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-toff-muted hover:text-toff-text text-xl leading-none transition-colors">×</button>
             </div>
-            <div className="modal-body">
-              <p><strong>MADDE 1 – TARAFLAR</strong></p>
+            <div className="flex-1 overflow-y-auto px-6 py-5 text-sm text-toff-muted space-y-4 leading-relaxed">
+              <p><strong className="text-toff-text">MADDE 1 – TARAFLAR</strong></p>
               <p>İşbu Sözleşme aşağıdaki taraflar arasında aşağıda belirtilen hüküm ve şartlar çerçevesinde imzalanmıştır.</p>
-              <p><strong>ALICI:</strong> (Bundan sonra ALICI olarak anılacaktır)</p>
-              <p><strong>SATICI:</strong> (Bundan sonra SATICI olarak anılacaktır)</p>
-              <p>Adres: Örnek Mahallesi, Örnek Sokak No:1, İstanbul</p>
-              <br />
-              <p><strong>MADDE 2 – KONU</strong></p>
-              <p>İşbu sözleşmenin konusu, ALICI'nın SATICI'ya ait internet sitesinden elektronik ortamda siparişini yaptığı aşağıda nitelikleri ve satış fiyatı belirtilen ürünün satışı ve teslimi ile ilgili olarak 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmelere Dair Yönetmelik hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.</p>
-              <br />
-              <p><strong>MADDE 3 – SÖZLEŞME KONUSU ÜRÜN</strong></p>
-              <p>Ürünlerin Cinsi ve türü, Miktarı, Marka/Modeli, Rengi, Satış Bedeli yukarıda belirtildiği gibidir.</p>
-              <br />
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p><strong className="text-toff-text">MADDE 2 – KONU</strong></p>
+              <p>İşbu sözleşmenin konusu, ALICI'nın SATICI'ya ait internet sitesinden elektronik ortamda siparişini yaptığı ürünlerin satışı ve teslimi ile ilgili 6502 sayılı Kanun hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.</p>
+              <p><strong className="text-toff-text">MADDE 3 – ÜRÜN BİLGİLERİ</strong></p>
+              <p>Ürünlerin cinsi, miktarı ve satış bedeli sipariş sayfasında belirtildiği gibidir.</p>
             </div>
-            <div className="modal-footer">
-              <button className="modal-ok-btn" onClick={() => setIsModalOpen(false)}>Tamam</button>
+            <div className="px-6 py-4 border-t border-toff-border flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-toff-accent hover:bg-toff-accent-3 text-white text-sm font-semibold px-6 py-2 rounded-lg transition-colors"
+              >
+                Tamam
+              </button>
             </div>
           </div>
         </div>
