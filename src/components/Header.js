@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import './Header.css';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import productService from '../services/productService';
-import { FaUser, FaHeart, FaShoppingBag, FaSignOutAlt, FaSearch, FaTimes } from 'react-icons/fa';
+import { FaUser, FaHeart, FaShoppingBag, FaSignOutAlt, FaSearch, FaTimes, FaBars } from 'react-icons/fa';
 
 function Header() {
   const { authTokens, handleLogout: onLogout } = useAuth();
   const { cartCount } = useCart();
   const navigate = useNavigate();
 
-  // --- Mega Menü için State ---
   const [activeMenu, setActiveMenu] = useState(null);
-  // --- Arama Overlay için State ---
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState([]);
   const [collections, setCollections] = useState([]);
-
 
   useEffect(() => {
     productService.getCollections()
@@ -36,7 +33,6 @@ function Header() {
       .catch(err => console.error('Kategori hatası:', err));
   }, []);
 
-  // --- Arama Fonksiyonu ---
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
@@ -46,133 +42,139 @@ function Header() {
     }
   };
 
-  // --- Mega Menü Fonksiyonları ---
-  const handleMouseEnter = (menuTitle) => {
-    setActiveMenu(menuTitle);
-  };
-  const handleMouseLeave = () => {
-    setActiveMenu(null);
-  };
-
-  // Menüyü Dinamik Oluştur
   const getDynamicMenu = () => {
-    // 1. Sabit Başlangıç (Tüm Ürünler)
     const menu = [
+      { title: 'TÜM ÜRÜNLER', path: '/tum-urunler', subCategories: [] },
       {
-        title: 'TÜM ÜRÜNLER',
-        path: '/tum-urunler',
-        subCategories: [],
-      },
-      {
-        title: 'KOLEKSİYONLAR',
-        path: '/koleksiyonlar',
-        subCategories: collections.map(col => ({
-          title: col.name,
-          path: `/koleksiyon/${col.slug}`
-        }))
+        title: 'KOLEKSİYONLAR', path: '/koleksiyonlar',
+        subCategories: collections.map(col => ({ title: col.name, path: `/koleksiyon/${col.slug}` }))
       }
     ];
-
-    // 2. Dinamik Kategoriler
     categories.forEach(cat => {
       menu.push({
-        title: cat.name.toUpperCase(), // Başlıkları büyük harf yap
+        title: cat.name.toUpperCase(),
         path: `/${cat.slug}`,
-        subCategories: cat.subCategories.map(sub => ({
-          title: sub.name,
-          path: `/${cat.slug}/${sub.slug}`
-        }))
+        subCategories: cat.subCategories.map(sub => ({ title: sub.name, path: `/${cat.slug}/${sub.slug}` }))
       });
     });
-
     return menu;
   };
 
-  const menuWithCollections = getDynamicMenu();
+  const menuItems = getDynamicMenu();
+
+  const iconClass = 'flex items-center justify-center w-9 h-9 text-toff-muted hover:text-toff-accent transition-colors relative';
 
   return (
     <>
-      <header className="site-header">
+      <header className="bg-toff-bg border-b border-toff-border-2 sticky top-0 z-40">
 
-        {/* ÜST SATIR: Logo Solda, Linkler Yanında, İkonlar Sağda */}
-        <div className="header-top">
+        {/* ── Top Bar ──────────────────────────────────────────────── */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
 
-          <div className="header-left-group">
+          {/* Left: Mobile hamburger + Logo + Desktop Nav */}
+          <div className="flex items-center gap-4">
+            {/* Mobile hamburger */}
+            <button
+              className="lg:hidden flex items-center justify-center w-9 h-9 text-toff-muted hover:text-toff-text transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              <FaBars />
+            </button>
+
             {/* Logo */}
-            <div className="logo-area">
-              <Link to="/">TOFF</Link>
-            </div>
+            <Link to="/" className="text-xl font-black tracking-[0.3em] text-toff-accent hover:text-toff-accent-2 transition-colors">
+              TOFF
+            </Link>
 
-            {/* Yeni Linkler */}
-            <nav className="header-top-nav">
-              <NavLink to="/koleksiyonlar" className={({ isActive }) => isActive ? "active" : ""}>Koleksiyonlar</NavLink>
-              <NavLink to="/tum-urunler" className={({ isActive }) => isActive ? "active" : ""}>Mağaza</NavLink>
-              <NavLink to="/hakkimizda" className={({ isActive }) => isActive ? "active" : ""}>Hakkımızda</NavLink>
+            {/* Desktop top nav links */}
+            <nav className="hidden lg:flex items-center gap-6 ml-4">
+              {[
+                { to: '/koleksiyonlar', label: 'Koleksiyonlar' },
+                { to: '/tum-urunler', label: 'Mağaza' },
+                { to: '/hakkimizda', label: 'Hakkımızda' },
+              ].map(link => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `text-sm font-medium transition-colors ${isActive ? 'text-toff-accent' : 'text-toff-muted hover:text-toff-text'}`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ))}
             </nav>
           </div>
 
-          {/* Sağda İkonlar */}
-          <div className="header-icons">
-            {/* Arama İkonu */}
-            <button onClick={() => setSearchOpen(true)} className="icon-link icon-only">
-              <FaSearch />
+          {/* Right: Icons */}
+          <div className="flex items-center gap-1">
+            <button onClick={() => setSearchOpen(true)} className={iconClass} aria-label="Ara">
+              <FaSearch size={15} />
             </button>
-
-            {/* Favoriler */}
-            <Link to="/favoriler" className="icon-link icon-only">
-              <FaHeart />
+            <Link to="/favoriler" className={iconClass} aria-label="Favoriler">
+              <FaHeart size={15} />
             </Link>
-
-            {/* Kullanıcı */}
             {authTokens ? (
               <>
-                <Link to="/hesabim" className="icon-link icon-only">
-                  <FaUser />
+                <Link to="/hesabim" className={iconClass} aria-label="Hesabım">
+                  <FaUser size={15} />
                 </Link>
-                <button onClick={onLogout} className="icon-link icon-only logout-btn">
-                  <FaSignOutAlt />
+                <button onClick={onLogout} className={`${iconClass} hover:text-red-400`} aria-label="Çıkış">
+                  <FaSignOutAlt size={15} />
                 </button>
               </>
             ) : (
-              <Link to="/login" className="icon-link icon-only">
-                <FaUser />
+              <Link to="/login" className={iconClass} aria-label="Giriş yap">
+                <FaUser size={15} />
               </Link>
             )}
-
-            {/* Sepet */}
-            <Link to="/sepet" className="icon-link icon-only cart-link">
-              <FaShoppingBag />
+            <Link to="/sepet" className={`${iconClass} ml-1`} aria-label="Sepet">
+              <FaShoppingBag size={16} />
               {cartCount > 0 && (
-                <span className="cart-badge">{cartCount}</span>
+                <span className="absolute -top-1 -right-1 bg-toff-accent text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
               )}
             </Link>
-
           </div>
         </div>
 
-        {/* ALT SATIR: Navigasyon Linkleri (Mega Menü) */}
-        <div className="header-bottom" onMouseLeave={handleMouseLeave}>
-          <nav className="main-nav">
-            <ul>
-              {menuWithCollections.map((item) => (
-                <li
-                  key={item.title}
-                  onMouseEnter={() => handleMouseEnter(item.title)}
-                >
-                  <Link to={item.path}>{item.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+        {/* ── Bottom Bar: Mega Menü (Desktop) ───────────────────────── */}
+        <div
+          className="hidden lg:block border-t border-toff-border-2 relative"
+          onMouseLeave={() => setActiveMenu(null)}
+        >
+          <div className="max-w-7xl mx-auto px-6">
+            <nav>
+              <ul className="flex items-center gap-8">
+                {menuItems.map(item => (
+                  <li key={item.title} onMouseEnter={() => setActiveMenu(item.title)}>
+                    <Link
+                      to={item.path}
+                      className={`block py-3 text-[11px] font-bold tracking-widest transition-colors ${activeMenu === item.title ? 'text-toff-accent' : 'text-toff-muted hover:text-toff-text'}`}
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
 
-          {/* MEGA MENÜ PANELİ */}
-          {activeMenu && menuWithCollections.find(item => item.title === activeMenu)?.subCategories.length > 0 && (
-            <div className="mega-menu-panel">
-              <div className="mega-menu-content">
-                <ul>
-                  {menuWithCollections.find(item => item.title === activeMenu).subCategories.map((subItem) => (
-                    <li key={subItem.title}>
-                      <Link to={subItem.path}>{subItem.title}</Link>
+          {/* Mega Menü Dropdown */}
+          {activeMenu && menuItems.find(i => i.title === activeMenu)?.subCategories.length > 0 && (
+            <div className="absolute top-full left-0 w-full bg-toff-bg-2 border-b border-toff-border shadow-2xl">
+              <div className="max-w-7xl mx-auto px-6 py-6">
+                <ul className="flex flex-wrap gap-x-8 gap-y-3">
+                  {menuItems.find(i => i.title === activeMenu).subCategories.map(sub => (
+                    <li key={sub.title}>
+                      <Link
+                        to={sub.path}
+                        onClick={() => setActiveMenu(null)}
+                        className="text-sm text-toff-muted hover:text-toff-accent transition-colors"
+                      >
+                        {sub.title}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -180,37 +182,87 @@ function Header() {
             </div>
           )}
         </div>
+
+        {/* ── Mobile Drawer ─────────────────────────────────────────── */}
+        {mobileOpen && (
+          <>
+            <div className="fixed inset-0 bg-black/60 z-30 lg:hidden" onClick={() => setMobileOpen(false)} />
+            <div className="fixed top-0 left-0 h-full w-72 bg-toff-bg-2 z-40 lg:hidden flex flex-col shadow-2xl animate-slide-right">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-toff-border">
+                <span className="text-lg font-black tracking-[0.3em] text-toff-accent">TOFF</span>
+                <button onClick={() => setMobileOpen(false)} className="text-toff-muted hover:text-toff-text">
+                  <FaTimes />
+                </button>
+              </div>
+              <nav className="flex-1 overflow-y-auto py-4 px-3">
+                {menuItems.map(item => (
+                  <div key={item.title} className="mb-1">
+                    <Link
+                      to={item.path}
+                      onClick={() => setMobileOpen(false)}
+                      className="block px-3 py-2.5 text-sm font-bold tracking-wider text-toff-muted hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors"
+                    >
+                      {item.title}
+                    </Link>
+                    {item.subCategories.length > 0 && (
+                      <div className="pl-5 mt-0.5 flex flex-col gap-0.5">
+                        {item.subCategories.map(sub => (
+                          <Link
+                            key={sub.title}
+                            to={sub.path}
+                            onClick={() => setMobileOpen(false)}
+                            className="block px-3 py-2 text-[13px] text-toff-faint hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors"
+                          >
+                            {sub.title}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </nav>
+            </div>
+          </>
+        )}
       </header>
 
-      {/* ARAMA OVERLAY */}
+      {/* ── Arama Overlay ─────────────────────────────────────────── */}
       {searchOpen && (
-        <div className="search-overlay">
-          <div className="search-overlay-content">
-            <button onClick={() => setSearchOpen(false)} className="search-close">
-              <FaTimes />
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-start pt-24 px-4">
+          <button
+            onClick={() => setSearchOpen(false)}
+            className="absolute top-6 right-6 text-toff-muted hover:text-toff-text transition-colors"
+          >
+            <FaTimes size={22} />
+          </button>
+
+          <form onSubmit={handleSearch} className="w-full max-w-2xl flex items-center gap-3">
+            <input
+              type="text"
+              placeholder="Ürün ara..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              autoFocus
+              className="flex-1 bg-transparent border-b-2 border-toff-border focus:border-toff-accent text-toff-text text-2xl font-light py-3 outline-none transition-colors placeholder:text-toff-faint"
+            />
+            <button type="submit" className="text-toff-accent hover:text-toff-accent-2 transition-colors p-2">
+              <FaSearch size={22} />
             </button>
+          </form>
 
-            <form onSubmit={handleSearch} className="search-overlay-form">
-              <input
-                type="text"
-                placeholder="Arama..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                autoFocus
-                className="search-overlay-input"
-              />
-              <button type="submit" className="search-overlay-submit">
-                <FaSearch />
-              </button>
-            </form>
-
-            <div className="popular-searches">
-              <h3>Popüler Aramalar</h3>
-              <div className="popular-tags">
-                <Link to="/tum-urunler?search=masa" onClick={() => setSearchOpen(false)}>Masa</Link>
-                <Link to="/tum-urunler?search=sandalye" onClick={() => setSearchOpen(false)}>Sandalye</Link>
-                <Link to="/tum-urunler?search=sehpa" onClick={() => setSearchOpen(false)}>Sehpa</Link>
-              </div>
+          <div className="mt-8 text-center">
+            <p className="text-xs font-bold text-toff-faint uppercase tracking-widest mb-3">Popüler Aramalar</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {['Masa', 'Sandalye', 'Sehpa'].map(tag => (
+                <Link
+                  key={tag}
+                  to={`/tum-urunler?search=${tag.toLowerCase()}`}
+                  onClick={() => setSearchOpen(false)}
+                  className="border border-toff-border text-toff-muted hover:border-toff-accent hover:text-toff-accent text-sm px-4 py-1.5 rounded-full transition-colors"
+                >
+                  {tag}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

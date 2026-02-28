@@ -1,40 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import './OffCanvasSidebar.css';
 import API_BASE_URL from '../config/api';
+import { FaTimes } from 'react-icons/fa';
 
 function OffCanvasSidebar() {
     const [isOpen, setIsOpen] = useState(false);
     const [collections, setCollections] = useState([]);
     const location = useLocation();
 
-    // Close sidebar when route changes
-    useEffect(() => {
-        setIsOpen(false);
-    }, [location]);
+    useEffect(() => { setIsOpen(false); }, [location]);
 
-    // Prevent body scroll when sidebar is open
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
+        document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+        return () => { document.body.style.overflow = 'unset'; };
     }, [isOpen]);
 
-    // Fetch collections
     useEffect(() => {
         axios.get(`${API_BASE_URL}/api/collections/`)
-            .then(response => {
-                setCollections(response.data);
-            })
-            .catch(error => {
-                console.error('Koleksiyonlar yüklenemedi:', error);
-            });
+            .then(r => setCollections(r.data))
+            .catch(e => console.error('Koleksiyonlar yüklenemedi:', e));
     }, []);
 
     const mainCategories = [
@@ -50,7 +35,7 @@ function OffCanvasSidebar() {
     const footerLinks = [
         { name: 'Kurumsal Satış', path: '/kurumsal-satis' },
         { name: 'Hakkımızda', path: '/hakkimizda' },
-        { name: 'İletişim', path: '/iletisim' },
+        { name: 'İletişim', path: '/bize-sorun' },
         { name: 'SSS', path: '/sss' },
     ];
 
@@ -58,83 +43,92 @@ function OffCanvasSidebar() {
         <>
             {/* Hamburger Button */}
             <button
-                className={`hamburger-btn ${isOpen ? 'open' : ''}`}
-                onClick={() => setIsOpen(!isOpen)}
-                aria-label="Menu"
+                aria-label="Menüyü Aç"
+                onClick={() => setIsOpen(true)}
+                className="flex flex-col gap-1.5 p-2 group"
             >
-                <span></span>
-                <span></span>
-                <span></span>
+                <span className="w-6 h-0.5 bg-current block transition-all group-hover:bg-toff-accent" />
+                <span className="w-4 h-0.5 bg-current block transition-all group-hover:bg-toff-accent" />
+                <span className="w-6 h-0.5 bg-current block transition-all group-hover:bg-toff-accent" />
             </button>
 
-            {/* Backdrop Overlay */}
+            {/* Backdrop */}
             {isOpen && (
                 <div
-                    className="sidebar-backdrop"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
                     onClick={() => setIsOpen(false)}
                 />
             )}
 
-            {/* Sidebar Menu */}
-            <div className={`sidebar-menu ${isOpen ? 'open' : ''}`}>
-                <div className="sidebar-header">
-                    <Link to="/" className="sidebar-logo">
-                        TOFF
-                    </Link>
+            {/* Sidebar */}
+            <div className={`fixed top-0 left-0 h-full w-72 bg-toff-bg-2 border-r border-toff-border z-50 flex flex-col shadow-2xl transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+
+                {/* Header */}
+                <div className="flex items-center justify-between px-5 py-5 border-b border-toff-border">
+                    <Link to="/" className="text-lg font-black tracking-[0.3em] text-toff-accent">TOFF</Link>
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="text-toff-muted hover:text-toff-text transition-colors p-1"
+                        aria-label="Menüyü Kapat"
+                    >
+                        <FaTimes />
+                    </button>
                 </div>
 
-                <nav className="sidebar-nav">
-                    {/* Kategoriler */}
-                    <div className="nav-section">
-                        <h3 className="nav-section-title">Kategoriler</h3>
-                        {mainCategories.map((category) => (
-                            <Link
-                                key={category.slug}
-                                to={`/${category.slug}`}
-                                className="nav-link"
-                            >
-                                {category.name}
-                            </Link>
-                        ))}
-                    </div>
+                {/* Nav */}
+                <nav className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-6">
 
-                    {/* Dinamik Koleksiyonlar */}
-                    {collections.length > 0 && (
-                        <div className="nav-section">
-                            <Link to="/koleksiyonlar" className="nav-section-title-link">
-                                <h3 className="nav-section-title">Koleksiyonlar</h3>
-                            </Link>
-                            {collections.map((collection) => (
+                    <div>
+                        <p className="text-[10px] font-bold text-toff-faint uppercase tracking-widest mb-3 px-2">Kategoriler</p>
+                        <div className="flex flex-col gap-0.5">
+                            {mainCategories.map(cat => (
                                 <Link
-                                    key={collection.id}
-                                    to={`/koleksiyon/${collection.slug}`}
-                                    className="nav-link"
+                                    key={cat.slug}
+                                    to={`/${cat.slug}`}
+                                    className="px-3 py-2.5 text-sm font-medium text-toff-muted hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors"
                                 >
-                                    {collection.name}
+                                    {cat.name}
                                 </Link>
                             ))}
                         </div>
+                    </div>
+
+                    {collections.length > 0 && (
+                        <div>
+                            <p className="text-[10px] font-bold text-toff-faint uppercase tracking-widest mb-3 px-2">Koleksiyonlar</p>
+                            <div className="flex flex-col gap-0.5">
+                                {collections.map(col => (
+                                    <Link
+                                        key={col.id}
+                                        to={`/koleksiyon/${col.slug}`}
+                                        className="px-3 py-2.5 text-sm text-toff-muted hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors"
+                                    >
+                                        {col.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
                     )}
 
-                    {/* Kurumsal */}
-                    <div className="nav-section">
-                        <h3 className="nav-section-title">Kurumsal</h3>
-                        {footerLinks.map((link) => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                className="nav-link"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
+                    <div>
+                        <p className="text-[10px] font-bold text-toff-faint uppercase tracking-widest mb-3 px-2">Kurumsal</p>
+                        <div className="flex flex-col gap-0.5">
+                            {footerLinks.map(link => (
+                                <Link
+                                    key={link.path}
+                                    to={link.path}
+                                    className="px-3 py-2.5 text-sm text-toff-muted hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors"
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </nav>
 
-                <div className="sidebar-footer">
-                    <p className="sidebar-tagline">
-                        Endüstriyel Ruh, Doğal Dokunuş
-                    </p>
+                {/* Footer tagline */}
+                <div className="px-5 py-4 border-t border-toff-border">
+                    <p className="text-[11px] text-toff-faint italic">Endüstriyel Ruh, Doğal Dokunuş</p>
                 </div>
             </div>
         </>
@@ -142,4 +136,3 @@ function OffCanvasSidebar() {
 }
 
 export default OffCanvasSidebar;
-
