@@ -51,6 +51,7 @@ import ToffPromisePage from './pages/ToffPromisePage';
 import CorporateSalesPage from './pages/CorporateSalesPage';
 import MembershipAgreementPage from './pages/MembershipAgreementPage';
 import InfoSocietyPage from './pages/InfoSocietyPage';
+import StorefrontPage from './pages/StorefrontPage';
 
 // === Pages: Admin ===
 import AdminOrdersPage from './pages/admin/AdminOrdersPage';
@@ -83,6 +84,7 @@ function AppRoutes() {
         <Route path="/urun/:slug" element={<ProductDetailPage />} />
         <Route path="/koleksiyon/:slug" element={<CollectionPage />} />
         <Route path="/koleksiyonlar" element={<CollectionsPage />} />
+        <Route path="/magaza" element={<StorefrontPage />} />
         <Route path="/tum-urunler" element={<CategoryPage />} />
 
         {/* ── Sepet (public) ────────────────────────── */}

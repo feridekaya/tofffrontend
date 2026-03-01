@@ -26,7 +26,7 @@ function Header() {
     '/sss', '/kargo-iade', '/toff-sozu', '/toff-promise',
     '/kurumsal-satis', '/uyelik-sozlesmesi', '/bilgi-toplumu-hizmetleri',
     '/login', '/register', '/forgot-password', '/reset-password',
-    '/sepet', '/odeme', '/favoriler', '/hesabim',
+    '/sepet', '/odeme', '/favoriler', '/hesabim', '/magaza',
   ];
   const showCatBar = !HIDDEN_PATHS.some(p => location.pathname === p)
     && !location.pathname.startsWith('/hesabim/')
@@ -143,7 +143,7 @@ function Header() {
             <nav className="hidden lg:flex items-center gap-6 ml-4">
               {[
                 { to: '/koleksiyonlar', label: 'Koleksiyonlar' },
-                { to: '/tum-urunler', label: 'Mağaza' },
+                { to: '/magaza', label: 'Mağaza' },
                 { to: '/hakkimizda', label: 'Hakkımızda' },
               ].map(link => (
                 <NavLink
