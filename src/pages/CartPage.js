@@ -34,7 +34,8 @@ function CartPage() {
     }
   };
 
-  const subtotal = cart.reduce((t, item) => t + parseFloat(item.product.price) * item.quantity, 0);
+  const safeCart = cart || [];
+  const subtotal = safeCart.reduce((t, item) => t + parseFloat(item.product?.price || 0) * item.quantity, 0);
   const kdvAmount = subtotal - subtotal / 1.2;
   const shippingCost = subtotal >= 1000 ? 0 : 100;
   const totalPayable = subtotal + shippingCost - discount;
@@ -67,7 +68,7 @@ function CartPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 animate-fade-up">
       <h1 className="text-2xl font-bold text-toff-text tracking-wider mb-8">SEPETİM</h1>
 
-      {cart.length === 0 ? (
+      {safeCart.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-6">
           <FiShoppingBag size={56} className="text-toff-faint" />
           <p className="text-toff-muted text-lg">Sepetinizde henüz ürün bulunmuyor.</p>
@@ -83,7 +84,7 @@ function CartPage() {
 
           {/* ── Sepet Listesi ─────────────────────────────────────────── */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            {cart.map(item => (
+            {safeCart.map(item => (
               <div
                 key={item.cartId || item.product.id}
                 className="flex gap-4 bg-toff-bg-2 border border-toff-border rounded-xl p-4 hover:border-toff-border-2 transition-colors"
