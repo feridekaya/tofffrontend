@@ -88,14 +88,26 @@ function CategoryPage() {
     window.scrollTo(0, 0);
   };
 
+  const CATEGORY_BANNERS = {
+    'masalar': '/assets/banners/masalar.png',
+    'oturma-elemanlari': '/assets/banners/oturma-elemanlari.png',
+    'sehpalar': '/assets/banners/sehpalar.png',
+    'sergileme-duzenleme': '/assets/banners/sergileme-duzenleme.png',
+    'dis-mekan': '/assets/banners/dis-mekan.png',
+    'mekan-cozumleri': '/assets/banners/mekan-cozumleri.png',
+    'little-paws': '/assets/banners/little-paws.png',
+    'tum-urunler': '/assets/banners/tum-urunler.png',
+  };
+
+  // ... component içi
   return (
     <div className="min-h-screen bg-toff-bg">
 
       {/* ── Banner ──────────────────────────────────────────────────── */}
       <div className="relative h-48 sm:h-64 lg:h-72 overflow-hidden">
-        {categoryImage ? (
+        {CATEGORY_BANNERS[slug || 'tum-urunler'] ? (
           <img
-            src={categoryImage}
+            src={CATEGORY_BANNERS[slug || 'tum-urunler']}
             alt={categoryName}
             className="w-full h-full object-cover scale-110"
           />
