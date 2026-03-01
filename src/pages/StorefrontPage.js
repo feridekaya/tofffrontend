@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import { FaArrowRight, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
-import heroImg from '../assets/storefront-hero.png';
+import heroImg from '../assets/storefront-hero.webp';
 
 // Kategori için fallback renk/gradient (görsel yoksa)
 const CAT_GRADIENTS = [
@@ -23,13 +23,13 @@ const CAT_GRADIENTS = [
 
 // Slug → local görsel eşleşmesi
 const CATEGORY_IMAGES = {
-    'masalar': '/assets/categories/masalar.png',
-    'oturma-elemanlari': '/assets/categories/oturma-elemanlari.png',
-    'sehpalar': '/assets/categories/sehpalar.png',
-    'sergileme-duzenleme': '/assets/categories/sergileme-duzenleme.png',
-    'dis-mekan': '/assets/categories/dis-mekan.jpg',
-    'mekan-cozumleri': '/assets/categories/mekan-cozumleri.png',
-    'little-paws': '/assets/categories/little-paws.png',
+    'masalar': '/assets/categories/masalar.webp',
+    'oturma-elemanlari': '/assets/categories/oturma-elemanlari.webp',
+    'sehpalar': '/assets/categories/sehpalar.webp',
+    'sergileme-duzenleme': '/assets/categories/sergileme-duzenleme.webp',
+    'dis-mekan': '/assets/categories/dis-mekan.webp',
+    'mekan-cozumleri': '/assets/categories/mekan-cozumleri.webp',
+    'little-paws': '/assets/categories/little-paws.webp',
 };
 
 // Ana kategori sırası (slug'larla eşleşir)

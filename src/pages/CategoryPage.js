@@ -89,14 +89,14 @@ function CategoryPage() {
   };
 
   const CATEGORY_BANNERS = {
-    'masalar': '/assets/banners/masalar.png',
-    'oturma-elemanlari': '/assets/banners/oturma-elemanlari.png',
-    'sehpalar': '/assets/banners/sehpalar.png',
-    'sergileme-duzenleme': '/assets/banners/sergileme-duzenleme.png',
-    'dis-mekan': '/assets/banners/dis-mekan.png',
-    'mekan-cozumleri': '/assets/banners/mekan-cozumleri.png',
-    'little-paws': '/assets/banners/little-paws.png',
-    'tum-urunler': '/assets/banners/tum-urunler.png',
+    'masalar': '/assets/banners/masalar.webp',
+    'oturma-elemanlari': '/assets/banners/oturma-elemanlari.webp',
+    'sehpalar': '/assets/banners/sehpalar.webp',
+    'sergileme-duzenleme': '/assets/banners/sergileme-duzenleme.webp',
+    'dis-mekan': '/assets/banners/dis-mekan.webp',
+    'mekan-cozumleri': '/assets/banners/mekan-cozumleri.webp',
+    'little-paws': '/assets/banners/little-paws.webp',
+    'tum-urunler': '/assets/banners/tum-urunler.webp',
   };
 
   // ... component içi
