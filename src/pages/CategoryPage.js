@@ -20,6 +20,7 @@ function CategoryPage() {
 
   const [products, setProducts] = useState([]);
   const [categoryName, setCategoryName] = useState('');
+  const [categoryImage, setCategoryImage] = useState(null);
   const [headerSlug, setHeaderSlug] = useState(slug);
   const [sortOption, setSortOption] = useState('-id');
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -57,6 +58,7 @@ function CategoryPage() {
       .then(res => {
         setCategoryName(res.data.name.toUpperCase());
         setHeaderSlug(res.data.header_slug);
+        setCategoryImage(res.data.image_url || null);
       })
       .catch(() => {
         setCategoryName(slug.replace(/-/g, ' ').toUpperCase());
@@ -81,11 +83,15 @@ function CategoryPage() {
 
       {/* ── Banner ──────────────────────────────────────────────────── */}
       <div className="relative h-48 sm:h-64 lg:h-72 overflow-hidden">
-        <img
-          src={`/assets/${headerSlug}-header.png`}
-          alt={categoryName}
-          className="w-full h-full object-cover scale-110"
-        />
+        {categoryImage ? (
+          <img
+            src={categoryImage}
+            alt={categoryName}
+            className="w-full h-full object-cover scale-110"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-toff-bg-2 via-toff-bg-3 to-toff-bg" />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-toff-bg via-black/40 to-transparent" />
         <div className="absolute inset-0 flex items-end justify-center pb-8">
           <h1 className="text-3xl sm:text-4xl font-black tracking-[0.25em] text-white drop-shadow-lg">
