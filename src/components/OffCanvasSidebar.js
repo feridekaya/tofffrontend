@@ -9,9 +9,9 @@ const CATEGORY_ORDER = [
     'oturma-elemanlari',
     'sehpalar',
     'sergileme-duzenleme',
+    'dis-mekan',
     'mekan-cozumleri',
     'little-paws',
-    'dis-mekan',
 ];
 
 function OffCanvasSidebar() {
