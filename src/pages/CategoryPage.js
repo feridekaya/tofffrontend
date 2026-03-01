@@ -110,22 +110,16 @@ function CategoryPage() {
     <div className="min-h-screen bg-toff-bg">
 
       {/* ── Banner ──────────────────────────────────────────────────── */}
-      <div className="relative h-48 sm:h-64 lg:h-72 overflow-hidden">
+      <div className="w-full bg-toff-bg-2">
         {CATEGORY_BANNERS[cleanSlug || 'tum-urunler'] ? (
           <img
             src={CATEGORY_BANNERS[cleanSlug || 'tum-urunler']}
             alt={categoryName}
-            className="w-full h-full object-cover scale-110"
+            className="w-full h-auto block"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-toff-bg-2 via-toff-bg-3 to-toff-bg" />
+          <div className="w-full h-48 sm:h-64 lg:h-72 bg-gradient-to-br from-toff-bg-2 via-toff-bg-3 to-toff-bg" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-toff-bg via-black/40 to-transparent" />
-        <div className="absolute inset-0 flex items-end justify-center pb-8">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-[0.25em] text-white drop-shadow-lg">
-            {categoryName}
-          </h1>
-        </div>
       </div>
 
       {/* ── Toolbar ─────────────────────────────────────────────────── */}

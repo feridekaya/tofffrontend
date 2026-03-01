@@ -115,6 +115,15 @@ function Header() {
 
   const menuItems = getDynamicMenu();
 
+  // Aktif URL yolu üzerindeki ana kategorinin adını bul
+  const currentCategoryMenu = menuItems.find(item =>
+    item.path === location.pathname ||
+    item.subCategories.some(sub => sub.path === location.pathname)
+  );
+
+  // Hover edilen bir kategori varsa onu, yoksa şu anda içinde bulunduğumuz kategoriyi göster
+  const displayedMenuTitle = activeMenu || (currentCategoryMenu ? currentCategoryMenu.title : null);
+
   const iconClass = 'flex items-center justify-center w-9 h-9 text-toff-muted hover:text-toff-accent transition-colors relative';
 
   return (
@@ -216,37 +225,37 @@ function Header() {
               </nav>
             </div>
 
-            {/* Mega Menü Dropdown */}
-            {activeMenu && menuItems.find(i => i.title === activeMenu)?.subCategories.length > 0 && (
-              <div className="absolute top-full left-0 w-full bg-black/90 backdrop-blur-xl border-t border-b border-toff-accent/20 shadow-2xl transition-all duration-300 origin-top animate-fade-down z-50">
-                <div className="max-w-7xl mx-auto px-6 py-8">
+            {/* Mega Menü Dropdown (Açık Kalan Versiyon) */}
+            {displayedMenuTitle && menuItems.find(i => i.title === displayedMenuTitle)?.subCategories.length > 0 && (
+              <div className="absolute top-full left-0 w-full bg-black/95 backdrop-blur-xl border-t border-b border-toff-accent/20 shadow-2xl transition-all duration-300 origin-top z-50">
+                <div className="max-w-7xl mx-auto px-6 py-6">
                   <div className="flex gap-12">
                     {/* Sol Görsel / Açıklama Kısmı (İstersen Sabit) */}
                     <div className="hidden lg:flex w-1/4 flex-col justify-center border-r border-white/5 pr-8">
                       <p className="text-xs tracking-[0.3em] text-toff-accent font-bold uppercase mb-2">
                         Koleksiyon
                       </p>
-                      <h3 className="text-xl font-black text-white leading-tight mb-3">
-                        {activeMenu}
+                      <h3 className="text-xl font-black text-white leading-tight mb-2">
+                        {displayedMenuTitle}
                       </h3>
-                      <p className="text-xs text-toff-faint leading-relaxed">
-                        Toff Design'ın özel tasarım {activeMenu.toLowerCase()} ürünlerini keşfedin. Konfor ve estetik bir arada.
-                      </p>
                     </div>
                     {/* Sağ Linkler */}
-                    <ul className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4">
-                      {menuItems.find(i => i.title === activeMenu).subCategories.map(sub => (
-                        <li key={sub.title} className="group flex items-center">
-                          <div className="w-1 h-1 rounded-full bg-toff-accent/30 mr-3 transition-transform duration-300 group-hover:scale-150 group-hover:bg-toff-accent" />
-                          <Link
-                            to={sub.path}
-                            onClick={() => setActiveMenu(null)}
-                            className="text-[13px] tracking-wide text-toff-faint hover:text-white transition-all duration-300 group-hover:translate-x-1.5 font-medium"
-                          >
-                            {sub.title}
-                          </Link>
-                        </li>
-                      ))}
+                    <ul className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-3">
+                      {menuItems.find(i => i.title === displayedMenuTitle).subCategories.map(sub => {
+                        const isActiveSub = location.pathname === sub.path;
+                        return (
+                          <li key={sub.title} className="group flex items-center">
+                            <div className={`w-1 h-1 rounded-full mr-3 transition-transform duration-300 group-hover:scale-150 group-hover:bg-toff-accent ${isActiveSub ? 'bg-toff-accent scale-150' : 'bg-toff-accent/30'}`} />
+                            <Link
+                              to={sub.path}
+                              onClick={() => setActiveMenu(null)}
+                              className={`text-[13px] tracking-wide transition-all duration-300 group-hover:translate-x-1.5 font-medium ${isActiveSub ? 'text-white translate-x-1.5 font-bold' : 'text-toff-faint hover:text-white'}`}
+                            >
+                              {sub.title}
+                            </Link>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 </div>
