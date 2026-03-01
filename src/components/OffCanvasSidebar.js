@@ -5,15 +5,13 @@ import productService from '../services/productService';
 
 // Kullanıcının istediği kategori sırası ve slug eşleşmeleri
 const CATEGORY_ORDER = [
-    'koleksiyonlar',
     'masalar',
     'oturma-elemanlari',
     'sehpalar',
-    'servis-uniteleri',
-    'dis-mekan-bahce',
     'sergileme-duzenleme',
     'mekan-cozumleri',
     'little-paws',
+    'dis-mekan',
 ];
 
 function OffCanvasSidebar() {

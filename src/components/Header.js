@@ -42,17 +42,15 @@ function Header() {
     }
   };
 
-  // Kullanıcının belirlediği menü sırası
+  // Kullanıcının belirlediği menü sırası (backend gerçek slug'ları)
   const MENU_ORDER = [
-    'koleksiyonlar',
     'masalar',
     'oturma-elemanlari',
     'sehpalar',
-    'servis-uniteleri',
-    'dis-mekan-bahce',
     'sergileme-duzenleme',
     'mekan-cozumleri',
     'little-paws',
+    'dis-mekan',
   ];
 
   const getDynamicMenu = () => {
