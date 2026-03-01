@@ -101,6 +101,7 @@ function AppRoutes() {
         {/* ── Kurumsal / Footer ─────────────────────── */}
         <Route path="/hakkimizda" element={<AboutPage />} />
         <Route path="/iletisim" element={<ContactPage />} />
+        <Route path="/bize-sorun" element={<ContactPage />} />
         <Route path="/sss" element={<FAQPage />} />
         <Route path="/kargo-iade" element={<ShippingReturnPage />} />
         <Route path="/toff-sozu" element={<ToffPromisePage />} />

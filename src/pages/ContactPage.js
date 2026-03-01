@@ -1,11 +1,41 @@
 // frontend/src/pages/ContactPage.js
 import React, { useState } from 'react';
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaWhatsapp, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from 'react-icons/fa';
 import contactService from '../services/contactService';
+
+const CONTACT_INFO = [
+    {
+        icon: <FaMapMarkerAlt size={18} />,
+        title: 'Adres',
+        lines: ['Toff Design Studio', 'Maslak Mah. Büyükdere Cad. No:123', 'Sarıyer / İstanbul'],
+        href: null,
+    },
+    {
+        icon: <FaPhoneAlt size={16} />,
+        title: 'Telefon',
+        lines: ['+90 542 450 93 42'],
+        sub: 'Hafta içi: 09:00 – 18:00',
+        href: 'tel:+905424509342',
+    },
+    {
+        icon: <FaWhatsapp size={20} />,
+        title: 'WhatsApp Hattı',
+        lines: ['+90 542 450 93 42'],
+        sub: '7/24 mesaj bırakabilirsiniz',
+        href: 'https://wa.me/905424509342',
+        green: true,
+    },
+    {
+        icon: <FaEnvelope size={16} />,
+        title: 'E-Posta',
+        lines: ['thetoffdesign@gmail.com'],
+        href: 'mailto:thetoffdesign@gmail.com',
+    },
+];
 
 function ContactPage() {
     const [form, setForm] = useState({ name: '', email: '', subject: 'Genel Bilgi', message: '' });
-    const [status, setStatus] = useState(null); // 'success' | 'error' | null
+    const [status, setStatus] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,294 +48,144 @@ function ContactPage() {
             await contactService.sendContact(form);
             setStatus('success');
             setForm({ name: '', email: '', subject: 'Genel Bilgi', message: '' });
-        } catch (err) {
+        } catch {
             setStatus('error');
         } finally {
             setLoading(false);
         }
     };
+
+    const inputClass = 'w-full bg-toff-bg border border-toff-border text-toff-text text-sm rounded-lg px-4 py-3 focus:outline-none focus:border-toff-accent transition-colors placeholder:text-toff-faint';
+    const labelClass = 'block text-xs font-bold text-toff-faint uppercase tracking-wider mb-1.5';
+
     return (
-        <div className="contact-page-container" style={styles.container}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 animate-fade-up">
 
             {/* Başlık */}
-            <div style={styles.headerSection}>
-                <h1 style={styles.mainTitle}>Bize Ulaşın</h1>
-                <h2 style={styles.subTitle}>Size Nasıl Yardımcı Olabiliriz?</h2>
-                <div style={styles.divider}></div>
+            <div className="mb-12 text-center">
+                <p className="text-xs font-bold text-toff-accent tracking-[0.3em] uppercase mb-3">İletişim</p>
+                <h1 className="text-3xl sm:text-4xl font-black text-toff-text mb-4">Size Nasıl Yardımcı Olabiliriz?</h1>
+                <div className="w-12 h-0.5 bg-toff-accent mx-auto" />
             </div>
 
-            <div style={styles.contentGrid}>
+            {/* İki Sütun */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
-                {/* Sol Taraf: İletişim Bilgileri */}
-                <div style={styles.infoColumn}>
-                    <h3 style={styles.columnTitle}>İletişim Bilgileri</h3>
-                    <p style={styles.columnText}>
+                {/* ── Sol: İletişim Bilgileri ───────────────────────────────── */}
+                <div className="flex flex-col gap-4">
+                    <p className="text-sm text-toff-muted leading-relaxed mb-2">
                         Sorularınız, önerileriniz veya iş birlikleri için bize aşağıdaki kanallardan ulaşabilirsiniz.
                         Ekibimiz en kısa sürede size dönüş yapacaktır.
                     </p>
 
-                    <div style={styles.contactItem}>
-                        <div style={styles.iconBox}><FaPhoneAlt /></div>
-                        <div>
-                            <h4 style={styles.itemTitle}>Telefon</h4>
-                            <p style={styles.itemText}>+90 (212) 000 00 00</p>
-                            <p style={styles.itemSubText}>Hafta içi: 09:00 - 18:00</p>
-                        </div>
-                    </div>
+                    {CONTACT_INFO.map((item, i) => {
+                        const Wrapper = item.href ? 'a' : 'div';
+                        const wrapperProps = item.href
+                            ? { href: item.href, target: '_blank', rel: 'noopener noreferrer' }
+                            : {};
+                        return (
+                            <Wrapper
+                                key={i}
+                                {...wrapperProps}
+                                className={`flex items-start gap-4 bg-toff-bg-2 border rounded-xl p-5 transition-all group
+                  ${item.href ? 'hover:border-toff-accent cursor-pointer' : ''}
+                  ${item.green ? 'border-green-800/40 hover:border-green-500' : 'border-toff-border'}`}
+                            >
+                                {/* İkon */}
+                                <div className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors
+                  ${item.green
+                                        ? 'bg-green-900/30 text-green-400 group-hover:bg-green-800/40'
+                                        : 'bg-toff-accent/10 text-toff-accent'}`}
+                                >
+                                    {item.icon}
+                                </div>
 
-                    <div style={styles.contactItem}>
-                        <div style={styles.iconBox}><FaWhatsapp /></div>
-                        <div>
-                            <h4 style={styles.itemTitle}>WhatsApp Hattı</h4>
-                            <p style={styles.itemText}>+90 (555) 000 00 00</p>
-                            <p style={styles.itemSubText}>7/24 Mesaj bırakabilirsiniz</p>
-                        </div>
-                    </div>
-
-                    <div style={styles.contactItem}>
-                        <div style={styles.iconBox}><FaEnvelope /></div>
-                        <div>
-                            <h4 style={styles.itemTitle}>E-Posta</h4>
-                            <p style={styles.itemText}>info@thetoff.com</p>
-                            <p style={styles.itemText}>satis@thetoff.com</p>
-                        </div>
-                    </div>
-
-                    <div style={styles.contactItem}>
-                        <div style={styles.iconBox}><FaMapMarkerAlt /></div>
-                        <div>
-                            <h4 style={styles.itemTitle}>Adres</h4>
-                            <p style={styles.itemText}>
-                                Toff Design Studio<br />
-                                Maslak Mah. Büyükdere Cad. No:123<br />
-                                Sarıyer / İstanbul
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Sosyal Medya */}
-                    <div style={styles.socialMedia}>
-                        <h4 style={styles.itemTitle}>Bizi Takip Edin</h4>
-                        <div style={styles.socialIcons}>
-                            <a href="/" style={styles.socialLink}><FaInstagram /></a>
-                            <a href="/" style={styles.socialLink}><FaLinkedin /></a>
-                        </div>
-                    </div>
+                                {/* İçerik */}
+                                <div>
+                                    <p className="text-xs font-bold text-toff-faint uppercase tracking-widest mb-1">{item.title}</p>
+                                    {item.lines.map((line, j) => (
+                                        <p key={j} className={`text-sm font-semibold ${item.green ? 'text-green-400' : 'text-toff-text'}`}>
+                                            {line}
+                                        </p>
+                                    ))}
+                                    {item.sub && <p className="text-xs text-toff-faint mt-0.5">{item.sub}</p>}
+                                </div>
+                            </Wrapper>
+                        );
+                    })}
                 </div>
 
-                {/* Sağ Taraf: İletişim Formu */}
-                <div style={styles.formColumn}>
-                    <h3 style={styles.columnTitle}>Mesaj Gönderin</h3>
+                {/* ── Sağ: Mail Gönderme Formu ─────────────────────────────── */}
+                <div className="bg-toff-bg-2 border border-toff-border rounded-2xl p-6 sm:p-8">
+                    <h2 className="text-lg font-bold text-toff-text mb-1">Bize Yazın</h2>
+                    <p className="text-sm text-toff-muted mb-6">Mesajınız doğrudan ekibimize iletilir.</p>
+
                     {status === 'success' && (
-                        <div style={{ color: '#4ade80', marginBottom: '16px', padding: '12px', background: '#052e16', borderRadius: '6px' }}>
-                            ✔ Mesajınız başarıyla gönderildi!
+                        <div className="mb-5 bg-green-900/30 border border-green-700/50 text-green-400 text-sm px-4 py-3 rounded-xl">
+                            ✓ Mesajınız başarıyla iletildi! En kısa sürede dönüş yapacağız.
                         </div>
                     )}
                     {status === 'error' && (
-                        <div style={{ color: '#f87171', marginBottom: '16px', padding: '12px', background: '#2d0000', borderRadius: '6px' }}>
-                            ✖ Mesaj gönderilemedi. Lütfen tekrar deneyin.
+                        <div className="mb-5 bg-red-900/30 border border-red-700/50 text-red-400 text-sm px-4 py-3 rounded-xl">
+                            ✕ Bir hata oluştu. Lütfen tekrar deneyin.
                         </div>
                     )}
-                    <form style={styles.form} onSubmit={handleSubmit}>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Adınız Soyadınız</label>
-                            <input type="text" name="name" value={form.name} onChange={handleChange} style={styles.input} placeholder="Adınız Soyadınız" required />
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label className={labelClass}>Adınız *</label>
+                                <input
+                                    type="text" name="name" value={form.name} required
+                                    onChange={handleChange} className={inputClass} placeholder="Ad Soyad"
+                                />
+                            </div>
+                            <div>
+                                <label className={labelClass}>E-Posta *</label>
+                                <input
+                                    type="email" name="email" value={form.email} required
+                                    onChange={handleChange} className={inputClass} placeholder="ornek@mail.com"
+                                />
+                            </div>
                         </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>E-Posta Adresiniz</label>
-                            <input type="email" name="email" value={form.email} onChange={handleChange} style={styles.input} placeholder="ornek@email.com" required />
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Konu</label>
-                            <select name="subject" value={form.subject} onChange={handleChange} style={styles.select}>
-                                <option>Genel Bilgi</option>
-                                <option>Sipariş Durumu</option>
-                                <option>İade / Değişim</option>
-                                <option>Kurumsal Satış</option>
-                                <option>Diğer</option>
+
+                        <div>
+                            <label className={labelClass}>Konu</label>
+                            <select
+                                name="subject" value={form.subject}
+                                onChange={handleChange} className={inputClass}
+                            >
+                                {['Genel Bilgi', 'Sipariş Durumu', 'Ürün Bilgisi', 'Kurumsal Satış', 'İade / Değişim', 'Diğer'].map(opt => (
+                                    <option key={opt} value={opt}>{opt}</option>
+                                ))}
                             </select>
                         </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Mesajınız</label>
-                            <textarea name="message" value={form.message} onChange={handleChange} style={styles.textarea} rows="5" placeholder="Mesajınızı buraya yazınız..." required />
+
+                        <div>
+                            <label className={labelClass}>Mesajınız *</label>
+                            <textarea
+                                name="message" value={form.message} required rows={5}
+                                onChange={handleChange} className={`${inputClass} resize-none`}
+                                placeholder="Mesajınızı buraya yazın..."
+                            />
                         </div>
-                        <button type="submit" style={styles.submitButton} disabled={loading}>
-                            {loading ? 'GÖNDERİLİYOR...' : 'GÖNDER'}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-toff-accent hover:bg-toff-accent-3 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl tracking-widest text-sm transition-colors"
+                        >
+                            {loading ? 'GÖNDERİLİYOR...' : 'MESAJ GÖNDER'}
                         </button>
+
+                        <p className="text-xs text-toff-faint text-center">
+                            veya direkt yazın: <a href="mailto:thetoffdesign@gmail.com" className="text-toff-accent hover:underline">thetoffdesign@gmail.com</a>
+                        </p>
                     </form>
                 </div>
-
             </div>
         </div>
     );
 }
 
-const styles = {
-    container: {
-        padding: '60px 20px',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        fontFamily: "'Segoe UI', sans-serif",
-        color: 'var(--text-secondary)',
-    },
-    headerSection: {
-        textAlign: 'center',
-        marginBottom: '60px'
-    },
-    mainTitle: {
-        fontSize: '2.5rem',
-        fontWeight: '700',
-        color: 'var(--text-primary)',
-        marginBottom: '10px'
-    },
-    subTitle: {
-        fontSize: '1.3rem',
-        fontWeight: '300',
-        color: 'var(--text-secondary)'
-    },
-    divider: {
-        width: '60px',
-        height: '4px',
-        backgroundColor: 'var(--accent-color)',
-        margin: '20px auto'
-    },
-    contentGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-        gap: '60px',
-    },
-    infoColumn: {
-        paddingRight: '20px'
-    },
-    columnTitle: {
-        fontSize: '1.5rem',
-        color: 'var(--text-primary)',
-        marginBottom: '20px',
-        borderBottom: '1px solid var(--border-color)',
-        paddingBottom: '10px'
-    },
-    columnText: {
-        marginBottom: '30px',
-        color: 'var(--text-secondary)',
-        lineHeight: '1.6'
-    },
-    contactItem: {
-        display: 'flex',
-        gap: '20px',
-        marginBottom: '30px'
-    },
-    iconBox: {
-        width: '50px',
-        height: '50px',
-        backgroundColor: 'var(--bg-secondary)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '1.2rem',
-        color: 'var(--accent-color)',
-        flexShrink: 0
-    },
-    itemTitle: {
-        fontSize: '1.1rem',
-        fontWeight: '600',
-        marginBottom: '5px',
-        color: 'var(--text-primary)'
-    },
-    itemText: {
-        color: 'var(--text-secondary)',
-        margin: 0,
-        lineHeight: '1.5'
-    },
-    itemSubText: {
-        fontSize: '0.9rem',
-        color: 'var(--text-muted)',
-        marginTop: '3px'
-    },
-    socialMedia: {
-        marginTop: '40px'
-    },
-    socialIcons: {
-        display: 'flex',
-        gap: '15px',
-        marginTop: '15px'
-    },
-    socialLink: {
-        width: '40px',
-        height: '40px',
-        backgroundColor: 'var(--bg-secondary)',
-        color: 'var(--text-primary)',
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '1.2rem',
-        transition: 'background 0.3s',
-        border: '1px solid var(--border-color)'
-    },
-    formColumn: {
-        backgroundColor: 'var(--bg-secondary)',
-        padding: '40px',
-        borderRadius: '15px',
-        border: '1px solid var(--border-color)'
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px'
-    },
-    formGroup: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px'
-    },
-    label: {
-        fontWeight: '600',
-        fontSize: '0.95rem',
-        color: 'var(--text-primary)'
-    },
-    input: {
-        padding: '12px',
-        border: '1px solid var(--border-color)',
-        borderRadius: '6px',
-        fontSize: '1rem',
-        outline: 'none',
-        backgroundColor: '#1F1F1F',
-        color: 'var(--text-primary)'
-    },
-    select: {
-        padding: '12px',
-        border: '1px solid var(--border-color)',
-        borderRadius: '6px',
-        fontSize: '1rem',
-        outline: 'none',
-        backgroundColor: '#1F1F1F',
-        color: 'var(--text-primary)'
-    },
-    textarea: {
-        padding: '12px',
-        border: '1px solid var(--border-color)',
-        borderRadius: '6px',
-        fontSize: '1rem',
-        outline: 'none',
-        resize: 'vertical',
-        backgroundColor: '#1F1F1F',
-        color: 'var(--text-primary)'
-    },
-    submitButton: {
-        padding: '15px',
-        backgroundColor: 'transparent',
-        color: 'var(--text-primary)',
-        border: '1px solid var(--text-primary)',
-        borderRadius: '6px',
-        fontSize: '1rem',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        transition: 'background 0.3s',
-        marginTop: '10px'
-    }
-};
-
 export default ContactPage;
-

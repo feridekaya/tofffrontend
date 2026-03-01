@@ -52,11 +52,10 @@ function Footer() {
           {
             title: 'MÜŞTERİ HİZMETLERİ',
             links: [
-              { to: '/bize-sorun', label: 'Bize Sorun' },
+              { to: '/iletisim', label: 'İletişim' },
               { to: '/sss', label: 'Sıkça Sorulan Sorular' },
               { to: '/kargo-iade', label: 'Ücretsiz Kargo ve İade' },
               { to: '/uyelik-sozlesmesi', label: 'Üyelik Sözleşmesi' },
-              { to: '/bize-sorun', label: 'İletişim' },
             ]
           },
           {
