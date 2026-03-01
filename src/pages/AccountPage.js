@@ -24,7 +24,8 @@ function AccountPage() {
       case 'orders': return <MyOrders />;
       case 'returns': return <MyReturns />;
       case 'addresses': return <MyAddresses />;
-      case 'userInfo': return <><MyUserInfo /><UpdatePassword /></>;
+      case 'userInfo': return <MyUserInfo authTokens={authTokens} />;
+      case 'password': return <UpdatePassword authTokens={authTokens} />;
       default: return <MyOrders />;
     }
   };

@@ -1,6 +1,6 @@
 // frontend/src/components/AccountSidebar.js
 import React from 'react';
-import { FaShoppingBag, FaUndo, FaMapMarkerAlt, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaShoppingBag, FaUndo, FaMapMarkerAlt, FaUser, FaSignOutAlt, FaKey } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { key: 'returns', icon: <FaUndo size={13} />, label: 'İptal / İade' },
   { key: 'addresses', icon: <FaMapMarkerAlt size={14} />, label: 'Adreslerim' },
   { key: 'userInfo', icon: <FaUser size={13} />, label: 'Kullanıcı Bilgilerim' },
+  { key: 'password', icon: <FaKey size={13} />, label: 'Şifre Güncelle' },
 ];
 
 function AccountSidebar({ activeView, setActiveView }) {
