@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import API_BASE_URL from '../config/api';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import { FaArrowRight, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
@@ -38,7 +39,7 @@ const MENU_ORDER = [
 ];
 
 export default function StorefrontPage() {
-    const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useAuth();
+    const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useCart();
     const [categories, setCategories] = useState([]);
     const [collections, setCollections] = useState([]);
     const [bestsellers, setBestsellers] = useState([]);

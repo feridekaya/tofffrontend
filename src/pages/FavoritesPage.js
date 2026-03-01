@@ -2,11 +2,12 @@
 import React from 'react';
 import ProductCard from '../components/ProductCard';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { FaHeart } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 function FavoritesPage() {
-  const { favorites, handleAddToCart: onAddToCart, toggleFavorite } = useAuth();
+  const { favorites, handleAddToCart: onAddToCart, toggleFavorite } = useCart();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-up">

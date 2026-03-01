@@ -6,9 +6,10 @@ import { FaHeart, FaRegHeart, FaRuler, FaWeightHanging, FaLayerGroup } from 'rea
 import './ProductDetailPage.css';
 import API_BASE_URL from '../config/api';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 function ProductDetailPage() {
-  const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useAuth();
+  const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useCart();
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);

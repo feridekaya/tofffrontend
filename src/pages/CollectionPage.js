@@ -5,9 +5,10 @@ import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import API_BASE_URL from '../config/api';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 function CollectionPage() {
-    const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useAuth();
+    const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useCart();
     const { slug } = useParams();
     const [collection, setCollection] = useState(null);
     const [products, setProducts] = useState([]);

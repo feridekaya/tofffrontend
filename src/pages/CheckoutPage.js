@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import CheckoutAddressForm from '../components/account/CheckoutAddressForm';
 import { FaCheckCircle, FaPlus } from 'react-icons/fa';
 import addressService from '../services/addressService';
@@ -11,7 +12,8 @@ const inputClass = 'w-full bg-toff-bg border border-toff-border-2 text-toff-text
 const labelClass = 'block text-xs font-semibold text-toff-muted uppercase tracking-wider mb-1.5';
 
 function CheckoutPage() {
-    const { cart, setCart, authTokens } = useAuth();
+    const { authTokens } = useAuth();
+    const { cart, setCart, clearCart } = useCart();
     const navigate = useNavigate();
 
     const [savedAddresses, setSavedAddresses] = useState([]);
@@ -81,7 +83,7 @@ function CheckoutPage() {
                 card_info: paymentInfo,
             });
             if (res.data.success) {
-                setCart([]);
+                if (clearCart) clearCart();
                 navigate('/');
                 alert(`Siparişiniz Alındı! Sipariş No: #${res.data.order_id}`);
             }

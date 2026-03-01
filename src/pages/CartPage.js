@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import cartService from '../services/cartService';
 import couponService from '../services/couponService';
 import { FiTrash2, FiShoppingBag } from 'react-icons/fi';
 
 function CartPage() {
-  const { cart, setCart, authTokens } = useAuth();
+  const { authTokens } = useAuth();
+  const { cart, setCart } = useCart();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);

@@ -67,7 +67,7 @@ function Header() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/tum-urunler?search=${encodeURIComponent(searchTerm)}`);
+      navigate(`/ tum - urunler ? search = ${encodeURIComponent(searchTerm)} `);
       setSearchOpen(false);
       setSearchTerm('');
     }
@@ -98,14 +98,14 @@ function Header() {
     const menu = [
       {
         title: 'KOLEKSİYONLAR', path: '/koleksiyonlar',
-        subCategories: collections.map(col => ({ title: col.name, path: `/koleksiyon/${col.slug}` }))
+        subCategories: collections.map(col => ({ title: col.name, path: `/ koleksiyon / ${col.slug} ` }))
       }
     ];
     sortedCats.forEach(cat => {
       menu.push({
         title: cat.name.toUpperCase(),
-        path: `/${cat.slug}`,
-        subCategories: cat.subCategories.map(sub => ({ title: sub.name, path: `/${cat.slug}/${sub.slug}` }))
+        path: `/ ${cat.slug} `,
+        subCategories: cat.subCategories.map(sub => ({ title: sub.name, path: `/ ${cat.slug}/${sub.slug}` }))
       });
     });
     // Tüm Ürünler en sona
