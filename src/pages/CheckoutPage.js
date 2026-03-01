@@ -1,6 +1,6 @@
 // frontend/src/pages/CheckoutPage.js
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import CheckoutAddressForm from '../components/account/CheckoutAddressForm';
 import { FaCheckCircle, FaPlus } from 'react-icons/fa';
@@ -22,6 +22,7 @@ function CheckoutPage() {
     const [paymentInfo, setPaymentInfo] = useState({ cardHolder: '', cardNumber: '', expiryDate: '', cvv: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [agreementChecked, setAgreementChecked] = useState(false);
 
     useEffect(() => {
         if (authTokens) fetchSavedAddresses();
@@ -113,8 +114,8 @@ function CheckoutPage() {
                                         key={addr.id}
                                         onClick={() => selectAddress(addr)}
                                         className={`cursor-pointer border rounded-xl p-4 transition-all ${selectedAddressId === addr.id
-                                                ? 'border-toff-accent bg-toff-accent/5'
-                                                : 'border-toff-border hover:border-toff-muted'
+                                            ? 'border-toff-accent bg-toff-accent/5'
+                                            : 'border-toff-border hover:border-toff-muted'
                                             }`}
                                     >
                                         <div className="flex justify-between items-start mb-1">
@@ -241,9 +242,26 @@ function CheckoutPage() {
                                 </div>
                             )}
 
+                            {/* Sözleşme Onay Checkbox */}
+                            <div className="mb-4 flex items-start gap-2.5 p-3 bg-toff-bg rounded-lg border border-toff-border">
+                                <input
+                                    type="checkbox"
+                                    id="agreement"
+                                    checked={agreementChecked}
+                                    onChange={e => setAgreementChecked(e.target.checked)}
+                                    className="mt-0.5 w-4 h-4 shrink-0 accent-amber-600 cursor-pointer"
+                                />
+                                <label htmlFor="agreement" className="text-xs text-toff-muted cursor-pointer leading-relaxed">
+                                    <Link to="/kargo-iade" target="_blank" className="text-toff-accent hover:underline">Ön Bilgilendirme Formu</Link>
+                                    {' '}ve{' '}
+                                    <Link to="/uyelik-sozlesmesi" target="_blank" className="text-toff-accent hover:underline">Mesafeli Satış Sözleşmesi</Link>'ni
+                                    {' '}okudum, onaylıyorum.
+                                </label>
+                            </div>
+
                             <button
                                 onClick={handleCompleteOrder}
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || !agreementChecked}
                                 className="w-full bg-toff-accent hover:bg-toff-accent-3 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 tracking-widest text-sm rounded-lg transition-colors"
                             >
                                 {isSubmitting ? 'İŞLENİYOR...' : 'SİPARİŞİ TAMAMLA'}

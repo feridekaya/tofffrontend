@@ -81,22 +81,18 @@ function AboutPage() {
             {/* Değerlerimiz */}
             <section style={styles.valuesSection}>
                 <h2 style={{ ...styles.sectionTitle, textAlign: 'center', marginBottom: '40px' }}>Değerlerimiz</h2>
-                <div style={styles.valuesGrid}>
-                    <div style={styles.valueItem}>
-                        <FaHammer size={40} color="var(--accent-color)" style={{ marginBottom: '15px' }} />
-                        <h3>Zanaat</h3>
-                        <p>%100 El işçiliği ve yerli üretim.</p>
-                    </div>
-                    <div style={styles.valueItem}>
-                        <FaFingerprint size={40} color="var(--accent-color)" style={{ marginBottom: '15px' }} />
-                        <h3>Esneklik</h3>
-                        <p>Kişiselleştirilebilir ölçü ve renk seçenekleri.</p>
-                    </div>
-                    <div style={styles.valueItem}>
-                        <FaShieldAlt size={40} color="var(--accent-color)" style={{ marginBottom: '15px' }} />
-                        <h3>Dayanıklılık</h3>
-                        <p>Nesilden nesile aktarılacak kalite.</p>
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    {[
+                        { icon: <FaHammer size={40} color="var(--accent-color)" />, title: 'Zanaat', text: '%100 El işçiliği ve yerli üretim.' },
+                        { icon: <FaFingerprint size={40} color="var(--accent-color)" />, title: 'Esneklik', text: 'Kişiselleştirilebilir ölçü ve renk seçenekleri.' },
+                        { icon: <FaShieldAlt size={40} color="var(--accent-color)" />, title: 'Dayanıklılık', text: 'Nesilden nesile aktarılacak kalite.' },
+                    ].map((val, i) => (
+                        <div key={i} className="flex flex-col items-center text-center p-6">
+                            <div className="mb-4 flex items-center justify-center">{val.icon}</div>
+                            <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: '10px', fontSize: '1.1rem' }}>{val.title}</h3>
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>{val.text}</p>
+                        </div>
+                    ))}
                 </div>
             </section>
 
