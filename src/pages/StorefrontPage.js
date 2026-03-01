@@ -29,12 +29,24 @@ const MENU_ORDER = [
 export default function StorefrontPage() {
     const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useAuth();
     const [categories, setCategories] = useState([]);
+    const [collections, setCollections] = useState([]);
     const [bestsellers, setBestsellers] = useState([]);
     const [email, setEmail] = useState('');
     const [subscribed, setSubscribed] = useState(false);
+    const [heroIdx, setHeroIdx] = useState(0);
+    const [heroFade, setHeroFade] = useState(true);
     const carouselRef = useRef(null);
+    const autoRef = useRef(null);
 
     useEffect(() => {
+        // Koleksiyonları çek (hero slider için)
+        axios.get(`${API_BASE_URL}/api/collections/`)
+            .then(res => {
+                const active = (res.data || []).filter(c => c.is_active);
+                setCollections(active);
+            })
+            .catch(() => { });
+
         // Ana kategorileri çek
         axios.get(`${API_BASE_URL}/api/categories/`)
             .then(res => {
@@ -51,7 +63,7 @@ export default function StorefrontPage() {
             })
             .catch(() => { });
 
-        // Bestsellers: en son eklenen aktif ürünler
+        // Bestsellers
         axios.get(`${API_BASE_URL}/api/products/?ordering=-id&is_active=true&page_size=8`)
             .then(res => {
                 const items = res.data.results || res.data;
@@ -59,6 +71,28 @@ export default function StorefrontPage() {
             })
             .catch(() => { });
     }, []);
+
+    // Hero auto-slide
+    useEffect(() => {
+        if (collections.length < 2) return;
+        autoRef.current = setInterval(() => {
+            setHeroFade(false);
+            setTimeout(() => {
+                setHeroIdx(i => (i + 1) % collections.length);
+                setHeroFade(true);
+            }, 400);
+        }, 5000);
+        return () => clearInterval(autoRef.current);
+    }, [collections]);
+
+    const goHero = (dir) => {
+        clearInterval(autoRef.current);
+        setHeroFade(false);
+        setTimeout(() => {
+            setHeroIdx(i => (i + dir + collections.length) % collections.length);
+            setHeroFade(true);
+        }, 300);
+    };
 
     const scrollCarousel = (dir) => {
         if (carouselRef.current) {
@@ -75,36 +109,60 @@ export default function StorefrontPage() {
         <div className="min-h-screen bg-toff-bg">
 
             {/* ══════════════════════════════════════════
-          1. HERO BANNER
+          1. HERO SLIDER (Koleksiyonlar)
       ══════════════════════════════════════════ */}
             <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
-                {/* Arka plan görseli */}
-                <img
-                    src={heroImg}
-                    alt="Toff Storefront"
-                    className="absolute inset-0 w-full h-full object-cover scale-105 transition-transform duration-[8000ms] hover:scale-100"
-                    onError={e => { e.target.style.display = 'none'; }}
-                />
-                {/* Koyu overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-toff-bg via-transparent to-transparent" />
+
+                {/* Arka plan: koleksiyon görseli veya fallback */}
+                {collections.length > 0 ? (
+                    collections.map((col, i) => (
+                        <div
+                            key={col.id}
+                            className="absolute inset-0 transition-opacity duration-700"
+                            style={{ opacity: i === heroIdx && heroFade ? 1 : 0, zIndex: i === heroIdx ? 1 : 0 }}
+                        >
+                            {col.image ? (
+                                <img
+                                    src={col.image}
+                                    alt={col.name}
+                                    className="w-full h-full object-cover scale-105"
+                                />
+                            ) : (
+                                <img
+                                    src={heroImg}
+                                    alt={col.name}
+                                    className="w-full h-full object-cover scale-105"
+                                />
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <img src={heroImg} alt="Toff" className="absolute inset-0 w-full h-full object-cover scale-105" />
+                )}
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" style={{ zIndex: 2 }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-toff-bg via-transparent to-transparent" style={{ zIndex: 2 }} />
 
                 {/* İçerik */}
-                <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-center">
-                    <div className="max-w-xl animate-fade-up">
-                        <p className="text-xs font-bold tracking-[0.4em] text-toff-accent uppercase mb-4">
-                            Yeni Sezon · 2025
+                <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-center" style={{ zIndex: 3 }}>
+                    <div className="max-w-xl">
+                        <p className="text-xs font-bold tracking-[0.4em] text-toff-accent uppercase mb-4 transition-all duration-500">
+                            {collections[heroIdx]?.name ? `Koleksiyon · ${heroIdx + 1}/${collections.length}` : 'Yeni Sezon · 2025'}
                         </p>
-                        <h1 className="text-4xl sm:text-6xl font-black text-white leading-tight mb-5">
-                            Minimalist<br />
-                            <span className="text-toff-accent">Metal</span> Koleksiyonu
+                        <h1
+                            className="text-4xl sm:text-6xl font-black text-white leading-tight mb-5 transition-opacity duration-500"
+                            style={{ opacity: heroFade ? 1 : 0 }}
+                        >
+                            {collections[heroIdx]?.name
+                                ? <>{collections[heroIdx].name.split(' ').slice(0, -1).join(' ')}<br /><span className="text-toff-accent">{collections[heroIdx].name.split(' ').slice(-1)[0]}</span></> : <> Minimalist<br /><span className="text-toff-accent">Metal</span> Koleksiyonu</>}
                         </h1>
-                        <p className="text-toff-muted text-base sm:text-lg leading-relaxed mb-8 max-w-md">
-                            Evinizin ruhunu değiştirecek yeni tasarımları keşfedin. Endüstriyel zarafetle ev konforu bir arada.
+                        <p className="text-toff-muted text-base sm:text-lg leading-relaxed mb-8 max-w-md" style={{ opacity: heroFade ? 1 : 0, transition: 'opacity 0.5s' }}>
+                            {collections[heroIdx]?.description || 'Evinizin ruhunu değiştirecek yeni tasarımları keşfedin. Endüstriyel zarafetle ev konforu bir arada.'}
                         </p>
                         <div className="flex flex-wrap gap-3">
                             <Link
-                                to="/koleksiyonlar"
+                                to={collections[heroIdx] ? `/koleksiyon/${collections[heroIdx].slug}` : '/koleksiyonlar'}
                                 className="flex items-center gap-2 bg-toff-accent hover:bg-toff-accent-3 text-white font-bold px-7 py-3.5 rounded-xl tracking-wider text-sm transition-all"
                             >
                                 Koleksiyonu İncele <FaArrowRight size={12} />
@@ -119,8 +177,38 @@ export default function StorefrontPage() {
                     </div>
                 </div>
 
+                {/* Sol / Sağ gezinme butonları */}
+                {collections.length > 1 && (
+                    <>
+                        <button
+                            onClick={() => goHero(-1)}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-toff-accent/80 border border-white/20 text-white rounded-full flex items-center justify-center transition-colors"
+                            style={{ zIndex: 4 }}
+                        >
+                            <FaChevronLeft size={14} />
+                        </button>
+                        <button
+                            onClick={() => goHero(1)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-toff-accent/80 border border-white/20 text-white rounded-full flex items-center justify-center transition-colors"
+                            style={{ zIndex: 4 }}
+                        >
+                            <FaChevronRight size={14} />
+                        </button>
+                        {/* Nokta indikatörleri */}
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2" style={{ zIndex: 4 }}>
+                            {collections.map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => { clearInterval(autoRef.current); setHeroFade(false); setTimeout(() => { setHeroIdx(i); setHeroFade(true); }, 300); }}
+                                    className={`h-1.5 rounded-full transition-all duration-300 ${i === heroIdx ? 'w-6 bg-toff-accent' : 'w-1.5 bg-white/40 hover:bg-white/70'}`}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
+
                 {/* Alt dekoratif çizgi */}
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-toff-accent/40 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-toff-accent/40 to-transparent" style={{ zIndex: 4 }} />
             </section>
 
             {/* ══════════════════════════════════════════
