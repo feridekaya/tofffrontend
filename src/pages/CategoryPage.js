@@ -17,7 +17,12 @@ const SORT_OPTIONS = [
 function CategoryPage() {
   const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useCart();
   const { slug } = useParams();
-  const cleanSlug = slug ? slug.trim() : null;
+
+  // Ultra defansif URL temizleme (useParams string içi "%20" kalsa bile siler)
+  let cleanSlug = slug || '';
+  try { cleanSlug = decodeURIComponent(cleanSlug); } catch (e) { }
+  cleanSlug = cleanSlug.replace(/%20/g, ' ').trim();
+
   const location = useLocation();
   const isAllProducts = location.pathname === '/tum-urunler' || !cleanSlug;
   const [searchParams, setSearchParams] = useSearchParams();
