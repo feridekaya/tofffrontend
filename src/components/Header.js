@@ -273,11 +273,11 @@ function Header() {
                         const isActiveSub = location.pathname === sub.path;
                         return (
                           <li key={sub.title} className="group flex items-center">
-                            <div className={`w-1 h-1 rounded-full mr-3 transition-transform duration-300 group-hover:scale-150 group-hover:bg-toff-accent ${isActiveSub ? 'bg-toff-accent scale-150' : 'bg-toff-accent/30'}`} />
+                            <div className={`w-1.5 h-1.5 rounded-full mr-3 transition-transform duration-300 group-hover:scale-150 group-hover:bg-toff-accent shadow-sm ${isActiveSub ? 'bg-toff-accent scale-150' : 'bg-white/60'}`} />
                             <Link
                               to={sub.path}
                               onClick={() => setActiveMenu(null)}
-                              className={`text-[13px] tracking-wide transition-all duration-300 group-hover:translate-x-1.5 font-medium ${isActiveSub ? 'text-white translate-x-1.5 font-bold' : 'text-toff-faint hover:text-white'}`}
+                              className={`text-[14px] tracking-wide transition-all duration-300 group-hover:translate-x-1.5 font-bold drop-shadow-md ${isActiveSub ? 'text-toff-accent translate-x-1.5' : 'text-white hover:text-toff-accent'}`}
                             >
                               {sub.title}
                             </Link>
