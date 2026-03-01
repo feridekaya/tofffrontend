@@ -105,6 +105,7 @@ function AppRoutes() {
         <Route path="/sss" element={<FAQPage />} />
         <Route path="/kargo-iade" element={<ShippingReturnPage />} />
         <Route path="/toff-sozu" element={<ToffPromisePage />} />
+        <Route path="/toff-promise" element={<ToffPromisePage />} />
         <Route path="/kurumsal-satis" element={<CorporateSalesPage />} />
         <Route path="/uyelik-sozlesmesi" element={<MembershipAgreementPage />} />
         <Route path="/bilgi-toplumu-hizmetleri" element={<InfoSocietyPage />} />
