@@ -242,8 +242,8 @@ function Header() {
         {/* ── Mobile Drawer ─────────────────────────────────────────── */}
         {mobileOpen && (
           <>
-            <div className="fixed inset-0 bg-black/60 z-30 lg:hidden" onClick={() => setMobileOpen(false)} />
-            <div className="fixed top-0 left-0 h-full w-72 bg-toff-bg-2 z-40 lg:hidden flex flex-col shadow-2xl animate-slide-right">
+            <div className="fixed inset-0 bg-black/60 z-30" onClick={() => setMobileOpen(false)} />
+            <div className="fixed top-0 left-0 h-full w-72 bg-toff-bg-2 z-40 flex flex-col shadow-2xl animate-slide-right">
               <div className="flex items-center justify-between px-5 py-4 border-b border-toff-border">
                 <span className="text-lg font-black tracking-[0.3em] text-toff-accent">TOFF</span>
                 <button onClick={() => setMobileOpen(false)} className="text-toff-muted hover:text-toff-text">

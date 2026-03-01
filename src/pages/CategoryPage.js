@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import API_BASE_URL from '../config/api';
@@ -16,6 +16,8 @@ const SORT_OPTIONS = [
 function CategoryPage() {
   const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useAuth();
   const { slug } = useParams();
+  const location = useLocation();
+  const isAllProducts = location.pathname === '/tum-urunler' || !slug;
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState([]);
@@ -36,7 +38,9 @@ function CategoryPage() {
     const searchQuery = searchParams.get('search');
     setCurrentPage(page);
 
-    let apiUrl = `${API_BASE_URL}/api/products/?category_slug=${slug}&page=${page}&ordering=${sortOption}`;
+    // Tüm ürünler sayfasıysa category_slug filtresi ekleme
+    let apiUrl = `${API_BASE_URL}/api/products/?page=${page}&ordering=${sortOption}&is_active=true`;
+    if (!isAllProducts && slug) apiUrl += `&category_slug=${slug}`;
     if (searchQuery) apiUrl += `&search=${encodeURIComponent(searchQuery)}`;
 
     axios.get(apiUrl)
@@ -54,16 +58,21 @@ function CategoryPage() {
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
 
-    axios.get(`${API_BASE_URL}/api/categories/${slug}/`)
-      .then(res => {
-        setCategoryName(res.data.name.toUpperCase());
-        setHeaderSlug(res.data.header_slug);
-        setCategoryImage(res.data.image_url || null);
-      })
-      .catch(() => {
-        setCategoryName(slug.replace(/-/g, ' ').toUpperCase());
-        setHeaderSlug(slug);
-      });
+    if (isAllProducts) {
+      setCategoryName('TÜM ÜRÜNLER');
+      setCategoryImage(null);
+    } else {
+      axios.get(`${API_BASE_URL}/api/categories/${slug}/`)
+        .then(res => {
+          setCategoryName(res.data.name.toUpperCase());
+          setHeaderSlug(res.data.header_slug);
+          setCategoryImage(res.data.image_url || null);
+        })
+        .catch(() => {
+          setCategoryName(slug.replace(/-/g, ' ').toUpperCase());
+          setHeaderSlug(slug);
+        });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, sortOption, searchParams]);
 
