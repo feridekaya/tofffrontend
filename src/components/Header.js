@@ -126,9 +126,9 @@ function Header() {
 
           {/* Left: Mobile hamburger + Logo + Desktop Nav */}
           <div className="flex items-center gap-4">
-            {/* Mobile hamburger */}
+            {/* Mobile hamburger — prod sayfalarında yalnızca mobil, diğerlerinde her zaman görünür */}
             <button
-              className="lg:hidden flex items-center justify-center w-9 h-9 text-toff-muted hover:text-toff-text transition-colors"
+              className={`${showCatBar ? 'lg:hidden' : ''} flex items-center justify-center w-9 h-9 text-toff-muted hover:text-toff-text transition-colors`}
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               <FaBars />
