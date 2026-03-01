@@ -13,7 +13,7 @@ import { useAuth } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
-import OffCanvasSidebar from './components/OffCanvasSidebar';
+
 import ToastContainer from './components/ToastContainer';
 
 // === Route Guards ===
@@ -66,7 +66,7 @@ function AppRoutes() {
   return (
     <>
       <ScrollToTop />
-      <OffCanvasSidebar />
+
       <Header />
 
       <Routes>
