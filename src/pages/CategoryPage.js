@@ -17,8 +17,9 @@ const SORT_OPTIONS = [
 function CategoryPage() {
   const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useCart();
   const { slug } = useParams();
+  const cleanSlug = slug ? slug.trim() : null;
   const location = useLocation();
-  const isAllProducts = location.pathname === '/tum-urunler' || !slug;
+  const isAllProducts = location.pathname === '/tum-urunler' || !cleanSlug;
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [products, setProducts] = useState([]);
@@ -63,19 +64,19 @@ function CategoryPage() {
       setCategoryName('TÜM ÜRÜNLER');
       setCategoryImage(null);
     } else {
-      axios.get(`${API_BASE_URL}/api/categories/${slug}/`)
+      axios.get(`${API_BASE_URL}/api/categories/${cleanSlug}/`)
         .then(res => {
           setCategoryName(res.data.name.toUpperCase());
           setHeaderSlug(res.data.header_slug);
           setCategoryImage(res.data.image_url || null);
         })
         .catch(() => {
-          setCategoryName(slug.replace(/-/g, ' ').toUpperCase());
-          setHeaderSlug(slug);
+          setCategoryName(cleanSlug.replace(/-/g, ' ').toUpperCase());
+          setHeaderSlug(cleanSlug);
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, sortOption, searchParams]);
+  }, [cleanSlug, sortOption, searchParams]);
 
   const handleSortChange = (option) => {
     setSortOption(option);
@@ -105,9 +106,9 @@ function CategoryPage() {
 
       {/* ── Banner ──────────────────────────────────────────────────── */}
       <div className="relative h-48 sm:h-64 lg:h-72 overflow-hidden">
-        {CATEGORY_BANNERS[slug || 'tum-urunler'] ? (
+        {CATEGORY_BANNERS[cleanSlug || 'tum-urunler'] ? (
           <img
-            src={CATEGORY_BANNERS[slug || 'tum-urunler']}
+            src={CATEGORY_BANNERS[cleanSlug || 'tum-urunler']}
             alt={categoryName}
             className="w-full h-full object-cover scale-110"
           />
