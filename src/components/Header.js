@@ -14,6 +14,8 @@ function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [liveResults, setLiveResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [categories, setCategories] = useState([]);
   const [collections, setCollections] = useState([]);
   const [catBarVisible, setCatBarVisible] = useState(true);
@@ -64,10 +66,36 @@ function Header() {
   // Route değişince barı sıfırla
   useEffect(() => { setCatBarVisible(true); lastScrollY.current = 0; }, [location.pathname]);
 
+  // Canlı Arama (Live Search) Debounce
+  useEffect(() => {
+    if (!searchOpen) {
+      setSearchTerm('');
+      setLiveResults([]);
+      return;
+    }
+    const term = searchTerm.trim();
+    if (term.length < 2) {
+      setLiveResults([]);
+      return;
+    }
+    const delayDebounceFn = setTimeout(() => {
+      setIsSearching(true);
+      productService.getProducts({ search: term })
+        .then(res => {
+          const results = res.data.results || res.data;
+          setLiveResults(Array.isArray(results) ? results.slice(0, 5) : []);
+        })
+        .catch(() => setLiveResults([]))
+        .finally(() => setIsSearching(false));
+    }, 400);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, searchOpen]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/ tum - urunler ? search = ${encodeURIComponent(searchTerm)} `);
+      navigate(`/tum-urunler?search=${encodeURIComponent(searchTerm.trim())}`);
       setSearchOpen(false);
       setSearchTerm('');
     }
@@ -307,44 +335,101 @@ function Header() {
         )}
       </header>
 
-      {/* ── Arama Overlay ─────────────────────────────────────────── */}
+      {/* ── Arama Overlay (Canlı Arama) ───────────────────────────── */}
       {searchOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-start pt-24 px-4">
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex flex-col items-center justify-start pt-24 px-4 overflow-y-auto w-full animate-fade-in">
           <button
             onClick={() => setSearchOpen(false)}
-            className="absolute top-6 right-6 text-toff-muted hover:text-toff-text transition-colors"
+            className="absolute top-6 right-6 lg:top-10 lg:right-10 w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full text-toff-muted hover:text-white transition-all duration-300"
           >
-            <FaTimes size={22} />
+            <FaTimes size={18} />
           </button>
 
-          <form onSubmit={handleSearch} className="w-full max-w-2xl flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="Ürün ara..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              autoFocus
-              className="flex-1 bg-transparent border-b-2 border-toff-border focus:border-toff-accent text-toff-text text-2xl font-light py-3 outline-none transition-colors placeholder:text-toff-faint"
-            />
-            <button type="submit" className="text-toff-accent hover:text-toff-accent-2 transition-colors p-2">
-              <FaSearch size={22} />
-            </button>
+          <form onSubmit={handleSearch} className="w-full max-w-3xl relative">
+            <div className="relative flex items-center">
+              <FaSearch className="absolute left-6 text-toff-faint" size={20} />
+              <input
+                type="text"
+                placeholder="Koleksiyonlardan veya ürünlerden arayın..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                autoFocus
+                className="w-full bg-toff-bg-2 border border-toff-border-2 focus:border-toff-accent focus:bg-toff-bg rounded-2xl text-white text-lg lg:text-xl py-5 pl-14 pr-6 outline-none transition-all placeholder:text-toff-faint shadow-2xl"
+              />
+              {searchTerm.trim() && (
+                <button type="button" onClick={() => setSearchTerm('')} className="absolute right-6 text-toff-faint hover:text-white transition-colors">
+                  <FaTimes size={18} />
+                </button>
+              )}
+            </div>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-xs font-bold text-toff-faint uppercase tracking-widest mb-3">Popüler Aramalar</p>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {['Masa', 'Sandalye', 'Sehpa'].map(tag => (
-                <Link
-                  key={tag}
-                  to={`/tum-urunler?search=${tag.toLowerCase()}`}
-                  onClick={() => setSearchOpen(false)}
-                  className="border border-toff-border text-toff-muted hover:border-toff-accent hover:text-toff-accent text-sm px-4 py-1.5 rounded-full transition-colors"
-                >
-                  {tag}
+          {/* Arama Sonuçları (Live) */}
+          <div className="w-full max-w-3xl mt-4">
+            {isSearching ? (
+              <div className="flex justify-center py-10">
+                <div className="w-8 h-8 border-2 border-toff-border border-t-toff-accent rounded-full animate-spin" />
+              </div>
+            ) : liveResults.length > 0 ? (
+              <div className="bg-toff-bg-2 border border-toff-border rounded-xl overflow-hidden shadow-2xl animate-fade-down">
+                <div className="px-5 py-3 border-b border-toff-border bg-black/20 flex justify-between items-center">
+                  <span className="text-[10px] uppercase tracking-widest text-toff-muted font-bold">Ürünler</span>
+                  <span className="text-[10px] text-toff-faint">{liveResults.length} sonuç gösteriliyor</span>
+                </div>
+                <div className="max-h-[50vh] overflow-y-auto">
+                  {liveResults.map(product => (
+                    <Link
+                      key={product.id}
+                      to={`/urun/${product.slug}`}
+                      onClick={() => { setSearchOpen(false); setSearchTerm(''); }}
+                      className="group flex items-center gap-5 p-4 hover:bg-toff-bg-3 transition-colors border-b border-white/5 last:border-0"
+                    >
+                      <div className="w-14 h-14 rounded-lg bg-toff-bg order border border-toff-border overflow-hidden shrink-0">
+                        {product.image ? (
+                          <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-toff-faint"><FaSearch size={10} /></div>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-white font-medium text-sm group-hover:text-toff-accent transition-colors">{product.name}</h4>
+                        <p className="text-toff-accent font-bold text-xs mt-1.5">{product.price} ₺</p>
+                      </div>
+                      <div className="w-8 h-8 rounded-full border border-toff-border flex items-center justify-center text-toff-faint group-hover:bg-toff-accent group-hover:text-white group-hover:border-toff-accent transition-all">
+                        <FaSearch size={10} />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <Link to={`/tum-urunler?search=${encodeURIComponent(searchTerm.trim())}`} onClick={() => setSearchOpen(false)} className="block w-full py-4 bg-toff-bg text-center text-[11px] font-bold tracking-widest text-toff-muted hover:text-white hover:bg-toff-accent/10 transition-colors border-t border-toff-border">
+                  TÜM "{searchTerm.toUpperCase()}" SONUÇLARINI GÖR
                 </Link>
-              ))}
-            </div>
+              </div>
+            ) : searchTerm.trim().length >= 2 ? (
+              <div className="text-center py-16 bg-white/5 border border-white/5 rounded-2xl animate-fade-in mt-4">
+                <div className="w-16 h-16 rounded-full bg-toff-bg flex items-center justify-center mx-auto mb-4 border border-toff-border">
+                  <FaSearch size={20} className="text-toff-muted" />
+                </div>
+                <h3 className="text-white text-lg font-medium mb-1">Sonuç Bulunamadı</h3>
+                <p className="text-toff-faint text-sm">"{searchTerm}" kelimesini içeren bir ürün bulunamadı.</p>
+              </div>
+            ) : (
+              <div className="mt-8 text-center animate-fade-in">
+                <p className="text-[10px] font-bold text-toff-faint uppercase tracking-[0.2em] mb-4">Popüler Aramalar</p>
+                <div className="flex flex-wrap gap-2.5 justify-center">
+                  {['Sehpa', 'Benç', 'Tabure', 'Masa', 'Berjer'].map(tag => (
+                    <Link
+                      key={tag}
+                      to={`/tum-urunler?search=${tag.toLowerCase()}`}
+                      onClick={() => setSearchOpen(false)}
+                      className="border border-toff-border/50 bg-toff-bg-2/50 text-toff-muted hover:bg-toff-accent hover:border-toff-accent hover:text-white text-[13px] px-5 py-2 rounded-full transition-all"
+                    >
+                      {tag}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
