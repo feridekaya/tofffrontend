@@ -16,12 +16,16 @@ const SORT_OPTIONS = [
 
 function CategoryPage() {
   const { handleAddToCart: onAddToCart, favorites, toggleFavorite } = useCart();
-  const { slug } = useParams();
+  const { parentSlug, slug } = useParams();
 
   // Ultra defansif URL temizleme (useParams string içi "%20" kalsa bile siler)
   let cleanSlug = slug || '';
   try { cleanSlug = decodeURIComponent(cleanSlug); } catch (e) { }
   cleanSlug = cleanSlug.replace(/%20/g, ' ').trim();
+
+  let cleanParentSlug = parentSlug || '';
+  try { cleanParentSlug = decodeURIComponent(cleanParentSlug); } catch (e) { }
+  cleanParentSlug = cleanParentSlug.replace(/%20/g, ' ').trim();
 
   const location = useLocation();
   const isAllProducts = location.pathname === '/tum-urunler' || !cleanSlug;
@@ -111,9 +115,9 @@ function CategoryPage() {
 
       {/* ── Banner ──────────────────────────────────────────────────── */}
       <div className="w-full bg-toff-bg-2">
-        {CATEGORY_BANNERS[cleanSlug || 'tum-urunler'] ? (
+        {CATEGORY_BANNERS[cleanParentSlug || cleanSlug || 'tum-urunler'] ? (
           <img
-            src={CATEGORY_BANNERS[cleanSlug || 'tum-urunler']}
+            src={CATEGORY_BANNERS[cleanParentSlug || cleanSlug || 'tum-urunler']}
             alt={categoryName}
             className="w-full h-auto block"
           />
