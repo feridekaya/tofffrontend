@@ -40,21 +40,12 @@ function CollectionPage() {
         <div className="min-h-screen bg-toff-bg">
 
             {/* Banner */}
-            <div className="relative h-64 sm:h-80 overflow-hidden">
+            <div className="w-full bg-toff-bg-2">
                 <img
-                    src={`/assets/collection-${slug}.png`}
+                    src={`/assets/collection-${slug}.webp`}
                     alt={collection?.name || 'Koleksiyon'}
-                    className="w-full h-full object-cover scale-110"
+                    className="w-full h-auto block"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-toff-bg via-black/40 to-transparent" />
-                <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 px-4 text-center">
-                    <h1 className="text-3xl sm:text-4xl font-black tracking-[0.2em] text-white drop-shadow-lg mb-2">
-                        {collection?.name || 'Koleksiyon'}
-                    </h1>
-                    {collection?.description && (
-                        <p className="text-sm text-white/70 max-w-md">{collection.description}</p>
-                    )}
-                </div>
             </div>
 
             {/* Ürünler */}
