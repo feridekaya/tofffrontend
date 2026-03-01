@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import productService from '../services/productService';
@@ -16,7 +16,23 @@ function Header() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState([]);
   const [collections, setCollections] = useState([]);
+  const [catBarVisible, setCatBarVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const location = useLocation();
 
+  // Kategori barı GÖRÜNMESELİ sayfalar (sadece mağaza/kategori/ürün sayfaları)
+  const HIDDEN_PATHS = [
+    '/', '/hakkimizda', '/iletisim', '/bize-sorun',
+    '/sss', '/kargo-iade', '/toff-sozu', '/toff-promise',
+    '/kurumsal-satis', '/uyelik-sozlesmesi', '/bilgi-toplumu-hizmetleri',
+    '/login', '/register', '/forgot-password', '/reset-password',
+    '/sepet', '/odeme', '/favoriler', '/hesabim',
+  ];
+  const showCatBar = !HIDDEN_PATHS.some(p => location.pathname === p)
+    && !location.pathname.startsWith('/hesabim/')
+    && !location.pathname.startsWith('/admin/');
+
+  // API: koleksiyonlar + kategoriler
   useEffect(() => {
     productService.getCollections()
       .then(res => setCollections(res.data))
@@ -32,6 +48,21 @@ function Header() {
       })
       .catch(err => console.error('Kategori hatası:', err));
   }, []);
+
+  // Scroll yönü takibi
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 80) { setCatBarVisible(true); return; }
+      setCatBarVisible(y < lastScrollY.current);
+      lastScrollY.current = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Route değişince barı sıfırla
+  useEffect(() => { setCatBarVisible(true); lastScrollY.current = 0; }, [location.pathname]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -161,49 +192,52 @@ function Header() {
           </div>
         </div>
 
-        {/* ── Bottom Bar: Mega Menü (Desktop) ───────────────────────── */}
-        <div
-          className="hidden lg:block border-t border-toff-border-2 relative"
-          onMouseLeave={() => setActiveMenu(null)}
-        >
-          <div className="max-w-7xl mx-auto px-6">
-            <nav>
-              <ul className="flex items-center gap-8">
-                {menuItems.map(item => (
-                  <li key={item.title} onMouseEnter={() => setActiveMenu(item.title)}>
-                    <Link
-                      to={item.path}
-                      className={`block py-3 text-[11px] font-bold tracking-widest transition-colors ${activeMenu === item.title ? 'text-toff-accent' : 'text-toff-muted hover:text-toff-text'}`}
-                    >
-                      {item.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-
-          {/* Mega Menü Dropdown */}
-          {activeMenu && menuItems.find(i => i.title === activeMenu)?.subCategories.length > 0 && (
-            <div className="absolute top-full left-0 w-full bg-toff-bg-2 border-b border-toff-border shadow-2xl">
-              <div className="max-w-7xl mx-auto px-6 py-6">
-                <ul className="flex flex-wrap gap-x-8 gap-y-3">
-                  {menuItems.find(i => i.title === activeMenu).subCategories.map(sub => (
-                    <li key={sub.title}>
+        {/* ── Bottom Bar: Mega Menü (Desktop) ──────────────────────── */}
+        {showCatBar && (
+          <div
+            className={`hidden lg:block border-t border-toff-border-2 relative transition-all duration-300
+            ${catBarVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
+            onMouseLeave={() => setActiveMenu(null)}
+          >
+            <div className="max-w-7xl mx-auto px-6">
+              <nav>
+                <ul className="flex items-center gap-8">
+                  {menuItems.map(item => (
+                    <li key={item.title} onMouseEnter={() => setActiveMenu(item.title)}>
                       <Link
-                        to={sub.path}
-                        onClick={() => setActiveMenu(null)}
-                        className="text-sm text-toff-muted hover:text-toff-accent transition-colors"
+                        to={item.path}
+                        className={`block py-3 text-[11px] font-bold tracking-widest transition-colors ${activeMenu === item.title ? 'text-toff-accent' : 'text-toff-muted hover:text-toff-text'}`}
                       >
-                        {sub.title}
+                        {item.title}
                       </Link>
                     </li>
                   ))}
                 </ul>
-              </div>
+              </nav>
             </div>
-          )}
-        </div>
+
+            {/* Mega Menü Dropdown */}
+            {activeMenu && menuItems.find(i => i.title === activeMenu)?.subCategories.length > 0 && (
+              <div className="absolute top-full left-0 w-full bg-toff-bg-2 border-b border-toff-border shadow-2xl">
+                <div className="max-w-7xl mx-auto px-6 py-6">
+                  <ul className="flex flex-wrap gap-x-8 gap-y-3">
+                    {menuItems.find(i => i.title === activeMenu).subCategories.map(sub => (
+                      <li key={sub.title}>
+                        <Link
+                          to={sub.path}
+                          onClick={() => setActiveMenu(null)}
+                          className="text-sm text-toff-muted hover:text-toff-accent transition-colors"
+                        >
+                          {sub.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ── Mobile Drawer ─────────────────────────────────────────── */}
         {mobileOpen && (
