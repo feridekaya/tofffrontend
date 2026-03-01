@@ -227,7 +227,7 @@ function Header() {
 
             {/* Mega Menü Dropdown (Açık Kalan Versiyon) */}
             {displayedMenuTitle && menuItems.find(i => i.title === displayedMenuTitle)?.subCategories.length > 0 && (
-              <div className="absolute top-full left-0 w-full bg-black/95 backdrop-blur-xl border-t border-b border-toff-accent/20 shadow-2xl transition-all duration-300 origin-top z-50">
+              <div className="absolute top-full left-0 w-full bg-black/50 backdrop-blur-md border-t border-b border-toff-accent/20 shadow-2xl transition-all duration-300 origin-top z-50">
                 <div className="max-w-7xl mx-auto px-6 py-6">
                   <div className="flex gap-12">
                     {/* Sol Görsel / Açıklama Kısmı (İstersen Sabit) */}

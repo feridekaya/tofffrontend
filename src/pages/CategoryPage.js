@@ -114,15 +114,15 @@ function CategoryPage() {
     <div className="min-h-screen bg-toff-bg">
 
       {/* ── Banner ──────────────────────────────────────────────────── */}
-      <div className="w-full bg-toff-bg-2">
+      <div className="w-full bg-toff-bg-2 relative h-48 sm:h-64 lg:h-80 overflow-hidden">
         {CATEGORY_BANNERS[cleanParentSlug || cleanSlug || 'tum-urunler'] ? (
           <img
             src={CATEGORY_BANNERS[cleanParentSlug || cleanSlug || 'tum-urunler']}
             alt={categoryName}
-            className="w-full h-auto block"
+            className="w-full h-full object-cover object-center scale-100"
           />
         ) : (
-          <div className="w-full h-48 sm:h-64 lg:h-72 bg-gradient-to-br from-toff-bg-2 via-toff-bg-3 to-toff-bg" />
+          <div className="w-full h-full bg-gradient-to-br from-toff-bg-2 via-toff-bg-3 to-toff-bg" />
         )}
       </div>
 
