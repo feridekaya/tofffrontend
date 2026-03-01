@@ -66,8 +66,8 @@ function OffCanvasSidebar() {
         setExpanded(prev => ({ ...prev, [slug]: !prev[slug] }));
     };
 
-    const navLinkClass = 'flex items-center justify-between px-3 py-2.5 text-sm font-medium text-toff-muted hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors';
-    const subLinkClass = 'block px-3 py-2 text-[13px] text-toff-faint hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors ml-3';
+    const navLinkClass = 'flex items-center justify-between px-3 py-2.5 text-xs font-bold tracking-wider text-toff-muted hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors uppercase';
+    const subLinkClass = 'block px-3 py-2 text-[11px] text-toff-faint hover:text-toff-accent hover:bg-toff-bg-3 rounded-lg transition-colors ml-3';
 
     return (
         <>
@@ -117,7 +117,7 @@ function OffCanvasSidebar() {
                             onClick={() => toggleExpand('koleksiyonlar')}
                             className={navLinkClass + ' w-full'}
                         >
-                            <span>Koleksiyonlar</span>
+                            <span>KOLEKSİYONLAR</span>
                             {collections.length > 0 && (
                                 expanded['koleksiyonlar']
                                     ? <FaChevronDown size={10} className="text-toff-faint" />
@@ -128,11 +128,11 @@ function OffCanvasSidebar() {
                         {expanded['koleksiyonlar'] && collections.length > 0 && (
                             <div className="mt-0.5 flex flex-col gap-0.5 mb-1">
                                 <Link to="/koleksiyonlar" className={subLinkClass}>
-                                    Tüm Koleksiyonlar
+                                    TÜM KOLEKSİYONLAR
                                 </Link>
                                 {collections.map(col => (
                                     <Link key={col.id} to={`/koleksiyon/${col.slug}`} className={subLinkClass}>
-                                        {col.name}
+                                        {col.name.toUpperCase()}
                                     </Link>
                                 ))}
                             </div>
@@ -148,7 +148,7 @@ function OffCanvasSidebar() {
                                         onClick={() => toggleExpand(cat.slug)}
                                         className={navLinkClass + ' w-full'}
                                     >
-                                        <span>{cat.name}</span>
+                                        {cat.name.toUpperCase()}
                                         {expanded[cat.slug]
                                             ? <FaChevronDown size={10} className="text-toff-faint" />
                                             : <FaChevronRight size={10} className="text-toff-faint" />
@@ -157,11 +157,11 @@ function OffCanvasSidebar() {
                                     {expanded[cat.slug] && (
                                         <div className="mt-0.5 flex flex-col gap-0.5 mb-1">
                                             <Link to={`/${cat.slug}`} className={subLinkClass}>
-                                                Tümünü Gör
+                                                TÜMÜNÜ GÖR
                                             </Link>
                                             {cat.subCategories.map(sub => (
                                                 <Link key={sub.id} to={`/${cat.slug}/${sub.slug}`} className={subLinkClass}>
-                                                    {sub.name}
+                                                    {sub.name.toUpperCase()}
                                                 </Link>
                                             ))}
                                         </div>
@@ -169,7 +169,7 @@ function OffCanvasSidebar() {
                                 </>
                             ) : (
                                 <Link to={`/${cat.slug}`} className={navLinkClass + ' block'}>
-                                    {cat.name}
+                                    {cat.name.toUpperCase()}
                                 </Link>
                             )}
                         </div>
@@ -178,7 +178,7 @@ function OffCanvasSidebar() {
                     {/* Tüm Ürünler (sona sabit) */}
                     <div className="mt-1">
                         <Link to="/tum-urunler" className={navLinkClass + ' block'}>
-                            Tüm Ürünler
+                            TÜM ÜRÜNLER
                         </Link>
                     </div>
 

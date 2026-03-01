@@ -42,21 +42,45 @@ function Header() {
     }
   };
 
+  // Kullanıcının belirlediği menü sırası
+  const MENU_ORDER = [
+    'koleksiyonlar',
+    'masalar',
+    'oturma-elemanlari',
+    'sehpalar',
+    'servis-uniteleri',
+    'dis-mekan-bahce',
+    'sergileme-duzenleme',
+    'mekan-cozumleri',
+    'little-paws',
+  ];
+
   const getDynamicMenu = () => {
+    // Kategorileri istenen sıraya göre sırala
+    const sortedCats = [...categories].sort((a, b) => {
+      const ia = MENU_ORDER.indexOf(a.slug);
+      const ib = MENU_ORDER.indexOf(b.slug);
+      if (ia === -1 && ib === -1) return 0;
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+
     const menu = [
-      { title: 'TÜM ÜRÜNLER', path: '/tum-urunler', subCategories: [] },
       {
         title: 'KOLEKSİYONLAR', path: '/koleksiyonlar',
         subCategories: collections.map(col => ({ title: col.name, path: `/koleksiyon/${col.slug}` }))
       }
     ];
-    categories.forEach(cat => {
+    sortedCats.forEach(cat => {
       menu.push({
         title: cat.name.toUpperCase(),
         path: `/${cat.slug}`,
         subCategories: cat.subCategories.map(sub => ({ title: sub.name, path: `/${cat.slug}/${sub.slug}` }))
       });
     });
+    // Tüm Ürünler en sona
+    menu.push({ title: 'TÜM ÜRÜNLER', path: '/tum-urunler', subCategories: [] });
     return menu;
   };
 
