@@ -20,6 +20,17 @@ const CAT_GRADIENTS = [
     'from-zinc-800 to-stone-600',
 ];
 
+// Slug → local görsel eşleşmesi
+const CATEGORY_IMAGES = {
+    'masalar': '/assets/categories/masalar.png',
+    'oturma-elemanlari': '/assets/categories/oturma-elemanlari.png',
+    'sehpalar': '/assets/categories/sehpalar.png',
+    'sergileme-duzenleme': '/assets/categories/sergileme-duzenleme.png',
+    'dis-mekan': '/assets/categories/dis-mekan.jpg',
+    'mekan-cozumleri': '/assets/categories/mekan-cozumleri.png',
+    'little-paws': '/assets/categories/little-paws.png',
+};
+
 // Ana kategori sırası (slug'larla eşleşir)
 const MENU_ORDER = [
     'masalar', 'oturma-elemanlari', 'sehpalar',
@@ -232,10 +243,10 @@ export default function StorefrontPage() {
                             to={`/${cat.slug}`}
                             className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
                         >
-                            {/* Görsel veya gradient fallback */}
-                            {cat.image_url ? (
+                            {/* Görsel: local > API > gradient */}
+                            {(CATEGORY_IMAGES[cat.slug] || cat.image_url) ? (
                                 <img
-                                    src={cat.image_url}
+                                    src={CATEGORY_IMAGES[cat.slug] || cat.image_url}
                                     alt={cat.name}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
