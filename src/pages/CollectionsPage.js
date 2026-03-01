@@ -19,7 +19,7 @@ function CollectionsPage() {
             {/* Banner */}
             <div className="relative h-48 sm:h-64 overflow-hidden">
                 <img
-                    src="/assets/koleksiyonlar-header.png"
+                    src="/assets/koleksiyonlar-header.webp"
                     alt="Koleksiyonlar"
                     className="w-full h-full object-cover scale-110"
                 />
@@ -46,7 +46,7 @@ function CollectionsPage() {
                             >
                                 <div
                                     className="absolute inset-0 bg-center bg-cover transition-transform duration-700 group-hover:scale-110"
-                                    style={{ backgroundImage: `url('${col.image || `/assets/collection-${col.slug}.png`}')` }}
+                                    style={{ backgroundImage: `url('${col.image || `/assets/collection-${col.slug}.webp`}')` }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                                 <div className="absolute bottom-0 left-0 p-6">
